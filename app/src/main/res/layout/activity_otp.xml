@@ -33,7 +33,27 @@
                 android:lineSpacingExtra="-13sp"
                 android:text="Otp Verify"
                 />
+
             <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:elevation="10dp"
+                app:cardElevation="10dp">
+                <EditText
+                    android:id="@+id/editOtp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter OTP"
+                    android:maxLength="6"
+                    android:drawableLeft="@drawable/ic_baseline_phone"
+                    android:inputType="number"
+                    android:background="@drawable/eddittext"
+                    android:padding="10dp" />
+            </androidx.cardview.widget.CardView>
+           <!-- <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -44,15 +64,15 @@
 
                 <EditText
                     android:id="@+id/editOtp"
+                    android:background="@drawable/eddittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_lock"
                     android:drawableLeft="@drawable/ic_baseline_lock"
                     android:hint="Enter OTP"
                     android:inputType="number"
                     android:maxLength="6"
                     android:padding="10dp" />
-            </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>-->
             <Button
                 android:id="@+id/btnVerify"
                 android:layout_width="match_parent"

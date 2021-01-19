@@ -24,6 +24,7 @@
  import com.shopprdriver.Model.AcceptModel;
  import com.shopprdriver.Model.CancelModel;
  import com.shopprdriver.Model.ChatMessage.Chat;
+ import com.shopprdriver.Model.ChatModel;
  import com.shopprdriver.Model.RatingsModel;
  import com.shopprdriver.Model.RejectedModel;
  import com.shopprdriver.R;
@@ -33,6 +34,7 @@
  import com.shopprdriver.Session.SessonManager;
  import com.squareup.picasso.Picasso;
 
+ import java.util.ArrayList;
  import java.util.List;
 
  import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
@@ -41,7 +43,6 @@
  import retrofit2.Response;
 
  public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.Holder> {
-     private static final int IO_BUFFER_SIZE = 1;
      List<Chat>chatList;
     Context context;
     private int SELF = 1;
@@ -346,13 +347,12 @@
 
      @Override
     public int getItemCount() {
-        return chatList.size();
+         if (chatList != null) {
+             return chatList.size();
+
+         } else return 0;
+        //return chatList.size();
     }
-     public void refreshEvents(List<Chat> events) {
-         this.chatList.clear();
-         this.chatList.addAll(events);
-         notifyDataSetChanged();
-     }
     @Override
     public int getItemViewType(int position) {
         //getting message object of current position

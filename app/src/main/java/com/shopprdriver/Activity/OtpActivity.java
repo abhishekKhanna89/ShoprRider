@@ -39,16 +39,16 @@ public class OtpActivity extends AppCompatActivity {
         btnVerify=findViewById(R.id.btnVerify);
         editOtp=findViewById(R.id.editOtp);
 
-        editOtp.setOnClickListener(new View.OnClickListener() {
+        btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnVerify.getText().toString().isEmpty()){
-                    btnVerify.setError("OTP Field Can't be blank");
-                    btnVerify.requestFocus();
+                if(editOtp.getText().toString().isEmpty()){
+                    editOtp.setError("OTP Field Can't be blank");
+                    editOtp.requestFocus();
                 }
-                else if(btnVerify.getText().toString().length()!=6){
-                    btnVerify.setError("OTP should be 6 digit");
-                    btnVerify.requestFocus();
+                else if(editOtp.getText().toString().length()!=6){
+                    editOtp.setError("OTP should be 6 digit");
+                    editOtp.requestFocus();
                 }
                 else {
                     OtpVerifyAPI();

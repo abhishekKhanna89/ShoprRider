@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.shopprdriver.Activity.ChatActivity;
 import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
@@ -85,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String newToken = instanceIdResult.getToken();
+            //Log.e("newToken", newToken);
+            //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
+        });
         viewUserChatList();
 
 
@@ -93,48 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    private void uploadFile() {
-
-     //
-
-        File file = new File("");
-
-        // Parsing any Media type file
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
-
-        ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-
-        //Call call = getResponse.uploadFile(fileToUpload, filename);
-        HashMap<String, RequestBody> partMap = new HashMap<>();
-        partMap.put("type", ApiFactory.getRequestBodyFromString("audio"));
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer "+sessonManager.getToken());
-
-        iApiServices.apiAudioSend(headers,2,fileToUpload,partMap)
-                .enqueue(new Callback<SendModel>() {
-                    @Override
-                    public void onResponse(Call<SendModel> call, Response<SendModel> response) {
-                        sessonManager.hideProgress();
-                        if (response.body()!=null){
-                            if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")){
-                               // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                            }else {
-                               // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<SendModel> call, Throwable t) {
-                        sessonManager.hideProgress();
-                    }
-                });
-    }
-
-
     private void viewUserChatList() {
         if (CommonUtils.isOnline(this)) {
             sessonManager.showProgress(this);
@@ -194,5 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        viewUserChatList();
+    }
 }
