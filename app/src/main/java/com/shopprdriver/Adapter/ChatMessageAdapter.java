@@ -62,11 +62,11 @@
         if (viewType == SELF) {
             //Inflating the layout self
             itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.out_msg_layout, parent, false);
+                    .inflate(R.layout.in_msg_layout, parent, false);
         } else{
             //else inflating the layout others
             itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.in_msg_layout, parent, false);
+                    .inflate(R.layout.out_msg_layout, parent, false);
         }
 
 
@@ -119,10 +119,9 @@
        }
        if (chat.getType().equalsIgnoreCase("product")){
            Picasso.get().load(chat.getFilePath()).into(holder.productImage);
-           //Glide.with(context).load(chat.getFilePath()).into(holder.productImage);
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
-           holder.pqText.setText("₹"+chat.getPrice()+"-"+chat.getQuantity());
+           holder.pqText.setText(chat.getQuantity()+" / "+"₹"+chat.getPrice());
        }else {
            holder.productLayout.setVisibility(View.GONE);
        }

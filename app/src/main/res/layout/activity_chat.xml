@@ -10,14 +10,32 @@
     android:focusableInTouchMode="true"
     tools:context=".Activity.ChatActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/chatRecyclerView"
-        android:layout_weight="2"
         android:divider="#fff"
+        android:layout_height="match_parent" />
 
-        android:layout_height="wrap_content" />
-
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fab_speed_dial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:fabGravity="bottom_end"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        app:fabMenu="@menu/floating_action_menu"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+    </RelativeLayout>
     <Chronometer
         android:id="@+id/record_timer"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,13 +50,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-
         android:background="@android:color/transparent"
         android:orientation="horizontal">
+
+
         <ImageButton
             android:id="@+id/chooseImage"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:visibility="visible"
             android:layout_marginLeft="5dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"

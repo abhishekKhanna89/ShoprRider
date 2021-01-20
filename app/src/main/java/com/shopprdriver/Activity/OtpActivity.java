@@ -64,6 +64,7 @@ public class OtpActivity extends AppCompatActivity {
             otpVerifyRequest.setOtp(editOtp.getText().toString());
             otpVerifyRequest.setMobile(mobile);
             otpVerifyRequest.setType(type);
+            otpVerifyRequest.setNotification_token(sessonManager.getNotificationToken());
             Call<OtpVerifyModel> call= ApiExecutor.getApiService(OtpActivity.this)
                     .otpService(otpVerifyRequest);
             call.enqueue(new Callback<OtpVerifyModel>() {

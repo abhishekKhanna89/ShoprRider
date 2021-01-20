@@ -5,7 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -20,6 +24,7 @@ import com.shopprdriver.Session.SessonManager;
 
 public class FirebaseMessageReceiver extends FirebaseMessagingService {
     SessonManager sessonManager;
+    Uri notification;
     @Override
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
@@ -45,6 +50,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             showNotification(
                     remoteMessage.getNotification().getTitle(),
                     remoteMessage.getNotification().getBody());
+
 
             Intent intent = new Intent("message_subject_intent");
             intent.putExtra("title", remoteMessage.getNotification().getTitle() );
@@ -88,6 +94,13 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                 this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
+        try {
+            notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Create a Builder object using NotificationCompat
         // class. This will allow control over all the flags
         NotificationCompat.Builder builder
@@ -99,6 +112,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                 .setVibrate(new long[]{1000, 1000, 1000,
                         1000, 1000})
                 .setOnlyAlertOnce(true)
+                .setSound(notification)
                 .setContentIntent(pendingIntent);
 
         // A customized design for the notification can be

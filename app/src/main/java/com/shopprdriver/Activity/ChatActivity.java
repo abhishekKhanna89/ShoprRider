@@ -37,13 +37,18 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.internal.NavigationMenu;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
 import com.shopprdriver.Model.ChatMessage.Chat;
@@ -71,7 +76,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -114,6 +122,11 @@ public class ChatActivity extends AppCompatActivity {
     private String recordFile;
     private Chronometer timer;
     String pathforaudio;
+    /*Todo:- FloatingActionButton*/
+    FabSpeedDial fabSpeedDial;
+    /*Todo:- Alert Dialog*/
+    AlertDialog alertDialog;
+    ImageView circleImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +142,29 @@ public class ChatActivity extends AppCompatActivity {
         /*Todo:- Voice Recorder*/
         timer = findViewById(R.id.record_timer);
 
+        /*Todo:- FloatingActionButton*/
+        fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        /*fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+
+                // TODO: Do something with yout menu items, or return false if you don't want to show them
+                return true;
+            }
+        });*/
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.fab_video:
+                        break;
+                    case R.id.fab_product:
+                        showCustomDialog();
+                        break;
+                }
+                return false;
+            }
+        });
 
         chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,6 +319,175 @@ public class ChatActivity extends AppCompatActivity {
         chatMessageList(id);
     }
 
+    private void showCustomDialog() {
+        //before inflating the custom alert dialog layout, we will get the current activity viewgroup
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.product_dialog_layout, viewGroup, false);
+        TextView successText=dialogView.findViewById(R.id.successText);
+        circleImage=dialogView.findViewById(R.id.circleImage);
+        ImageView insertImage=dialogView.findViewById(R.id.insertImage);
+        ImageView closeBtn=dialogView.findViewById(R.id.closeBtn);
+        EditText editPrice=dialogView.findViewById(R.id.editPrice);
+        EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
+        Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        insertImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inserImageFile();
+            }
+        });
+
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CommonUtils.isOnline(ChatActivity.this)) {
+                    //sessonManager.showProgress(ChatActivity.this);
+                    HashMap<String, RequestBody> partMap = new HashMap<>();
+                    partMap.put("type", ApiFactory.getRequestBodyFromString("product"));
+                    partMap.put("price",ApiFactory.getRequestBodyFromString(editPrice.getText().toString()));
+                    partMap.put("quantity",ApiFactory.getRequestBodyFromString(editQuantity.getText().toString()));
+                    MultipartBody.Part[] imageArray1 = new MultipartBody.Part[imagePathList.size()];
+                    //Log.d("arrayLis",""+imageArray1);
+
+                    for (int i = 0; i < imageArray1.length; i++) {
+                        File file = new File(imagePathList.get(i));
+                        try {
+                            File compressedfile = new Compressor(ChatActivity.this).compressToFile(file);
+                            RequestBody requestBodyArray = RequestBody.create(MediaType.parse("image/*"), compressedfile);
+                            imageArray1[i] = MultipartBody.Part.createFormData("file", compressedfile.getName(), requestBodyArray);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer "+sessonManager.getToken());
+                    ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
+                    iApiServices.apiProductSend(headers,id,imageArray1,partMap)
+                            .enqueue(new Callback<SendModel>() {
+                                @Override
+                                public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                    //sessonManager.hideProgress();
+                                    if (response.body()!=null) {
+                                        if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                                            chatMessageList1(id);
+
+                                            alertDialog.dismiss();
+                                            // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<SendModel> call, Throwable t) {
+                                    //sessonManager.hideProgress();
+                                }
+                            });
+                }else {
+                    CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
+                }
+            }
+        });
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void inserImageFile() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+        myAlertDialog.setTitle("Upload Pictures Option");
+        myAlertDialog.setMessage("How do you want to set your picture?");
+
+        myAlertDialog.setPositiveButton("Gallery", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
+
+                } else {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 787);
+                }
+
+
+            }
+        });
+
+        myAlertDialog.setNegativeButton("Camera", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
+
+                } else {
+                    try {
+                        takeCameraImg1();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+        myAlertDialog.show();
+    }
+
+    private void takeCameraImg1() throws Exception {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            try {
+                photoFile = createFile1();
+                //Log.d("checkexcesdp", String.valueOf(photoFile));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                //Log.d("checkexcep", ex.getMessage());
+            }
+            photoFile = createFile1();
+            photoUri = FileProvider.getUriForFile(ChatActivity.this, getPackageName() + ".provider", photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            startActivityForResult(takePictureIntent, 2);
+
+        }
+    }
+
+    private File createFile1()throws Exception {
+        String imageFileName = "GOOGLES" + System.currentTimeMillis();
+        String storageDir = Environment.getExternalStorageDirectory() + "/skImages";
+        Log.d("storagepath===", storageDir);
+        File dir = new File(storageDir);
+        if (!dir.exists())
+            dir.mkdir();
+
+        File image = new File(storageDir + "/" + imageFileName + ".jpg");
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentMPath = image.getAbsolutePath();
+        return image;
+    }
+
     private void chatMessageList1(int id) {
         Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),id);
         call.enqueue(new Callback<ChatMessageModel>() {
@@ -299,8 +504,6 @@ public class ChatActivity extends AppCompatActivity {
                             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
                             //chatRecyclerView.smoothScrollToPosition(chatList.size()-1);
                             chatMessageAdapter.notifyDataSetChanged();
-
-
 
                         }
                     }
@@ -405,9 +608,7 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
     }
-    public void onRefresh(Bundle s) {
-        this.onCreate(s);
-    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -415,16 +616,132 @@ public class ChatActivity extends AppCompatActivity {
 
             try {
                 rotateImage();
+
             } catch (Exception e) {
                 e.printStackTrace();
 
             }
 
 
-        } else if ((requestCode == 786)) {
+        }else if ((resultCode == RESULT_OK && requestCode == 2)){
+            rotateImage1();
+        }
+        else if ((requestCode == 786)) {
             selectFromGallery(data);
+        }else if ((requestCode == 787)){
+            selectFromGallery1(data);
         }
 
+    }
+
+    private void selectFromGallery1(Intent data) {
+        if (data != null) {
+            try {
+
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                if (data.getClipData() != null) {
+                    int imageCount = data.getClipData().getItemCount();
+                    for (int i = 0; i < imageCount; i++) {
+                        Uri mImageUri = data.getClipData().getItemAt(i).getUri();
+                        photoPath = Helper.pathFromUri(ChatActivity.this, mImageUri);
+                        imagePathList.add(photoPath);
+
+
+                        // Get the cursor
+                        Cursor cursor1 = getApplicationContext().getContentResolver().query(mImageUri,
+                                filePathColumn, null, null, null);
+                        // Move to first row
+                        cursor1.moveToFirst();
+
+                        int columnIndex1 = cursor1.getColumnIndex(filePathColumn[0]);
+                        imageEncoded = cursor1.getString(columnIndex1);
+
+                        if (Build.VERSION.SDK_INT > 23) {
+                            // Log.d("inelswe", "inelse");
+                            bitmap = handleSamplingAndRotationBitmap(getApplicationContext(), mImageUri);
+
+                        } else {
+                            // Log.d("inelse", "inelse");
+                            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+
+                        }
+
+
+                        //   deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                        cursor1.close();
+                        //ProfileUpdateAPI();
+                        circleImage.setImageBitmap(bitmap);
+
+
+                    }
+                } else {
+                    Uri mImageUri = data.getData();
+                    photoPath = Helper.pathFromUri(ChatActivity.this, mImageUri);
+                    imagePathList.add(photoPath);
+
+                    // Get the cursor
+                    Cursor cursor1 = getApplicationContext().getContentResolver().query(mImageUri,
+                            filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor1.moveToFirst();
+
+                    int columnIndex1 = cursor1.getColumnIndex(filePathColumn[0]);
+                    imageEncoded = cursor1.getString(columnIndex1);
+
+
+                    if (Build.VERSION.SDK_INT > 23) {
+                        //Log.d("inelswe", "inelse");
+                        bitmap = handleSamplingAndRotationBitmap(getApplicationContext(), mImageUri);
+
+                    } else {
+                        //Log.d("inelse", "inelse");
+                        bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+
+                    }
+
+                    //  deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+
+                    cursor1.close();
+                    //ProfileUpdateAPI();
+                    circleImage.setImageBitmap(bitmap);
+
+
+                }
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void rotateImage1() {
+        try {
+            String photoPath = photoFile.getAbsolutePath();
+            imagePathList.add(photoPath);
+
+            // Log.d("ress",""+imagePathList);
+            bitmap = MediaStore.Images.Media.getBitmap(ChatActivity.this.getContentResolver(), photoUri);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+
+            if (Build.VERSION.SDK_INT > 23) {
+                bitmap = handleSamplingAndRotationBitmap(getApplicationContext(), photoUri);
+
+            } else {
+                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), photoUri);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+
+            }
+            //ProfileUpdateAPI();
+            circleImage.setImageBitmap(bitmap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
     private void takeCameraImg() throws IOException {
@@ -441,6 +758,7 @@ public class ChatActivity extends AppCompatActivity {
             photoUri = FileProvider.getUriForFile(ChatActivity.this, getPackageName() + ".provider", photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             startActivityForResult(takePictureIntent, 1);
+
         }
 
     }

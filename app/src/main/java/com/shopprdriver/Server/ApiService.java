@@ -74,5 +74,9 @@ public interface ApiService {
     @POST("send-message/{chat_id}")
     Call<SendModel>apiAudioSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id,@Part MultipartBody.Part file, @PartMap() Map<String, RequestBody> partMap);
 
+    @Multipart
+    @POST("send-message/{chat_id}")
+    Call<SendModel>apiProductSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+
 
 }

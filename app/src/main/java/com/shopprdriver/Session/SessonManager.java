@@ -17,6 +17,8 @@ public class SessonManager {
     private final SharedPreferences.Editor editor;
     public static final String NAME = "MY_PREFERENCES";
     public static final String Token = "token";
+    public static final String NOTIFICATION_TOKEN="notification_token";
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -46,6 +48,13 @@ public class SessonManager {
     }
 
 
+    public void setNotificationToken(String notificationToken){
+        editor.putString(NOTIFICATION_TOKEN,notificationToken);
+        editor.apply();
+    }
+    public String getNotificationToken(){
+        return sharedPreference.getString(NOTIFICATION_TOKEN,"");
+    }
 
     public void hideProgress() {
         while (mDialog != null && mDialog.isShowing()){
