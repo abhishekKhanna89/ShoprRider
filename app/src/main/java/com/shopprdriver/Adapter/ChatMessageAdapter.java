@@ -162,7 +162,7 @@
            holder.greenLayout.setVisibility(View.VISIBLE);
            holder.closeRedLayout.setVisibility(View.GONE);
            holder.rejectText.setVisibility(View.GONE);
-           holder.cancelText.setVisibility(View.VISIBLE);
+           holder.cancelText.setVisibility(View.GONE);
            holder.acceptText.setVisibility(View.GONE);
            holder.ratingBar.setIsIndicator(true);
        }
