@@ -84,8 +84,8 @@
 
         <ImageButton
             android:id="@+id/sendMsgBtn"
-            android:background="@drawable/record_btn_stopped"
             android:layout_width="50dp"
+            android:background="@drawable/record_btn_stopped"
             android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             />

@@ -45,6 +45,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView chatRecyclerView;
     List<Chat> chatList;
     EditText editText;
-    ImageView sendMsgBtn,chooseImage;
+    ImageButton sendMsgBtn,chooseImage;
     /*Todo:- BroadCast Receiver*/
     BroadcastReceiver mMessageReceiver;
     String body;
@@ -115,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
     private static String baseUrl="http://shoppr.avaskmcompany.xyz/api/shoppr/";
 
     /*Todo:- Voice Recorder*/
-    private boolean isRecording = false;
+    boolean isRecording = false;
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private int PERMISSION_CODE = 21;
 
@@ -203,28 +204,27 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View v) {
-                if(isRecording) {
+                if (!isRecording) {
+                    if(checkPermissions()) {
+                        //Start Recording
+                        startRecording();
+                        // Change button image and set Recording state to false
+                        sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
+                        isRecording = true;
+                    }
+                }
+                else {
                     //Stop Recording
-                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped));
+
                     stopRecording();
 
                     // Change button image and set Recording state to false
-
-                    //sendMsgBtn.setImageDrawable();
+                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped,null));
                     isRecording = false;
-                } else {
-                    //Check permission to record audio
-                    if(checkPermissions()) {
-                        //Start Recording
-                        sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording));
-                        startRecording();
-                        // Change button image and set Recording state to false
-                        //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
-                        isRecording = true;
-                    }
                 }
             }
         });
@@ -234,11 +234,13 @@ public class ChatActivity extends AppCompatActivity {
 
             }
 
+            @SuppressLint("UseCompatLoadingForDrawables")
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 0) {
-                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
+                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped));
+                    //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     // is only executed if the EditText was directly changed by the user
                 } else {
                     sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.send));
