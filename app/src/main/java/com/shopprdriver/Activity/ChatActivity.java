@@ -203,24 +203,26 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint({"UseCompatLoadingForDrawables", "NewApi"})
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View v) {
                 if(isRecording) {
                     //Stop Recording
+                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped));
                     stopRecording();
 
                     // Change button image and set Recording state to false
-                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
+
                     //sendMsgBtn.setImageDrawable();
                     isRecording = false;
                 } else {
                     //Check permission to record audio
                     if(checkPermissions()) {
                         //Start Recording
+                        sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording));
                         startRecording();
                         // Change button image and set Recording state to false
-                        sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
+                        //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
                         isRecording = true;
                     }
                 }
