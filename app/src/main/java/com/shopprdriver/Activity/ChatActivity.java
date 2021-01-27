@@ -159,6 +159,8 @@ public class ChatActivity extends AppCompatActivity {
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.fab_video:
+                        startActivity(new Intent(ChatActivity.this,VideoChatActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                     case R.id.fab_product:
                         showCustomDialog();
@@ -183,7 +185,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (intent.getStringExtra("title")!=null||intent.getStringExtra("body")!=null){
                     String title=intent.getStringExtra("title");
                     body=intent.getStringExtra("body");
-                    chatMessageList1(id);
+                    chatMessageList(id);
 /*// Create the initial data list.
                     // msgDtoList = new ArrayList<ChatModel>();
                     ChatModel msgDto = new ChatModel(ChatModel.MSG_TYPE_RECEIVED, body);
@@ -200,7 +202,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
         IntentFilter i = new IntentFilter();
-        i.addAction("message_subject_intent");
+        i.addAction("message_subject1_intent");
         LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
@@ -286,7 +288,7 @@ public class ChatActivity extends AppCompatActivity {
                                             if (response.body()!=null) {
                                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                     editText.getText().clear();
-                                                    chatMessageList1(id);
+                                                    chatMessageList(id);
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                                 }else {
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -408,7 +410,7 @@ public class ChatActivity extends AppCompatActivity {
                                     //sessonManager.hideProgress();
                                     if (response.body()!=null) {
                                         if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
-                                            chatMessageList1(id);
+                                            chatMessageList(id);
 
                                             alertDialog.dismiss();
                                             // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -514,7 +516,7 @@ public class ChatActivity extends AppCompatActivity {
         return image;
     }
 
-    private void chatMessageList1(int id) {
+    /*private void chatMessageList1(int id) {
         Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),id);
         call.enqueue(new Callback<ChatMessageModel>() {
             @Override
@@ -541,7 +543,7 @@ public class ChatActivity extends AppCompatActivity {
                 //Log.d("resssssss",t.getMessage());
             }
         });
-    }
+    }*/
 
     private void startDialog() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
@@ -585,12 +587,12 @@ public class ChatActivity extends AppCompatActivity {
 
     private void chatMessageList(int id) {
         if (CommonUtils.isOnline(ChatActivity.this)) {
-            sessonManager.showProgress(ChatActivity.this);
+            //sessonManager.showProgress(ChatActivity.this);
             Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),id);
             call.enqueue(new Callback<ChatMessageModel>() {
                 @Override
                 public void onResponse(Call<ChatMessageModel> call, Response<ChatMessageModel> response) {
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             ChatMessageModel chatMessageModel=response.body();
@@ -598,7 +600,9 @@ public class ChatActivity extends AppCompatActivity {
                                 chatList=chatMessageModel.getData().getChats();
                                 ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
-                                chatRecyclerView.getLayoutManager().scrollToPosition(chatList.size()-1);
+                                chatRecyclerView.scrollToPosition(chatList.size()-1);
+                                chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
+                                //chatRecyclerView.getLayoutManager().scrollToPosition(chatList.size()-1);
                                 //adapter.notifyDataSetChanged();
                                 chatMessageAdapter.notifyDataSetChanged();
 
@@ -609,7 +613,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ChatMessageModel> call, Throwable t) {
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
                 }
             });
 
@@ -627,6 +631,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -860,7 +865,7 @@ public class ChatActivity extends AppCompatActivity {
                             //sessonManager.hideProgress();
                             if (response.body()!=null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
-                                    chatMessageList1(id);
+                                    chatMessageList(id);
                                     // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 }else {
                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -1130,7 +1135,7 @@ public class ChatActivity extends AppCompatActivity {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     timer.setVisibility(View.GONE);
                                     timer.stop();
-                                    chatMessageList1(id);
+                                    chatMessageList(id);
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 } else {
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();

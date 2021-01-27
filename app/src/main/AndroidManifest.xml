@@ -9,18 +9,21 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-
+        <activity android:name=".Activity.VideoChatActivity"></activity>
         <activity
             android:name=".Activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -40,10 +43,10 @@
         <activity
             android:name=".Activity.OtpActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.ChatActivity"
-            android:screenOrientation="portrait"
-            android:label="Chat"/>
-
+        <activity
+            android:name=".Activity.ChatActivity"
+            android:label="Chat"
+            android:screenOrientation="portrait" />
 
         <service android:name=".notifications.FirebaseMessageReceiver">
             <intent-filter>

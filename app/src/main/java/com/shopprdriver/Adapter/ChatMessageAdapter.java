@@ -97,7 +97,7 @@
             }
         };
         IntentFilter i = new IntentFilter();
-        i.addAction("message_subject_intent");
+        i.addAction("message_subject1_intent");
         LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
 
@@ -139,9 +139,9 @@
            holder.voicePlayerView.setVisibility(View.GONE);
        }
 
-       if (chat.getType().equalsIgnoreCase("address-request")){
-           String lat ="28.5355";
-           String lon = "77.3910";
+       if (chat.getType().equalsIgnoreCase("address")){
+           String lat =chat.getLat();
+           String lon =chat.getLang();
            String url ="https://maps.googleapis.com/maps/api/staticmap?";
            url+="&zoom=14";
            url+="&size=200x200";

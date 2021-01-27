@@ -52,7 +52,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                     remoteMessage.getNotification().getBody());
 
 
-            Intent intent = new Intent("message_subject_intent");
+            Intent intent = new Intent("message_subject1_intent");
             intent.putExtra("title", remoteMessage.getNotification().getTitle() );
             intent.putExtra("body", remoteMessage.getNotification().getBody());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
