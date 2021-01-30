@@ -357,6 +357,7 @@ public class ChatActivity extends AppCompatActivity {
         circleImage=dialogView.findViewById(R.id.circleImage);
         ImageView insertImage=dialogView.findViewById(R.id.insertImage);
         ImageView closeBtn=dialogView.findViewById(R.id.closeBtn);
+        EditText editName=dialogView.findViewById(R.id.editName);
         EditText editPrice=dialogView.findViewById(R.id.editPrice);
         EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
         Button submitBtn=dialogView.findViewById(R.id.submitBtn);
@@ -383,6 +384,7 @@ public class ChatActivity extends AppCompatActivity {
                     //sessonManager.showProgress(ChatActivity.this);
                     HashMap<String, RequestBody> partMap = new HashMap<>();
                     partMap.put("type", ApiFactory.getRequestBodyFromString("product"));
+                    partMap.put("name",ApiFactory.getRequestBodyFromString(editName.getText().toString()));
                     partMap.put("price",ApiFactory.getRequestBodyFromString(editPrice.getText().toString()));
                     partMap.put("quantity",ApiFactory.getRequestBodyFromString(editQuantity.getText().toString()));
                     MultipartBody.Part[] imageArray1 = new MultipartBody.Part[imagePathList.size()];

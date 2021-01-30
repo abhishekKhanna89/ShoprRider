@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     SwipeRefreshLayout swipeRefreshLayout;
     UserChatListAdapter userChatListAdapter;
-    private static String baseUrl="http://shoppr.avaskmcompany.xyz/api/shoppr/";
+    //private static String baseUrl="http://shoppr.avaskmcompany.xyz/api/shoppr/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private void viewUserChatList() {
         if (CommonUtils.isOnline(this)) {
             sessonManager.showProgress(this);
+            //Log.d("token",sessonManager.getToken());
             Call<UserChatListModel> call= ApiExecutor.getApiService(this)
                     .apiUserChatList("Bearer "+sessonManager.getToken());
             call.enqueue(new Callback<UserChatListModel>() {
