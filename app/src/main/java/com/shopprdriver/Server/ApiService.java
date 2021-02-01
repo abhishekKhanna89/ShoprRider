@@ -6,11 +6,13 @@ import com.google.gson.JsonObject;
 import com.shopprdriver.Model.AcceptModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
+import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.Send.SendModel;
+import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
@@ -77,6 +79,11 @@ public interface ApiService {
     @Multipart
     @POST("send-message/{chat_id}")
     Call<SendModel>apiProductSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+
+
+    @POST("update-location")
+    Call<LocationUpdateModel>apiLocationUpdate(@Header("Authorization") String token,
+                                               @Body UpdateLocationRequest updateLocationRequest);
 
 
 }

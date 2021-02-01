@@ -1,71 +1,70 @@
 package com.shopprdriver;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
+import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaRecorder;
-import android.net.Uri;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Chronometer;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.shopprdriver.Activity.ChatActivity;
 import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
-import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
 import com.shopprdriver.Server.ApiExecutor;
-import com.shopprdriver.Server.ApiFactory;
-import com.shopprdriver.Server.ApiService;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
+import com.shopprdriver.background_service.MyService;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.internal.http2.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+
 public class MainActivity extends AppCompatActivity {
+    /*Todo:- Background Service*/
+    private JobScheduler jobScheduler;
+    private ComponentName componentName;
+    private JobInfo jobInfo;
+
     SessonManager sessonManager;
     RecyclerView userChatListRecyclerView;
     List<Userchat>chatsListModelList;
     private LinearLayoutManager linearLayoutManager;
     SwipeRefreshLayout swipeRefreshLayout;
     UserChatListAdapter userChatListAdapter;
+
     //private static String baseUrl="http://shoppr.avaskmcompany.xyz/api/shoppr/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sessonManager=new SessonManager(this);
+        //Log.d("token",sessonManager.getToken());
+
 
         userChatListRecyclerView=findViewById(R.id.userChatListRecyclerView);
         swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
@@ -85,6 +84,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
+        }else{
+            showGPSDisabledAlertToUser();
+        }
+
+
 
         viewUserChatList();
 
@@ -158,5 +167,60 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         viewUserChatList();
+        StartBackgroundTask();
+    }
+    @SuppressLint("NewApi")
+    public void StartBackgroundTask() {
+        jobScheduler = (JobScheduler) getApplicationContext().getSystemService(JOB_SCHEDULER_SERVICE);
+        componentName = new ComponentName(getApplicationContext(), MyService.class);
+        jobInfo = new JobInfo.Builder(1, componentName)
+                .setMinimumLatency(10000) //10 sec interval
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setRequiresCharging(false).build();
+        jobScheduler.schedule(jobInfo);
+    }
+    private void showGPSDisabledAlertToUser(){
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable GPS",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        StartBackgroundTask();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StartBackgroundTask();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        StartBackgroundTask();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        StartBackgroundTask();
     }
 }

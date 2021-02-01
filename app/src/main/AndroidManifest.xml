@@ -54,6 +54,11 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".background_service.MyService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
