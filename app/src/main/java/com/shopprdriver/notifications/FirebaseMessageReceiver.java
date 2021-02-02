@@ -21,6 +21,9 @@ import com.shopprdriver.Activity.ChatActivity;
 import com.shopprdriver.R;
 import com.shopprdriver.Session.SessonManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class FirebaseMessageReceiver extends FirebaseMessagingService {
     SessonManager sessonManager;
@@ -29,6 +32,9 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
         sessonManager=new SessonManager(this);
+
+
+
         // First case when notifications are received via
         // data event
         // Here, 'title' and 'message' are the assumed names
@@ -44,12 +50,31 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         // Second case when notification payload is
         // received.
         if (remoteMessage.getNotification() != null) {
+            JSONObject jsonObject=new JSONObject(remoteMessage.getData());
+            //Log.d("ress",""+jsonObject);
+            try {
+                String caller=jsonObject.getString("caller");
+                String token=jsonObject.getString("token");
+                String id=jsonObject.getString("id");
+                //String user_id=jsonObject.getString("user_id");
+                String image=jsonObject.getString("image");
+                String channel=jsonObject.getString("channel");
+                //sessonManager.setAgoraToken(token);
+                sessonManager.setAgoraChanelName(channel);
+                //sessonManager.setAgoraUserid(id);
+                //Log.d("ressss",token+channel);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             // Since the notification is received directly from
             // FCM, the title and the body can be fetched
             // directly as below.
-            showNotification(
-                    remoteMessage.getNotification().getTitle(),
-                    remoteMessage.getNotification().getBody());
+            showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+
+
+           /* String title=remoteMessage.getNotification().getTitle();
+            String body=remoteMessage.getNotification().getBody();
+            Log.d("bodyResponse",body+title);*/
 
 
             Intent intent = new Intent("message_subject1_intent");

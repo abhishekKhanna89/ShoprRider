@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.shopprdriver.Model.AcceptModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
+import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
@@ -14,6 +15,7 @@ import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
+import com.shopprdriver.RequestService.AgoraRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.RequestService.RatingsRequest;
@@ -26,6 +28,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
@@ -85,5 +88,11 @@ public interface ApiService {
     Call<LocationUpdateModel>apiLocationUpdate(@Header("Authorization") String token,
                                                @Body UpdateLocationRequest updateLocationRequest);
 
+
+    @NonNull
+    @GET("initiate-video-call/{chat_id}")
+    Call<InitiateVideoCallModel>apiInitiateVideoCall(@Header("Authorization") String token,
+                                                     @Path("chat_id")int chat_id,
+                                                     @Query("channel_name") String channel_name);
 
 }

@@ -19,6 +19,10 @@ public class SessonManager {
     public static final String Token = "token";
     public static final String NOTIFICATION_TOKEN="notification_token";
 
+    public static final String AGORA_TOKEN="agora_token";
+    public static final String AGORA_CHANEL_NAME="agora_chanel_name";
+    public static final String AGORA_USERID="agora_user_id";
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -35,6 +39,29 @@ public class SessonManager {
         return pref;
     }
 
+    public void setAgoraToken(String agoraToken){
+        editor.putString(AGORA_TOKEN,agoraToken);
+        editor.apply();
+    }
+    public String getAgoraToken(){
+        return sharedPreference.getString(AGORA_TOKEN,"");
+    }
+    public void setAgoraChanelName(String chanelName){
+        editor.putString(AGORA_CHANEL_NAME,chanelName);
+        editor.apply();
+    }
+    public String getAgoraChanelName(){
+        return sharedPreference.getString(AGORA_CHANEL_NAME,"");
+    }
+
+
+    public void setAgoraUserid(String agoraUserid){
+        editor.putString(AGORA_USERID,agoraUserid);
+        editor.apply();
+    }
+    public String getAgoraUserid(){
+        return sharedPreference.getString(AGORA_USERID,"");
+    }
 
 
     public void setToken(String token) {
@@ -42,6 +69,7 @@ public class SessonManager {
         editor.putString(Token, token);
         editor.commit();
     }
+
 
     public String getToken() {
         return sharedPreference.getString(Token, "");
@@ -55,6 +83,7 @@ public class SessonManager {
     public String getNotificationToken(){
         return sharedPreference.getString(NOTIFICATION_TOKEN,"");
     }
+
 
     public void hideProgress() {
         while (mDialog != null && mDialog.isShowing()){

@@ -160,7 +160,8 @@ public class ChatActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
                     case R.id.fab_video:
                         startActivity(new Intent(ChatActivity.this,VideoChatActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                .putExtra("chatId",id)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                     case R.id.fab_product:
                         showCustomDialog();

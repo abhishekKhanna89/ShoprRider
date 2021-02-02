@@ -23,7 +23,8 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.VideoChatActivity"></activity>
+        <activity android:name=".Activity.VideoChatActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.SplashActivity"
             android:screenOrientation="portrait">
