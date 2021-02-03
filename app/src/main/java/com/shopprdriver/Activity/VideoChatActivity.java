@@ -141,9 +141,6 @@ public class VideoChatActivity extends AppCompatActivity {
         viewInitiateVideoCall(chatId);             // Tutorial Step 4
     }
 
-    private void joinChannel() {
-        mRtcEngine.joinChannel("006b39ff59abf8e48728d42ac518e72c844IACL+GrgQMd4LD6cpRKCNC8vwcbS7H5I1Lat2Ln+hQk5gOXmXe2379yDIgCMvgAAxbwaYAQAAQAAAAAAAwAAAAAAAgAAAAAABAAAAAAA", "customerchannel3", "Extra Optional Data", 1);
-    }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
         Log.i(LOG_TAG, "checkSelfPermission " + permission + " " + requestCode);
@@ -282,15 +279,6 @@ public class VideoChatActivity extends AppCompatActivity {
         container.addView(surfaceView);
         mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
     }
-
-    // Tutorial Step 4
-    /*private void joinChannel() {
-        if (token!=null||channel_name!=null||userId!=null){
-            int uId=Integer.parseInt(userId);
-            mRtcEngine.joinChannel("006b39ff59abf8e48728d42ac518e72c844IADEgcNfCvYNcB93mmFZToK34EmCbPPVbO5qYWk28RivneXmXe2bjtJtIgBk/QAAQKoaYAQAAQAAAAAAAwAAAAAAAgAAAAAABAAAAAAA", channel_name, "Extra Optional Data", uId);
-        }
-        // if you do not specify the uid, we will generate the uid for you
-    }*/
 
     // Tutorial Step 5
     private void setupRemoteVideo(int uid) {

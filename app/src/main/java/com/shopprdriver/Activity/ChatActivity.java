@@ -7,13 +7,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,7 +29,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -48,9 +45,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.internal.NavigationMenu;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
 import com.shopprdriver.Model.ChatMessage.Chat;
@@ -65,20 +61,20 @@ import com.shopprdriver.Server.ApiService;
 import com.shopprdriver.Server.Helper;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
+import com.shopprdriver.app.Config;
+import com.shopprdriver.util.NotificationUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -99,7 +95,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText editText;
     ImageButton sendMsgBtn,chooseImage;
     /*Todo:- BroadCast Receiver*/
-    BroadcastReceiver mMessageReceiver;
+    BroadcastReceiver mRegistrationBroadcastReceiver;
     String body;
 
     List<ChatModel> msgDtoList;
@@ -180,31 +176,24 @@ public class ChatActivity extends AppCompatActivity {
         msgDtoList=new ArrayList<>();
         chatList=new ArrayList<>();
 
-        mMessageReceiver = new BroadcastReceiver() {
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getStringExtra("title")!=null||intent.getStringExtra("body")!=null){
-                    String title=intent.getStringExtra("title");
-                    body=intent.getStringExtra("body");
+
+                // checking for type intent filter
+                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+                    // gcm successfully registered
+                    // now subscribe to `global` topic to receive app wide notifications
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+
                     chatMessageList(id);
-/*// Create the initial data list.
-                    // msgDtoList = new ArrayList<ChatModel>();
-                    ChatModel msgDto = new ChatModel(ChatModel.MSG_TYPE_RECEIVED, body);
-                    msgDtoList.add(msgDto);
 
-
-                    // Create the data adapter with above data list.
-                    chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
-
-                    // Set data adapter to RecyclerView.
-                    chatRecyclerView.setAdapter(chatAppMsgAdapter);
-                    //Toast.makeText(ChatActivity.this, "Title:- "+title+" Body:- "+body, Toast.LENGTH_SHORT).show();*/
+                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    // new push notification is received
+                    chatMessageList(id);
                 }
             }
         };
-        IntentFilter i = new IntentFilter();
-        i.addAction("message_subject1_intent");
-        LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -636,12 +625,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1217,6 +1201,27 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
 
 }

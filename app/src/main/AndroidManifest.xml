@@ -48,12 +48,19 @@
             android:name=".Activity.ChatActivity"
             android:label="Chat"
             android:screenOrientation="portrait" />
-
-        <service android:name=".notifications.FirebaseMessageReceiver">
+        <!-- Firebase Notifications -->
+        <service android:name=".notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service android:name=".notifications.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- ./Firebase Notifications -->
 
         <service
             android:name=".background_service.MyService"
@@ -69,8 +76,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <receiver android:name=".notifications.NotificationReceiver"
-            android:exported="false"/>
+
 
     </application>
 
