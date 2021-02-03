@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -61,6 +63,37 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                 String channel=jsonObject.getString("channel");
                 //sessonManager.setAgoraToken(token);
                 sessonManager.setAgoraChanelName(channel);
+
+
+                int NOTIFICATION_ID = 1;
+
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+                builder.setSmallIcon(R.drawable.pin_logo);
+                builder.setColor(ContextCompat.getColor(this, R.color.colorDarkBlue));
+                builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.pin_logo));
+                builder.setContentTitle("Notification Actions");
+                builder.setContentText("Tap View to launch our website");
+                builder.setAutoCancel(true);
+                //PendingIntent launchIntent = getLaunchIntent(NOTIFICATION_ID, getBaseContext());
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.journaldev.com"));
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                Intent buttonIntent = new Intent(getBaseContext(), NotificationReceiver.class);
+                buttonIntent.putExtra("notificationId", NOTIFICATION_ID);
+                PendingIntent dismissIntent = PendingIntent.getBroadcast(getBaseContext(), 0, buttonIntent, 0);
+
+                //builder.setContentIntent(launchIntent);
+                builder.addAction(android.R.drawable.ic_menu_view, "VIEW", pendingIntent);
+                builder.addAction(android.R.drawable.ic_delete, "DISMISS", dismissIntent);
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                // Will display the notification in the notification bar
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+
                 //sessonManager.setAgoraUserid(id);
                 //Log.d("ressss",token+channel);
             } catch (JSONException e) {
@@ -84,6 +117,10 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
 
         }
     }
+
+    /*private PendingIntent getLaunchIntent(int notification_id, Context baseContext) {
+
+    }*/
 
     // Method to get the custom Design for the display of
     // notification.

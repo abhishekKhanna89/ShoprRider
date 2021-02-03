@@ -102,7 +102,7 @@ public class VideoChatActivity extends AppCompatActivity {
     private void viewInitiateVideoCall(int chatId) {
         if (CommonUtils.isOnline(VideoChatActivity.this)) {
             Call<InitiateVideoCallModel> call = ApiExecutor.getApiService(this)
-                    .apiInitiateVideoCall("Bearer " + sessonManager.getToken(), chatId,channel_name);
+                    .apiInitiateVideoCall("Bearer " + sessonManager.getToken(), chatId, channel_name);
             call.enqueue(new Callback<InitiateVideoCallModel>() {
                 @Override
                 public void onResponse(Call<InitiateVideoCallModel> call, Response<InitiateVideoCallModel> response) {
@@ -115,6 +115,8 @@ public class VideoChatActivity extends AppCompatActivity {
                                 String uId = initiateVideoCallModel.getData().getUser_id();
                                 int bb = Integer.parseInt(uId);
                                 mRtcEngine.joinChannel(token1, channel_name1, "Extra Optional Data", bb);
+                                //mRtcEngine.joinChannel("006b39ff59abf8e48728d42ac518e72c844IAB0wsNC4YeSrDM6t3BebPmyj4UXXLs2eUuo7/fi6XGg9EZzOXOuK7GEIgCzRAEAV6obYAQAAQAAAAAAAwAAAAAAAgAAAAAABAAAAAAA", "customerchannel4", "Extra Optional Data",5);
+
                             }
                         }
                     }

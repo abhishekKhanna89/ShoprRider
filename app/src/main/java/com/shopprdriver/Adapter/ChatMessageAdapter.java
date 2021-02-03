@@ -48,8 +48,7 @@
     private int SELF = 1;
     View itemView;
     SessonManager sessonManager;
-     BroadcastReceiver mMessageReceiver;
-     String title,body;
+
     public ChatMessageAdapter(Context context, List<Chat>chatList){
         this.context=context;
         this.chatList=chatList;
@@ -81,24 +80,6 @@
     public void onBindViewHolder(@NonNull Holder holder, int position) {
        Chat chat=chatList.get(position);
        sessonManager=new SessonManager(context);
-        recycle();
-        mMessageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getStringExtra("title")!=null||intent.getStringExtra("body")!=null){
-                    holder.textLayout.setVisibility(View.VISIBLE);
-                    title=intent.getStringExtra("title");
-                     body=intent.getStringExtra("body");
-                     holder.message_body.setText(title+"\t"+body);
-                   // Toast.makeText(context, "Title:- "+title+" Body:- "+body, Toast.LENGTH_SHORT).show();
-                }else {
-                    holder.textLayout.setVisibility(View.GONE);
-                }
-            }
-        };
-        IntentFilter i = new IntentFilter();
-        i.addAction("message_subject1_intent");
-        LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,new IntentFilter(i));
 
 
        if (chat.getType().equalsIgnoreCase("image")){
@@ -431,11 +412,4 @@
 
 
      }
-     public void recycle() {
-         unregisterNotifications();
-     }
-     private void unregisterNotifications() {
-         LocalBroadcastManager.getInstance(context).unregisterReceiver(mMessageReceiver);
-     }
-
 }
