@@ -7,4 +7,16 @@
         android:onClick="logout"
         android:icon="@drawable/ic_logout"
         app:showAsAction="ifRoom"/>
+
+    <item  android:id="@+id/actionNotification"
+        android:title="Notification"
+        android:onClick="notification"/>
+
+    <item  android:id="@+id/actionOrder"
+        android:title="Order"
+        android:onClick="order"/>
+
+    <item  android:id="@+id/actionProfile"
+        android:title="Profile"
+        app:showAsAction="withText"/>
 </menu>

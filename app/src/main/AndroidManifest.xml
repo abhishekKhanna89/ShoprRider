@@ -48,6 +48,10 @@
             android:name=".Activity.ChatActivity"
             android:label="Chat"
             android:screenOrientation="portrait" />
+        <activity android:name=".Activity.NotificationListActivity"
+            android:label="Notification"
+            android:screenOrientation="portrait"/>
+
         <!-- Firebase Notifications -->
         <service android:name=".notifications.MyFirebaseMessagingService">
             <intent-filter>

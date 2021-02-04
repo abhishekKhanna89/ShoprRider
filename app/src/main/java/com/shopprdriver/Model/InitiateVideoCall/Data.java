@@ -14,6 +14,10 @@ public class Data {
     @SerializedName("user_id")
     @Expose
     private String user_id;
+    @SerializedName("rtm_token")
+    @Expose
+    private String rtm_token;
+
 
     public String getToken() {
         return token;
@@ -37,5 +41,13 @@ public class Data {
 
     public String getUser_id() {
         return user_id;
+    }
+
+    public void setRtm_token(String rtm_token) {
+        this.rtm_token = rtm_token;
+    }
+
+    public String getRtm_token() {
+        return rtm_token;
     }
 }

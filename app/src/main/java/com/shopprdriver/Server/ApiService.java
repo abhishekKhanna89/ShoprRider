@@ -9,6 +9,7 @@ import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
+import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
@@ -94,5 +95,10 @@ public interface ApiService {
     Call<InitiateVideoCallModel>apiInitiateVideoCall(@Header("Authorization") String token,
                                                      @Path("chat_id")int chat_id,
                                                      @Query("channel_name") String channel_name);
+    @NonNull
+    @GET("notifications")
+    Call<NotificationListModel>apiNotificationList(@Header("Authorization") String token,
+                                                   @Query("page")int page);
+
 
 }

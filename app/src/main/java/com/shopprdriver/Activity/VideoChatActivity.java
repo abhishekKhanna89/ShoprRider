@@ -34,6 +34,8 @@ import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
+import io.agora.rtm.RtmCallManager;
+import io.agora.rtm.RtmClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,13 +84,14 @@ public class VideoChatActivity extends AppCompatActivity {
     String token, channel_name, userId;
     BroadcastReceiver mMessageReceiver;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_chat);
         sessonManager = new SessonManager(this);
         chatId = getIntent().getIntExtra("chatId", 0);
-        //
 
         //token = sessonManager.getAgoraToken();
         channel_name = sessonManager.getAgoraChanelName();
@@ -113,8 +116,9 @@ public class VideoChatActivity extends AppCompatActivity {
                                 String token1 = initiateVideoCallModel.getData().getToken();
                                 String channel_name1 = initiateVideoCallModel.getData().getChannelName();
                                 String uId = initiateVideoCallModel.getData().getUser_id();
+                                String rtm_token=initiateVideoCallModel.getData().getRtm_token();
                                 int bb = Integer.parseInt(uId);
-                                mRtcEngine.joinChannel(token1, channel_name1, "Extra Optional Data", bb);
+                                mRtcEngine.joinChannel(token1, channel_name1, rtm_token, bb);
                                 //mRtcEngine.joinChannel("006b39ff59abf8e48728d42ac518e72c844IAB0wsNC4YeSrDM6t3BebPmyj4UXXLs2eUuo7/fi6XGg9EZzOXOuK7GEIgCzRAEAV6obYAQAAQAAAAAAAwAAAAAAAgAAAAAABAAAAAAA", "customerchannel4", "Extra Optional Data",5);
 
                             }
@@ -322,4 +326,5 @@ public class VideoChatActivity extends AppCompatActivity {
             surfaceView.setVisibility(muted ? View.GONE : View.VISIBLE);
         }
     }
+
 }

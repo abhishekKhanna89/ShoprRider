@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.shopprdriver.Activity.LoginActivity;
+import com.shopprdriver.Activity.NotificationListActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
@@ -222,5 +223,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         StartBackgroundTask();
+    }
+
+    public void notification(MenuItem item) {
+        startActivity(new Intent(MainActivity.this, NotificationListActivity.class));
+    }
+
+    public void order(MenuItem item) {
+
     }
 }
