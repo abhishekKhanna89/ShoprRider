@@ -10,6 +10,7 @@ import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
+import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
@@ -100,5 +101,10 @@ public interface ApiService {
     Call<NotificationListModel>apiNotificationList(@Header("Authorization") String token,
                                                    @Query("page")int page);
 
+
+    @NonNull
+    @GET("orders")
+    Call<OrderDetailsModel>apiMyOrderDetails(@Header("Authorization") String token,
+                                             @Query("page")int page);
 
 }

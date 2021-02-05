@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.shopprdriver.Activity.LoginActivity;
+import com.shopprdriver.Activity.MyOrderActivity;
 import com.shopprdriver.Activity.NotificationListActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
@@ -230,6 +231,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void order(MenuItem item) {
-
+        startActivity(new Intent(MainActivity.this, MyOrderActivity.class));
     }
 }

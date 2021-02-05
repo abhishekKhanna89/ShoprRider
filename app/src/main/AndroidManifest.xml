@@ -23,8 +23,15 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.VideoChatActivity"
+        <activity android:name=".Activity.OrderDetailsActivity"
+            android:label="Order Details"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.MyOrderActivity"
+            android:label="Order"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.VideoChatActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -48,24 +55,20 @@
             android:name=".Activity.ChatActivity"
             android:label="Chat"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.NotificationListActivity"
+        <activity
+            android:name=".Activity.NotificationListActivity"
             android:label="Notification"
-            android:screenOrientation="portrait"/>
-
-        <!-- Firebase Notifications -->
+            android:screenOrientation="portrait" /> <!-- Firebase Notifications -->
         <service android:name=".notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".notifications.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
-        </service>
-        <!-- ./Firebase Notifications -->
-
+        </service> <!-- ./Firebase Notifications -->
         <service
             android:name=".background_service.MyService"
             android:exported="true"
@@ -80,8 +83,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-
     </application>
 
 </manifest>
