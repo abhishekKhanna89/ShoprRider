@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,9 @@ import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
+import com.shopprdriver.SendBird.BaseApplication;
+import com.shopprdriver.SendBird.utils.ActivityUtils;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -29,6 +33,7 @@ public class OtpActivity extends AppCompatActivity {
     EditText editOtp;
     SessonManager sessonManager;
     String type,mobile;
+    String appId = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +81,19 @@ public class OtpActivity extends AppCompatActivity {
                     sessonManager.hideProgress();
                     if (response.body()!=null){
                         if (response.body().getStatus()!= null && response.body().getStatus().equals("success")){
+                            OtpVerifyModel otpVerifyModel=response.body();
+                            String userId=otpVerifyModel.getUser_id();
+                            String sendbird_token=otpVerifyModel.getSendbird_token();
+                            if (!TextUtils.isEmpty(appId) && !TextUtils.isEmpty(userId)
+                                    && ((BaseApplication)getApplication()).initSendBirdCall(appId)) {
+                                AuthenticationUtils.authenticate(OtpActivity.this, userId, sendbird_token, isSuccess -> {
+                                    if (isSuccess) {
+                                        setResult(RESULT_OK, null);
+                                        ActivityUtils.startMainActivityAndFinish(OtpActivity.this);
+                                    }
+                                });
 
+                            }
                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());
