@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.shopprdriver.MainActivity;
+import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
@@ -65,7 +67,6 @@ public class OtpActivity extends AppCompatActivity {
             otpVerifyRequest.setMobile(mobile);
             otpVerifyRequest.setType(type);
             otpVerifyRequest.setNotification_token(sessonManager.getNotificationToken());
-            String notificationToken=sessonManager.getNotificationToken();
             //Log.d("notificationToken",notificationToken);
             Call<OtpVerifyModel> call= ApiExecutor.getApiService(OtpActivity.this)
                     .otpService(otpVerifyRequest);
@@ -75,6 +76,7 @@ public class OtpActivity extends AppCompatActivity {
                     sessonManager.hideProgress();
                     if (response.body()!=null){
                         if (response.body().getStatus()!= null && response.body().getStatus().equals("success")){
+
                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());

@@ -28,4 +28,6 @@
     <!-- Chat Activity -->
     <color name="localBackground">#827b92</color>
     <color name="remoteBackground">#484258</color>
+    <color name="appBackground">#ffffff</color>
+    <color name="callBackground">#2c2c2c</color>
 </resources>
