@@ -372,5 +372,43 @@
                 </LinearLayout>
             </LinearLayout>
         </me.himanshusoni.chatmessageview.ChatMessageView>
+        <!--Todo:- Store Type -->
+        <me.himanshusoni.chatmessageview.ChatMessageView
+            android:id="@+id/storeLocationLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cmv_backgroundColor="#e0ffc6"
+            app:cmv_backgroundColorPressed="#FFBABABA"
+            app:cmv_cornerRadius="3dp"
+            app:cmv_arrowPosition="left"
+            android:layout_margin="5dp"
+            android:layout_gravity="end">
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/storeLocationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:elevation="2dp"
+                    android:lines="2"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/storeLocationTextDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="1dp"
+                    android:text="11:00 AM"
+                    android:textColor="#000000"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </me.himanshusoni.chatmessageview.ChatMessageView>
     </LinearLayout>
 </ScrollView>

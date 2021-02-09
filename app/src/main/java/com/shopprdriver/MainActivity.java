@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sessonManager=new SessonManager(this);
-        Log.d("token",sessonManager.getToken());
+        //Log.d("token",sessonManager.getToken());
 
 
         userChatListRecyclerView=findViewById(R.id.userChatListRecyclerView);
