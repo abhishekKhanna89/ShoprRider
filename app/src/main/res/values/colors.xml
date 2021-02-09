@@ -9,7 +9,7 @@
     <color name="white">#FFF</color>
     <color name="orange">#F44336</color>
     <color name="darkorange">#F8A9A3</color>
-    <color name="colorPrimary">#d83c3c</color>
+    <color name="colorPrimary">#91be55</color>
     <color name="green">#2fc8a3</color>
     <color name="lightgreen">#e5faf5</color>
     <color name="brown">#C9A1A1A1</color>
@@ -30,4 +30,5 @@
     <color name="remoteBackground">#484258</color>
     <color name="appBackground">#ffffff</color>
     <color name="callBackground">#2c2c2c</color>
+    <color name="textColor">#53a3a4</color>
 </resources>

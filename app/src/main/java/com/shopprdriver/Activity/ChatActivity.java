@@ -36,6 +36,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +54,12 @@ import com.shopprdriver.Adapter.ChatMessageAdapter;
 import com.shopprdriver.Model.ChatMessage.Chat;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.ChatModel;
+import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.TextTypeRequest;
+import com.shopprdriver.SendBird.call.CallService;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Server.ApiFactory;
 import com.shopprdriver.Server.ApiService;
@@ -89,7 +94,7 @@ import static android.media.MediaRecorder.VideoSource.CAMERA;
 
 public class ChatActivity extends AppCompatActivity {
     SessonManager sessonManager;
-    int id;
+    int chat_id;
     RecyclerView chatRecyclerView;
     List<Chat> chatList;
     EditText editText;
@@ -125,11 +130,12 @@ public class ChatActivity extends AppCompatActivity {
     /*Todo:- Alert Dialog*/
     AlertDialog alertDialog;
     ImageView circleImage;
+    String calleeId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        id=getIntent().getIntExtra("id",0);
+        chat_id =getIntent().getIntExtra("id",0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
@@ -154,11 +160,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    case R.id.fab_video:
-                        startActivity(new Intent(ChatActivity.this,VideoChatActivity.class)
-                                .putExtra("chatId",id)
-                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        break;
                     case R.id.fab_product:
                         showCustomDialog();
                         break;
@@ -186,11 +187,11 @@ public class ChatActivity extends AppCompatActivity {
                     // now subscribe to `global` topic to receive app wide notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
 
-                    chatMessageList(id);
+                    chatMessageList(chat_id);
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
-                    chatMessageList(id);
+                    chatMessageList(chat_id);
                 }
             }
         };
@@ -270,7 +271,7 @@ public class ChatActivity extends AppCompatActivity {
                                     textTypeRequest.setType("text");
                                     textTypeRequest.setMessage(msgContent);
                                     Call<SendModel>call=ApiExecutor.getApiService(ChatActivity.this)
-                                            .apiSend("Bearer "+sessonManager.getToken(),id,textTypeRequest);
+                                            .apiSend("Bearer "+sessonManager.getToken(), chat_id,textTypeRequest);
                                     call.enqueue(new Callback<SendModel>() {
                                         @Override
                                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
@@ -278,7 +279,7 @@ public class ChatActivity extends AppCompatActivity {
                                             if (response.body()!=null) {
                                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                     editText.getText().clear();
-                                                    chatMessageList(id);
+                                                    chatMessageList(chat_id);
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                                 }else {
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -334,7 +335,7 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         chatRecyclerView.setNestedScrollingEnabled(false);
 
-        chatMessageList(id);
+        chatMessageList(chat_id);
     }
 
     private void showCustomDialog() {
@@ -395,14 +396,14 @@ public class ChatActivity extends AppCompatActivity {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Authorization", "Bearer "+sessonManager.getToken());
                     ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-                    iApiServices.apiProductSend(headers,id,imageArray1,partMap)
+                    iApiServices.apiProductSend(headers, chat_id,imageArray1,partMap)
                             .enqueue(new Callback<SendModel>() {
                                 @Override
                                 public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                     //sessonManager.hideProgress();
                                     if (response.body()!=null) {
                                         if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
-                                            chatMessageList(id);
+                                            chatMessageList(chat_id);
 
                                             alertDialog.dismiss();
                                             // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -615,14 +616,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id=item.getItemId();
-        if (id==android.R.id.home){
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
 
@@ -845,14 +838,14 @@ public class ChatActivity extends AppCompatActivity {
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer "+sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-            iApiServices.apiImageSend(headers,id,imageArray1,partMap)
+            iApiServices.apiImageSend(headers, chat_id,imageArray1,partMap)
                     .enqueue(new Callback<SendModel>() {
                         @Override
                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                             //sessonManager.hideProgress();
                             if (response.body()!=null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
-                                    chatMessageList(id);
+                                    chatMessageList(chat_id);
                                     // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 }else {
                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -1113,7 +1106,7 @@ public class ChatActivity extends AppCompatActivity {
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer " + sessonManager.getToken());
 
-            iApiServices.apiAudioSend(headers, id, fileToUpload, partMap)
+            iApiServices.apiAudioSend(headers, chat_id, fileToUpload, partMap)
                     .enqueue(new Callback<SendModel>() {
                         @Override
                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
@@ -1122,7 +1115,7 @@ public class ChatActivity extends AppCompatActivity {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     timer.setVisibility(View.GONE);
                                     timer.stop();
-                                    chatMessageList(id);
+                                    chatMessageList(chat_id);
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 } else {
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
@@ -1223,5 +1216,91 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
+    /*Todo:- Option Menu*/
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_calling, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id=item.getItemId();
+        if (id==android.R.id.home){
+            onBackPressed();
+        }else if (id==R.id.action_audio){
+            initializationVoice(chat_id);
+        }
+        else if (id==R.id.action_video){
+            initializationVideo(chat_id);
+           /* startActivity(new Intent(ChatDetailsActivity.this,VideoChatViewActivity.class)
+                    .putExtra("chatId",chat_id)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));*/
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    private void initializationVideo(int chat_id) {
+        if (CommonUtils.isOnline(this)) {
+            Call<InitiateVideoCallModel>call= ApiExecutor.getApiService(this)
+                    .apiInitiateVideoCall("Bearer "+sessonManager.getToken(),chat_id);
+            call.enqueue(new Callback<InitiateVideoCallModel>() {
+                @Override
+                public void onResponse(Call<InitiateVideoCallModel> call, Response<InitiateVideoCallModel> response) {
+                    if (response.body()!=null) {
+                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            InitiateVideoCallModel initiateVideoCallModel = response.body();
+                            if (initiateVideoCallModel.getData()!=null){
+                                String savedCalleeId = initiateVideoCallModel.getData().getUser_id();
+                                String savedUserId=initiateVideoCallModel.getData().getUser_id();
+                                calleeId=savedCalleeId;
+                                calleeId=savedUserId;
+                                CallService.dial(ChatActivity.this, calleeId, true);
+                                PrefUtils.setCalleeId(ChatActivity.this, calleeId);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<InitiateVideoCallModel> call, Throwable t) {
+
+                }
+            });
+        }else {
+            CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
+        }
+    }
+
+    private void initializationVoice(int chat_id) {
+        if (CommonUtils.isOnline(this)) {
+            Call<InitiateVideoCallModel>call= ApiExecutor.getApiService(this)
+                    .apiInitiateVideoCall("Bearer "+sessonManager.getToken(),chat_id);
+            call.enqueue(new Callback<InitiateVideoCallModel>() {
+                @Override
+                public void onResponse(Call<InitiateVideoCallModel> call, Response<InitiateVideoCallModel> response) {
+                    if (response.body()!=null) {
+                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            InitiateVideoCallModel initiateVideoCallModel = response.body();
+                            if (initiateVideoCallModel.getData()!=null){
+                                String savedCalleeId = initiateVideoCallModel.getData().getUser_id();
+                                String savedUserId=initiateVideoCallModel.getData().getUser_id();
+                                calleeId=savedCalleeId;
+                                calleeId=savedUserId;
+                                CallService.dial(ChatActivity.this, calleeId, false);
+                                PrefUtils.setCalleeId(ChatActivity.this, calleeId);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<InitiateVideoCallModel> call, Throwable t) {
+
+                }
+            });
+        }else {
+            CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
+        }
+    }
 }

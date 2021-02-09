@@ -17,7 +17,6 @@ import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.SendBird.utils.TimeUtils;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 
-
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;

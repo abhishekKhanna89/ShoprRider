@@ -8,14 +8,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.shopprdriver.MainActivity;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.BaseApplication;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.app.Config;
 import com.shopprdriver.util.NotificationUtils;
@@ -24,6 +28,9 @@ public class SplashActivity extends AppCompatActivity {
     private static final String TAG ="" ;
     SessonManager sessonManager;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private Boolean mAutoAuthenticateResult;
+    private String mEncodedAuthInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +93,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
+
     }
 
     @Override
@@ -93,4 +101,5 @@ public class SplashActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
+
 }

@@ -1,14 +1,15 @@
  package com.shopprdriver.Adapter;
 
  import android.app.Activity;
- import android.content.BroadcastReceiver;
+ import android.app.Dialog;
  import android.content.Context;
  import android.content.Intent;
- import android.content.IntentFilter;
  import android.os.Build;
  import android.view.LayoutInflater;
  import android.view.View;
  import android.view.ViewGroup;
+ import android.view.Window;
+ import android.view.WindowManager;
  import android.widget.ImageView;
  import android.widget.LinearLayout;
  import android.widget.RatingBar;
@@ -18,13 +19,11 @@
  import androidx.annotation.NonNull;
  import androidx.annotation.RequiresApi;
  import androidx.appcompat.widget.AppCompatRatingBar;
- import androidx.localbroadcastmanager.content.LocalBroadcastManager;
  import androidx.recyclerview.widget.RecyclerView;
 
  import com.shopprdriver.Model.AcceptModel;
  import com.shopprdriver.Model.CancelModel;
  import com.shopprdriver.Model.ChatMessage.Chat;
- import com.shopprdriver.Model.ChatModel;
  import com.shopprdriver.Model.RatingsModel;
  import com.shopprdriver.Model.RejectedModel;
  import com.shopprdriver.R;
@@ -34,13 +33,15 @@
  import com.shopprdriver.Session.SessonManager;
  import com.squareup.picasso.Picasso;
 
- import java.util.ArrayList;
  import java.util.List;
 
+ import me.himanshusoni.chatmessageview.ChatMessageView;
  import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
  import retrofit2.Call;
  import retrofit2.Callback;
  import retrofit2.Response;
+ import uk.co.senab.photoview.PhotoViewAttacher;
+
 
  public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.Holder> {
      List<Chat>chatList;
@@ -320,7 +321,54 @@
                 }
             }
         });
+        /*Todo:-   Zoom Image*/
+        holder.locationImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setContentView(R.layout.image_layout);
+                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
+                Picasso.get().load(chat.getFilePath()).into(imageFirst);
+                PhotoViewAttacher pAttacher;
+                pAttacher = new PhotoViewAttacher(imageFirst);
+                pAttacher.update();
+                dialog.show();
+            }
+        });
 
+        holder.productImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setContentView(R.layout.image_layout);
+                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
+                Picasso.get().load(chat.getFilePath()).into(imageFirst);
+                PhotoViewAttacher pAttacher;
+                pAttacher = new PhotoViewAttacher(imageFirst);
+                pAttacher.update();
+                dialog.show();
+            }
+        });
+
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setContentView(R.layout.image_layout);
+                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
+                Picasso.get().load(chat.getFilePath()).into(imageFirst);
+                PhotoViewAttacher pAttacher;
+                pAttacher = new PhotoViewAttacher(imageFirst);
+                pAttacher.update();
+                dialog.show();
+            }
+        });
     }
 
 
@@ -354,20 +402,21 @@
         /*Todo:- Location*/
         ImageView locationImage;
         TextView locationText,locationDate;
-        LinearLayout mapLayout;
+         ChatMessageView mapLayout;
         /*Todo:- Text*/
         TextView message_body,dateText;
-        LinearLayout textLayout;
+         ChatMessageView textLayout;
         /*Todo:- Product*/
         ImageView productImage;
         TextView pqText,dateProduct,productMessage,acceptText,rejectText,cancelText;
-        LinearLayout productLayout,greenLayout,closeRedLayout;
+        LinearLayout greenLayout,closeRedLayout;
+         ChatMessageView productLayout;
         /*Todo:- Image*/
         ImageView image;
         TextView imageText,dateImage;
-        LinearLayout imageLayout;
+         ChatMessageView imageLayout;
         /*Todo:- Rating*/
-        LinearLayout ratingLayout;
+        ChatMessageView ratingLayout;
         TextView ratingsMessage,dateRating;
         AppCompatRatingBar ratingBar;
         /*Todo:- Audio*/
@@ -407,6 +456,13 @@
             ratingBar=itemView.findViewById(R.id.ratingBar);
             /*Todo:- Audio*/
             voicePlayerView=itemView.findViewById(R.id.voicePlayerView);
+
+
+
+
+
+
+
 
         }
 

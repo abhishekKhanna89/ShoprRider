@@ -35,6 +35,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:hint="@string/calls_user_id"
+            android:focusable="false"
             android:imeOptions="actionDone"
             android:singleLine="true" />
 

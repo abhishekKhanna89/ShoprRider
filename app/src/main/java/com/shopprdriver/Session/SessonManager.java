@@ -21,7 +21,7 @@ public class SessonManager {
 
     public static final String AGORA_TOKEN="agora_token";
     public static final String AGORA_CHANEL_NAME="agora_chanel_name";
-    public static final String AGORA_USERID="agora_user_id";
+    public static final String SendBird_USERID="user_id";
 
 
     public Dialog mDialog;
@@ -55,12 +55,12 @@ public class SessonManager {
     }
 
 
-    public void setAgoraUserid(String agoraUserid){
-        editor.putString(AGORA_USERID,agoraUserid);
+    public void setSendBird_USERID(String agoraUserid){
+        editor.putString(SendBird_USERID,agoraUserid);
         editor.apply();
     }
-    public String getAgoraUserid(){
-        return sharedPreference.getString(AGORA_USERID,"");
+    public String getSendBird_USERID(){
+        return sharedPreference.getString(SendBird_USERID,"");
     }
 
 

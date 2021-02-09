@@ -47,7 +47,7 @@ public class CallService extends Service {
     private final ServiceData mServiceData = new ServiceData();
 
     class CallBinder extends Binder {
-        CallService getService() {
+       CallService getService() {
             return CallService.this;
         }
     }
@@ -227,7 +227,7 @@ public class CallService extends Service {
         ServiceData serviceData = new ServiceData();
         serviceData.isHeadsUpNotification = true;
         serviceData.remoteNicknameOrUserId = UserInfoUtils.getNicknameOrUserId(call.getRemoteUser());
-        serviceData.callState = CallActivity.STATE.STATE_ACCEPTING;
+        serviceData.callState =CallActivity.STATE.STATE_ACCEPTING;
         serviceData.callId = call.getCallId();
         serviceData.isVideoCall = call.isVideoCall();
         serviceData.calleeIdToDial = null;
