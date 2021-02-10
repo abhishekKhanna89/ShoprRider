@@ -100,4 +100,9 @@ public class LoginActivity extends AppCompatActivity {
             CommonUtils.showToastInCenter(LoginActivity.this, getString(R.string.please_check_network));
         }
     }
+
+    public void register(View view) {
+        startActivity(new Intent(LoginActivity.this,RegisterActivity.class)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    }
 }

@@ -15,6 +15,7 @@ import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.Send.SendModel;
+import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.RequestService.AgoraRequest;
@@ -44,6 +45,12 @@ import retrofit2.http.Query;
 public interface ApiService {
     @POST("login-with-otp")
     Call<LoginModel> loginUser(@Body LoginRequest requestBody);
+
+    @Multipart
+    @POST("register")
+    Call<JsonObject> apiRegister(@HeaderMap Map<String, String> token, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+
+
     @POST("verify-otp")
     Call<OtpVerifyModel>otpService(@Body OtpVerifyRequest verifyRequest);
     @NonNull
@@ -105,5 +112,10 @@ public interface ApiService {
     @GET("orders")
     Call<OrderDetailsModel>apiMyOrderDetails(@Header("Authorization") String token,
                                              @Query("page")int page);
+
+    @NonNull
+    @GET("state-list")
+    Call<StateListModel>apiStateList();
+
 
 }

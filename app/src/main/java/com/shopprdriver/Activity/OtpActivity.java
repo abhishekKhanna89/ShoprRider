@@ -81,7 +81,6 @@ public class OtpActivity extends AppCompatActivity {
                             String userId=otpVerifyModel.getUser_id();
                             String sendbird_token=otpVerifyModel.getSendbird_token();
                             String savedAppId = PrefUtils.getAppId(OtpActivity.this);
-
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());
                                 if (((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
@@ -89,9 +88,9 @@ public class OtpActivity extends AppCompatActivity {
                                         if (isSuccess) {
                                             setResult(RESULT_OK, null);
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(OtpActivity.this, MainActivity.class)
+                                           /* startActivity(new Intent(OtpActivity.this, MainActivity.class)
                                                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                            finish();
+                                            finish();*/
                                         }
                                     });
                                 }

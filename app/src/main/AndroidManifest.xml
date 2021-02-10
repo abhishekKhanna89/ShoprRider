@@ -26,6 +26,9 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".Activity.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:label="Register"/>
         <activity
             android:name=".Activity.OrderDetailsActivity"
             android:label="Order Details"
@@ -45,14 +48,16 @@
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:label="Login"/>
         <activity
             android:name=".MainActivity"
             android:label="Chat"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.OtpActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:label="OTP Verify"/>
         <activity
             android:name=".Activity.ChatActivity"
             android:label="Chat"
