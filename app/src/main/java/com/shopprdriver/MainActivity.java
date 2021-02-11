@@ -27,9 +27,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.shopprdriver.Activity.CommissionTransactionActivity;
 import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Activity.MyOrderActivity;
 import com.shopprdriver.Activity.NotificationListActivity;
+import com.shopprdriver.Activity.WalletTransactionActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sessonManager=new SessonManager(this);
-        //Log.d("token",sessonManager.getToken());
+        Log.d("token",sessonManager.getToken());
 
 
         userChatListRecyclerView=findViewById(R.id.userChatListRecyclerView);
@@ -232,5 +234,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void order(MenuItem item) {
         startActivity(new Intent(MainActivity.this, MyOrderActivity.class));
+    }
+
+    public void walletTransaction(MenuItem item) {
+        startActivity(new Intent(MainActivity.this, WalletTransactionActivity.class));
+    }
+
+    public void commissionTransaction(MenuItem item) {
+        startActivity(new Intent(MainActivity.this, CommissionTransactionActivity.class));
     }
 }

@@ -6,10 +6,12 @@ import com.google.gson.JsonObject;
 import com.shopprdriver.Model.AcceptModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
+import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
+import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.RatingsModel;
@@ -17,7 +19,9 @@ import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
+import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
+import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
 import com.shopprdriver.RequestService.AgoraRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
@@ -48,7 +52,7 @@ public interface ApiService {
 
     @Multipart
     @POST("register")
-    Call<JsonObject> apiRegister(@HeaderMap Map<String, String> token, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+    Call<LoginModel> apiRegister(@HeaderMap Map<String, String> token, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
 
 
     @POST("verify-otp")
@@ -117,5 +121,22 @@ public interface ApiService {
     @GET("state-list")
     Call<StateListModel>apiStateList();
 
+    @Multipart
+    @POST("upload-document")
+    Call<UploadDocumentModel>apiUploadDocument(@HeaderMap Map<String, String> token);
+    @NonNull
+    @GET("wallet-history")
+    Call<WalletHistoryModel>apiWalletHistory(@Header("Authorization") String token);
 
+    @NonNull
+    @GET("deliver-order/{order_id}")
+    Call<LoginModel>apiDeliverOrder(@Header("Authorization") String token,
+                                    @Path("order_id")int order_id);
+    @NonNull
+    @GET("order-details/{order_id}")
+    Call<OrderDeatilsListModel>apiMyOderDetails(@Header("Authorization") String token,
+                                                @Path("order_id")int order_id);
+
+    @POST("commission-history")
+    Call<CommissionTransactionsModel>apiCommissionTransaction(@Header("Authorization") String token);
 }

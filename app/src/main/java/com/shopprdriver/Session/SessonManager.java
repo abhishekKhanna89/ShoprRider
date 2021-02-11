@@ -23,6 +23,7 @@ public class SessonManager {
     public static final String AGORA_CHANEL_NAME="agora_chanel_name";
     public static final String SendBird_USERID="user_id";
 
+    public static final String Form_Step="form_step";
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -84,6 +85,13 @@ public class SessonManager {
         return sharedPreference.getString(NOTIFICATION_TOKEN,"");
     }
 
+    public void setForm_Step(String form_Step){
+        editor.putString(Form_Step,form_Step);
+        editor.apply();
+    }
+    public String getForm_Step(){
+        return sharedPreference.getString(Form_Step,"");
+    }
 
     public void hideProgress() {
         while (mDialog != null && mDialog.isShowing()){

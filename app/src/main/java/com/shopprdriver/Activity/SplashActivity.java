@@ -59,7 +59,6 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(sessonManager.getToken().isEmpty()){
-
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
                 }
@@ -68,6 +67,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
 
                 }
+
             }
         }, 5000);
     }

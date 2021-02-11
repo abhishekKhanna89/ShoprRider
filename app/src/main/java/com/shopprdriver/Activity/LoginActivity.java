@@ -102,7 +102,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        startActivity(new Intent(LoginActivity.this,RegisterActivity.class)
-        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        if (sessonManager.getForm_Step().isEmpty()){
+            startActivity(new Intent(LoginActivity.this,RegisterActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        }else {
+            if (sessonManager.getForm_Step().equalsIgnoreCase("1")){
+                startActivity(new Intent(LoginActivity.this, Page1Activity.class));
+                finish();
+            }
+        }
+
     }
 }

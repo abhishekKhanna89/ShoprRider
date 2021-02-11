@@ -36,8 +36,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.shopprdriver.MainActivity;
+import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
 import com.shopprdriver.Model.StateList.StateListModel;
@@ -65,6 +67,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.media.MediaRecorder.VideoSource.CAMERA;
+
 public class RegisterActivity extends AppCompatActivity {
     EditText editName, editMobile, editPassword, editAddress;
     Spinner textCity;
@@ -80,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
     Bitmap bitmap = null;
     private String photoPath;
     String imageEncoded;
-    private static String baseUrl = "http://shoppr.avaskmcompany.xyz/api/";
+    private static String baseUrl = "http://shoppr.avaskmcompany.xyz/api/shoppr/";
 
     /*Todo:- State List*/
     List<State> stateList;
@@ -88,11 +92,13 @@ public class RegisterActivity extends AppCompatActivity {
     List<String> stateName;
     List<String> cityName;
 
+    int stateId,cityId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         sessonManager = new SessonManager(RegisterActivity.this);
+        askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
         editName = findViewById(R.id.editName);
         editMobile = findViewById(R.id.editMobile);
         editPassword = findViewById(R.id.editPassword);
@@ -110,9 +116,8 @@ public class RegisterActivity extends AppCompatActivity {
         spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int itemPosition = spinnerState.getSelectedItemPosition();
-                 cityName.clear();
-                //Log.d()
+                stateId=stateList.get(position).getId();
+                cityName.clear();
                 if (stateList.get(position).getCities().size() != 0) {
                     cityList = stateList.get(position).getCities();
                     for (int i = 0; i < cityList.size(); i++) {
@@ -124,6 +129,19 @@ public class RegisterActivity extends AppCompatActivity {
                     //Toast.makeText(RegisterActivity.this, "elsePart", Toast.LENGTH_SHORT).show();
                     textCity.setAdapter(null);
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        textCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cityId=cityList.get(position).getId();
+                /*city=textCity.getItemAtPosition(position).toString();
+                String id = textCity.get(position).getId();*/
             }
 
             @Override
@@ -190,7 +208,12 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (editPassword.getText().toString().isEmpty()) {
             editPassword.setError("Password Field Can't be blank");
             editPassword.requestFocus();
-        } else {
+        } else if (cityId==0){
+            Toast.makeText(this, "City not available", Toast.LENGTH_SHORT).show();
+        }else if (imagePathList.size()==0){
+            Toast.makeText(this, "Please select image", Toast.LENGTH_SHORT).show();
+        }
+        else {
             RegisterAPI();
         }
 
@@ -204,6 +227,8 @@ public class RegisterActivity extends AppCompatActivity {
             partMap.put("mobile", ApiFactory.getRequestBodyFromString(editMobile.getText().toString()));
             partMap.put("address", ApiFactory.getRequestBodyFromString(editAddress.getText().toString()));
             partMap.put("password", ApiFactory.getRequestBodyFromString(editPassword.getText().toString()));
+            partMap.put("state",ApiFactory.getRequestBodyFromString(String.valueOf(stateId)));
+            partMap.put("city",ApiFactory.getRequestBodyFromString(String.valueOf(cityId)));
 
             MultipartBody.Part[] imageArray1 = new MultipartBody.Part[imagePathList.size()];
             //Log.d("arrayLis",""+imageArray1);
@@ -224,41 +249,32 @@ public class RegisterActivity extends AppCompatActivity {
             headers.put("Authorization", "Bearer " + sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
             iApiServices.apiRegister(headers, imageArray1, partMap)
-                    .enqueue(new Callback<JsonObject>() {
+                    .enqueue(new Callback<LoginModel>() {
                         @Override
-                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                             sessonManager.hideProgress();
-                            JsonObject jsonObject = response.body();
-                            String code = jsonObject.get("status").getAsString();
-                            //Log.d("responseJson",""+jsonObject);
-                            if (code.equals("success")) {
-                                String msg = jsonObject.get("message").getAsString();
-                                Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
-                                if ((!editMobile.getText().toString().isEmpty())) {
-                                    startActivity(new Intent(RegisterActivity.this, OtpActivity.class)
-                                            .putExtra("type", "register")
-                                            .putExtra("mobile", editMobile.getText().toString())
-                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                    finish();
-                                } else {
-                                    sessonManager.getToken();
-                                    //sessonManager.setToken(response.body().getToken());
-                                    startActivity(new Intent(RegisterActivity.this, MainActivity.class)
-                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                    finish();
+                            if (response.body()!=null) {
+                                if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                                    Toast.makeText(RegisterActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    if ((!editMobile.getText().toString().isEmpty())) {
+                                        startActivity(new Intent(RegisterActivity.this, OtpActivity.class)
+                                                .putExtra("type", "register")
+                                                .putExtra("mobile", editMobile.getText().toString())
+                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                        finish();
+                                    }
+                                }else {
+                                    Toast.makeText(RegisterActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-
-                            } else {
-                                String msg = jsonObject.get("message").getAsString();
-                                Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<JsonObject> call, Throwable t) {
-                            sessonManager.hideProgress();
+                        public void onFailure(Call<LoginModel> call, Throwable t) {
+                                    sessonManager.hideProgress();
                         }
                     });
+
         } else {
             CommonUtils.showToastInCenter(RegisterActivity.this, getString(R.string.please_check_network));
         }

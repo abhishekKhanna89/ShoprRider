@@ -1,10 +1,11 @@
-package com.shopprdriver.Model.OrderDetails;
+package com.shopprdriver.Model.OrderDeatilsList;
+
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Datum {
+public class Order {
 
     @SerializedName("id")
     @Expose
@@ -18,12 +19,15 @@ public class Datum {
     @SerializedName("service_charge")
     @Expose
     private String serviceCharge;
-    @SerializedName("created_at")
-    @Expose
-    private String createdAt;
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("payment_status")
+    @Expose
+    private String paymentStatus;
+    @SerializedName("balance_used")
+    @Expose
+    private String balanceUsed;
     @SerializedName("show_deliver_button")
     @Expose
     private Integer showDeliverButton;
@@ -63,20 +67,28 @@ public class Datum {
         this.serviceCharge = serviceCharge;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getBalanceUsed() {
+        return balanceUsed;
+    }
+
+    public void setBalanceUsed(String balanceUsed) {
+        this.balanceUsed = balanceUsed;
     }
 
     public Integer getShowDeliverButton() {
