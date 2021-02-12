@@ -80,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }else {
                                 sessonManager.getToken();
-                                //sessonManager.setToken(response.body().getToken());
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();

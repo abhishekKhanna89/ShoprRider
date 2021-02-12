@@ -48,7 +48,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
 import com.shopprdriver.Model.ChatMessage.Chat;
@@ -130,16 +130,27 @@ public class ChatActivity extends AppCompatActivity {
     /*Todo:- Alert Dialog*/
     AlertDialog alertDialog;
     ImageView circleImage;
-    String calleeId;
     BroadcastReceiver mMessageReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        chat_id =getIntent().getIntExtra("id",0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
+        chat_id =getIntent().getIntExtra("id",0);
+        chatMessageList(chat_id);
+
+        if (sessonManager.getChatId().isEmpty()){
+            chatMessageList(chat_id);
+        }else {
+            String cId=sessonManager.getChatId();
+            int a=Integer.parseInt(cId);
+            chatMessageList(a);
+        }
+
+
+
         editText = findViewById(R.id.editText);
         sendMsgBtn = findViewById(R.id.sendMsgBtn);
         chooseImage=findViewById(R.id.chooseImage);
@@ -180,22 +191,13 @@ public class ChatActivity extends AppCompatActivity {
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getStringExtra("title")!=null||intent.getStringExtra("body")!=null){
-                    String title=intent.getStringExtra("title");
-                    body=intent.getStringExtra("body");
-                    chatMessageList(chat_id);
-/*// Create the initial data list.
-                    // msgDtoList = new ArrayList<ChatModel>();
-                    ChatModel msgDto = new ChatModel(ChatModel.MSG_TYPE_RECEIVED, body);
-                    msgDtoList.add(msgDto);
+                if (intent.getStringExtra("chat_id")!=null){
+                    chat_id=intent.getIntExtra("chat_id",0);
+                    if (sessonManager.getChatId()!=null){
+                        String chatid=String.valueOf(sessonManager.getChatId());
+                        chatMessageList(Integer.parseInt(chatid));
+                    }
 
-
-                    // Create the data adapter with above data list.
-                    chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
-
-                    // Set data adapter to RecyclerView.
-                    chatRecyclerView.setAdapter(chatAppMsgAdapter);
-                    //Toast.makeText(ChatActivity.this, "Title:- "+title+" Body:- "+body, Toast.LENGTH_SHORT).show();*/
                 }
             }
         };
@@ -360,7 +362,7 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         chatRecyclerView.setNestedScrollingEnabled(false);
 
-        chatMessageList(chat_id);
+
     }
 
     private void showCustomDialog() {
@@ -603,10 +605,11 @@ public class ChatActivity extends AppCompatActivity {
         myAlertDialog.show();
     }
 
-    private void chatMessageList(int id) {
+    private void chatMessageList(int chat_id) {
+        //Log.d("ress",""+id);
         if (CommonUtils.isOnline(ChatActivity.this)) {
-            //sessonManager.showProgress(ChatActivity.this);
-            Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),id);
+
+            Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),chat_id);
             call.enqueue(new Callback<ChatMessageModel>() {
                 @Override
                 public void onResponse(Call<ChatMessageModel> call, Response<ChatMessageModel> response) {
@@ -614,6 +617,9 @@ public class ChatActivity extends AppCompatActivity {
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             ChatMessageModel chatMessageModel=response.body();
+                            Gson gson=new Gson();
+                            String msg=gson.toJson(chatMessageModel);
+                            Log.d("ress",""+msg);
                             if (chatMessageModel.getData()!=null){
                                 chatList=chatMessageModel.getData().getChats();
                                 ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);

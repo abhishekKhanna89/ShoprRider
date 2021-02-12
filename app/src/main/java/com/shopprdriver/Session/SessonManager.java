@@ -25,6 +25,8 @@ public class SessonManager {
 
     public static final String Form_Step="form_step";
 
+    public static final String CHAT_ID="chat_id";
+
     public Dialog mDialog;
     public SessonManager(Context ctx) {
         sharedPreference = ctx.getSharedPreferences(NAME, Context.MODE_PRIVATE);
@@ -68,7 +70,7 @@ public class SessonManager {
     public void setToken(String token) {
      //   Log.d("sssss", token);
         editor.putString(Token, token);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -91,6 +93,16 @@ public class SessonManager {
     }
     public String getForm_Step(){
         return sharedPreference.getString(Form_Step,"");
+    }
+
+
+    public void setChatId(String chatId){
+        editor.putString(CHAT_ID,chatId);
+        editor.apply();
+    }
+
+    public String getChatId(){
+        return sharedPreference.getString(CHAT_ID,"");
     }
 
     public void hideProgress() {
