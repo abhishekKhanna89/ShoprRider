@@ -41,6 +41,7 @@ import com.shopprdriver.Server.Helper;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -74,14 +75,12 @@ public class Page1Activity extends AppCompatActivity {
 
     Bitmap bitmapAadharFront;
     String select;
-    ArrayList<String> imagePathListFrontAdhar = new ArrayList<>();
-    ArrayList<String> imagePathListBackAdhar = new ArrayList<>();
-    ArrayList<String> imagePathListFrontDl = new ArrayList<>();
-    ArrayList<String> imagePathListBackDl = new ArrayList<>();
-    ArrayList<String> imagePathListPan = new ArrayList<>();
+
     private static String baseUrl = "http://shoppr.avaskmcompany.xyz/api/shoppr/";
     SessonManager sessonManager;
-    File file;
+    byte[] byteArrayAdharFront,byteArrayAdharBack,
+            byteArrayDlNoFront,byteArrayDlNoBack,byteArrayPan;
+    File finalFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -310,8 +309,17 @@ public class Page1Activity extends AppCompatActivity {
 
                 Bundle extras = data.getExtras();
                 bitmapAadharFront = (Bitmap) extras.get("data");
+
                 bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                 frontAadhar.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayAdharFront = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                 finalFile = new File(getRealPathFromURI(tempUri));
+
                 //savebitmap(bitmapAadharFront);
             }
 
@@ -321,6 +329,13 @@ public class Page1Activity extends AppCompatActivity {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                         frontAadhar.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayAdharFront=stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                         finalFile = new File(getRealPathFromURI(tempUri));
                         //savebitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -333,6 +348,13 @@ public class Page1Activity extends AppCompatActivity {
                 bitmapAadharFront = (Bitmap) extras.get("data");
                 bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                 backAadhar.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayAdharBack = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                 finalFile = new File(getRealPathFromURI(tempUri));
                 //savebitmap(bitmapAadharFront);
             }
 
@@ -342,6 +364,13 @@ public class Page1Activity extends AppCompatActivity {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                         backAadhar.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayAdharBack = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                         finalFile = new File(getRealPathFromURI(tempUri));
                         //savebitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -354,6 +383,13 @@ public class Page1Activity extends AppCompatActivity {
                 bitmapAadharFront = (Bitmap) extras.get("data");
                 bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                 frontDlno.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayDlNoFront = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                 finalFile = new File(getRealPathFromURI(tempUri));
                 //savebitmap(bitmapAadharFront);
             }
 
@@ -363,6 +399,13 @@ public class Page1Activity extends AppCompatActivity {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                         frontDlno.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayDlNoFront = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                         finalFile = new File(getRealPathFromURI(tempUri));
                         //savebitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -375,6 +418,13 @@ public class Page1Activity extends AppCompatActivity {
                 bitmapAadharFront = (Bitmap) extras.get("data");
                 bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                 backDlno.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayDlNoBack = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                 finalFile = new File(getRealPathFromURI(tempUri));
                 //savebitmap(bitmapAadharFront);
             }
 
@@ -384,6 +434,13 @@ public class Page1Activity extends AppCompatActivity {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                         backDlno.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayDlNoBack = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                         finalFile = new File(getRealPathFromURI(tempUri));
                         //savebitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -396,6 +453,13 @@ public class Page1Activity extends AppCompatActivity {
                 bitmapAadharFront = (Bitmap) extras.get("data");
                 bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                 panCard.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayPan = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                 finalFile = new File(getRealPathFromURI(tempUri));
                 //savebitmap(bitmapAadharFront);
             }
 
@@ -405,6 +469,13 @@ public class Page1Activity extends AppCompatActivity {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
                         panCard.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayPan = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                         finalFile = new File(getRealPathFromURI(tempUri));
                         //savebitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -415,15 +486,33 @@ public class Page1Activity extends AppCompatActivity {
 
 
     }
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
 
 
     public void submit(View view) {
-        if (imagePathListFrontAdhar.size()==0||imagePathListBackAdhar.size()==0||
-                imagePathListFrontDl.size()==0||imagePathListBackDl.size()==0||
-                imagePathListPan.size()==0){
+        if (byteArrayAdharBack.length == 0) {
             Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
-        }else {
+        } else if (byteArrayAdharFront.length == 0) {
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
+        } else if (byteArrayDlNoFront.length == 0) {
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
+        } else if (byteArrayDlNoBack.length == 0) {
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
+        } else if (byteArrayPan.length==0) {
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
+        } else {
             uploadDocument();
             //Toast.makeText(this, "Good", Toast.LENGTH_SHORT).show();
         }
@@ -432,35 +521,52 @@ public class Page1Activity extends AppCompatActivity {
     private void uploadDocument() {
         if (CommonUtils.isOnline(Page1Activity.this)) {
             sessonManager.showProgress(Page1Activity.this);
+            RequestBody pan_card = RequestBody
+                    .create(MediaType.parse("image/*"),byteArrayPan);
+            MultipartBody.Part filePartPan = MultipartBody.Part.createFormData("pan_card", finalFile.getName(), pan_card);
+            RequestBody front_aadhaar_card = RequestBody
+                    .create(MediaType.parse("image/*"), byteArrayAdharFront);
+            MultipartBody.Part filePartAdharFront = MultipartBody.Part.createFormData("front_aadhaar_card", finalFile.getName(), front_aadhaar_card);
 
+
+            RequestBody back_aadhaar_card = RequestBody
+                    .create(MediaType.parse("image/*"), byteArrayAdharBack);
+            MultipartBody.Part filePartAdharBack = MultipartBody.Part.createFormData("back_aadhaar_card", finalFile.getName(), back_aadhaar_card);
+            RequestBody front_dl_no = RequestBody
+                    .create(MediaType.parse("image/*"), byteArrayDlNoFront);
+            MultipartBody.Part filePartDlFront = MultipartBody.Part.createFormData("front_dl_no", finalFile.getName(), front_dl_no);
+            RequestBody back_dl_no = RequestBody
+                    .create(MediaType.parse("image/*"), byteArrayDlNoBack);
+            MultipartBody.Part filePartback_dl_no = MultipartBody.Part.createFormData("back_dl_no", finalFile.getName(), back_dl_no);
 
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer " + sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-            iApiServices.apiUploadDocument(headers)
+            iApiServices.apiUploadDocument(headers,filePartPan,filePartAdharFront,filePartAdharBack,filePartDlFront,
+                    filePartback_dl_no)
                     .enqueue(new Callback<UploadDocumentModel>() {
                         @Override
                         public void onResponse(Call<UploadDocumentModel> call, Response<UploadDocumentModel> response) {
                             sessonManager.hideProgress();
+                            //Toast.makeText(Page1Activity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             if (response.body()!=null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                     Toast.makeText(Page1Activity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     UploadDocumentModel uploadDocumentModel=response.body();
                                     int step=uploadDocumentModel.getFormStep();
                                     String form_step=String.valueOf(step);
-                                    sessonManager.setForm_Step(form_step);
                                     startActivity(new Intent(Page1Activity.this, Page2Activity.class)
                                             .putExtra("form_step",form_step)
                                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     finish();
+                                    finishAffinity();
                                 }
-                            }else {
-                                Toast.makeText(Page1Activity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<UploadDocumentModel> call, Throwable t) {
+                            Toast.makeText(Page1Activity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                             sessonManager.hideProgress();
                         }
                     });

@@ -14,6 +14,7 @@ import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
+import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.Send.SendModel;
@@ -22,7 +23,8 @@ import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
-import com.shopprdriver.RequestService.AgoraRequest;
+
+import com.shopprdriver.RequestService.AccountDetailsRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.RequestService.RatingsRequest;
@@ -36,6 +38,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
@@ -120,10 +123,13 @@ public interface ApiService {
     @NonNull
     @GET("state-list")
     Call<StateListModel>apiStateList();
-
     @Multipart
     @POST("upload-document")
-    Call<UploadDocumentModel>apiUploadDocument(@HeaderMap Map<String, String> token);
+    Call<UploadDocumentModel>apiUploadDocument(@HeaderMap Map<String, String> token,@Part MultipartBody.Part  pan_card,
+                                               @Part MultipartBody.Part front_aadhaar_card,
+                                               @Part MultipartBody.Part back_aadhaar_card,
+                                               @Part MultipartBody.Part front_dl_no,
+                                               @Part MultipartBody.Part back_dl_no);
     @NonNull
     @GET("wallet-history")
     Call<WalletHistoryModel>apiWalletHistory(@Header("Authorization") String token);
@@ -139,4 +145,13 @@ public interface ApiService {
 
     @POST("commission-history")
     Call<CommissionTransactionsModel>apiCommissionTransaction(@Header("Authorization") String token);
+
+    @POST("update-details")
+    Call<UploadDocumentModel>apiUpdateDetails(@Header("Authorization") String token,
+                                              @Body AccountDetailsRequest accountDetailsRequest);
+
+    @NonNull
+    @GET("profile-status")
+    Call<ProfileStatusModel>apiProfileStatus(@Header("Authorization") String token);
+
 }

@@ -94,7 +94,7 @@ public class OtpActivity extends AppCompatActivity {
                                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                 finish();
                                             }else {
-                                                sessonManager.setForm_Step(form_step);
+                                                //sessonManager.setForm_Step(form_step);
                                                 startActivity(new Intent(OtpActivity.this, Page1Activity.class)
                                                         .putExtra("form_step",form_step)
                                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

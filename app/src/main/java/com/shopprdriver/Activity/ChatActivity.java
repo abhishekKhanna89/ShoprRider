@@ -131,6 +131,7 @@ public class ChatActivity extends AppCompatActivity {
     AlertDialog alertDialog;
     ImageView circleImage;
     String calleeId;
+    BroadcastReceiver mMessageReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,8 +177,32 @@ public class ChatActivity extends AppCompatActivity {
         });
         msgDtoList=new ArrayList<>();
         chatList=new ArrayList<>();
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getStringExtra("title")!=null||intent.getStringExtra("body")!=null){
+                    String title=intent.getStringExtra("title");
+                    body=intent.getStringExtra("body");
+                    chatMessageList(chat_id);
+/*// Create the initial data list.
+                    // msgDtoList = new ArrayList<ChatModel>();
+                    ChatModel msgDto = new ChatModel(ChatModel.MSG_TYPE_RECEIVED, body);
+                    msgDtoList.add(msgDto);
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+
+                    // Create the data adapter with above data list.
+                    chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
+
+                    // Set data adapter to RecyclerView.
+                    chatRecyclerView.setAdapter(chatAppMsgAdapter);
+                    //Toast.makeText(ChatActivity.this, "Title:- "+title+" Body:- "+body, Toast.LENGTH_SHORT).show();*/
+                }
+            }
+        };
+        IntentFilter i = new IntentFilter();
+        i.addAction("message_subject_intent");
+        LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
@@ -194,7 +219,7 @@ public class ChatActivity extends AppCompatActivity {
                     chatMessageList(chat_id);
                 }
             }
-        };
+        };*/
 
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -1302,5 +1327,11 @@ public class ChatActivity extends AppCompatActivity {
         }else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
+    }
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 }

@@ -262,6 +262,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                 .putExtra("mobile", editMobile.getText().toString())
                                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                         finish();
+                                        finishAffinity();
                                     }
                                 }else {
                                     Toast.makeText(RegisterActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();

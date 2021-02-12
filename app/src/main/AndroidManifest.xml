@@ -78,17 +78,14 @@
         <activity
             android:name=".Activity.NotificationListActivity"
             android:label="Notification"
-            android:screenOrientation="portrait" /> <!-- Firebase Notifications -->
-        <service android:name=".notifications.MyFirebaseMessagingService">
+            android:screenOrientation="portrait" />
+        <!-- Firebase Notifications -->
+        <service android:name=".notifications.FirebaseMessageReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".notifications.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service> <!-- ./Firebase Notifications -->
+        <!-- ./Firebase Notifications -->
         <service
             android:name=".background_service.MyService"
             android:exported="true"
