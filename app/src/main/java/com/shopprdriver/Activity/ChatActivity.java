@@ -138,16 +138,29 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
-        chat_id =getIntent().getIntExtra("id",0);
-        chatMessageList(chat_id);
+       /* chat_id =getIntent().getIntExtra("id",0);
+        chatMessageList(chat_id);*/
+
+        chat_id = getIntent().getIntExtra("id", 0);
+        //Log.d("ChatId+",""+chat_id);
 
         if (sessonManager.getChatId().isEmpty()){
+            sessonManager.setChatId("");
+            chatMessageList(chat_id);
+        }else {
+            String cId=sessonManager.getChatId();
+            int a=Integer.parseInt(cId);
+            sessonManager.setChatId("");
+            chatMessageList(a);
+            // Log.d("ChatId+",""+a);
+        }
+       /* if (sessonManager.getChatId().isEmpty()){
             chatMessageList(chat_id);
         }else {
             String cId=sessonManager.getChatId();
             int a=Integer.parseInt(cId);
             chatMessageList(a);
-        }
+        }*/
 
 
 
@@ -1284,6 +1297,7 @@ public class ChatActivity extends AppCompatActivity {
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
+
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 CallService.dial(ChatActivity.this, savedCalleeId, true);
 

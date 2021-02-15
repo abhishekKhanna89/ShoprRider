@@ -52,6 +52,13 @@ public class SplashActivity extends AppCompatActivity {
             //Log.e("newToken", newToken);
             //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
         });
+
+
+        AuthenticationUtils.autoAuthenticate(this, userId -> {
+
+        });
+
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

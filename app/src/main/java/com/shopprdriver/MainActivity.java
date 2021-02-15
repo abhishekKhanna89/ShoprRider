@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -20,6 +21,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -35,11 +37,13 @@ import com.shopprdriver.Activity.WalletTransactionActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
+import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.background_service.MyService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,6 +53,12 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String[] MANDATORY_PERMISSIONS = {
+            Manifest.permission.RECORD_AUDIO,   // for VoiceCall and VideoCall
+            Manifest.permission.CAMERA          // for VideoCall
+    };
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+
     /*Todo:- Background Service*/
     private JobScheduler jobScheduler;
     private ComponentName componentName;
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         viewUserChatList();
 
 
-
+        checkPermissions();
 
 
 
@@ -125,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                                 userChatListAdapter=new UserChatListAdapter(MainActivity.this,chatsListModelList);
                                 userChatListRecyclerView.setAdapter(userChatListAdapter);
                                 userChatListAdapter.notifyDataSetChanged();
+
                             }
                         }
                     }
@@ -242,5 +253,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void commissionTransaction(MenuItem item) {
         startActivity(new Intent(MainActivity.this, CommissionTransactionActivity.class));
+    }
+
+    private void checkPermissions() {
+        ArrayList<String> deniedPermissions = new ArrayList<>();
+        for (String permission : MANDATORY_PERMISSIONS) {
+            if (checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissions.add(permission);
+            }
+        }
+
+        if (deniedPermissions.size() > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(deniedPermissions.toArray(new String[0]), REQUEST_PERMISSIONS_REQUEST_CODE);
+            } else {
+                ToastUtils.showToast(this, "Permission denied.");
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            boolean allowed = true;
+
+            for (int result : grantResults) {
+                allowed = allowed && (result == PackageManager.PERMISSION_GRANTED);
+            }
+
+            if (!allowed) {
+                ToastUtils.showToast(this, "Permission denied.");
+            }
+        }
     }
 }

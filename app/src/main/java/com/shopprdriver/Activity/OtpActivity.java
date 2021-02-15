@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,6 +81,7 @@ public class OtpActivity extends AppCompatActivity {
                             OtpVerifyModel otpVerifyModel=response.body();
                             String userId=otpVerifyModel.getUser_id();
                             String sendbird_token=otpVerifyModel.getSendbird_token();
+                            Log.d("res",sendbird_token);
                             String form_step=otpVerifyModel.getForm_step();
                             String savedAppId = PrefUtils.getAppId(OtpActivity.this);
                             if((!editOtp.getText().toString().isEmpty())){
