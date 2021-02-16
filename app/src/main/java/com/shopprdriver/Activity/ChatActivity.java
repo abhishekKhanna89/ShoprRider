@@ -1296,10 +1296,13 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
+                                CallService.dial(ChatActivity.this, savedUserId, true);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
+                                //String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
+                                /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
 
-                                String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
-                                CallService.dial(ChatActivity.this, savedCalleeId, true);
+
+                                CallService.dial(ChatActivity.this, savedCalleeId, true);*/
 
                             }
                         }
@@ -1328,9 +1331,11 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
+                                CallService.dial(ChatActivity.this, savedUserId, false);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
+                                /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
-                                CallService.dial(ChatActivity.this, savedCalleeId, false);
+                                CallService.dial(ChatActivity.this, savedCalleeId, false);*/
                             }
                         }
                     }
