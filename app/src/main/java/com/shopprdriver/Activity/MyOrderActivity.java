@@ -185,9 +185,12 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
             holder.totalText.setText("Total :" + datum.getTotal());
             holder.serviceChargeText.setText("Service Charge :" + datum.getServiceCharge());
 
-            if (datum.getStatus().equalsIgnoreCase("Confirmed")) {
-                holder.statusText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            if (datum.getStatus()!=null && datum.getStatus().equalsIgnoreCase("Confirmed")) {
                 holder.statusText.setText("Status :" + datum.getStatus());
+                holder.statusText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            }else {
+                holder.statusText.setText("Status :" + datum.getStatus());
+                holder.statusText.setTextColor(getResources().getColor(R.color.black));
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -219,6 +222,7 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
                 totalText = itemView.findViewById(R.id.totalText);
                 serviceChargeText = itemView.findViewById(R.id.serviceChargeText);
                 statusText = itemView.findViewById(R.id.statusText);
+
             }
         }
     }

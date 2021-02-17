@@ -2,8 +2,9 @@ package com.shopprdriver.Server;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.JsonObject;
+import com.shopprdriver.Model.AcceptChatModel;
 import com.shopprdriver.Model.AcceptModel;
+import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
@@ -21,7 +22,6 @@ import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
-import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
 
 import com.shopprdriver.RequestService.AccountDetailsRequest;
@@ -37,8 +37,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
@@ -61,8 +59,8 @@ public interface ApiService {
     @POST("verify-otp")
     Call<OtpVerifyModel>otpService(@Body OtpVerifyRequest verifyRequest);
     @NonNull
-    @GET("chats")
-    Call<UserChatListModel> apiUserChatList(@Header("Authorization") String token);
+    @GET("available-chats")
+    Call<AvailableChatModel> apiUserChatList(@Header("Authorization") String token);
     @NonNull
     @GET("chat-messages/{chat_id}")
     Call<ChatMessageModel>apiChatMessage(@Header("Authorization") String token,
@@ -153,5 +151,14 @@ public interface ApiService {
     @NonNull
     @GET("profile-status")
     Call<ProfileStatusModel>apiProfileStatus(@Header("Authorization") String token);
+
+    @NonNull
+    @GET("accept-chat/{chat_id}")
+    Call<AcceptChatModel>apiAcceptChat(@Header("Authorization") String token,
+                                       @Path("chat_id") int chat_id);
+    @NonNull
+    @GET("reject-chat/{chat_id}")
+    Call<AcceptChatModel>apiRejectChat(@Header("Authorization") String token,
+                                       @Path("chat_id") int chat_id);
 
 }

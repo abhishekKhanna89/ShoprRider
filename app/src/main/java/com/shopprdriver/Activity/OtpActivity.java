@@ -81,7 +81,7 @@ public class OtpActivity extends AppCompatActivity {
                             OtpVerifyModel otpVerifyModel=response.body();
                             String userId=otpVerifyModel.getUser_id();
                             String sendbird_token=otpVerifyModel.getSendbird_token();
-                            Log.d("res",sendbird_token);
+                            //Log.d("res",sendbird_token);
                             String form_step=otpVerifyModel.getForm_step();
                             String savedAppId = PrefUtils.getAppId(OtpActivity.this);
                             if((!editOtp.getText().toString().isEmpty())){

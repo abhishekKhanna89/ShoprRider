@@ -35,8 +35,9 @@ import com.shopprdriver.Activity.MyOrderActivity;
 import com.shopprdriver.Activity.NotificationListActivity;
 import com.shopprdriver.Activity.WalletTransactionActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
+import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
+import com.shopprdriver.Model.AvailableChat.Userchat;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
-import com.shopprdriver.Model.UserChatList.Userchat;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -121,15 +122,15 @@ public class MainActivity extends AppCompatActivity {
         if (CommonUtils.isOnline(this)) {
             sessonManager.showProgress(this);
             //Log.d("token",sessonManager.getToken());
-            Call<UserChatListModel> call= ApiExecutor.getApiService(this)
+            Call<AvailableChatModel> call= ApiExecutor.getApiService(this)
                     .apiUserChatList("Bearer "+sessonManager.getToken());
-            call.enqueue(new Callback<UserChatListModel>() {
+            call.enqueue(new Callback<AvailableChatModel>() {
                 @Override
-                public void onResponse(Call<UserChatListModel> call, Response<UserChatListModel> response) {
+                public void onResponse(Call<AvailableChatModel> call, Response<AvailableChatModel> response) {
                     sessonManager.hideProgress();
                     if (response.body()!=null){
                         if (response.body().getStatus()!= null && response.body().getStatus().equals("success")){
-                            UserChatListModel chatsListModel=response.body();
+                            AvailableChatModel chatsListModel=response.body();
                             if(chatsListModel.getData().getUserchats()!=null) {
                                 chatsListModelList = chatsListModel.getData().getUserchats();
                                 userChatListAdapter=new UserChatListAdapter(MainActivity.this,chatsListModelList);
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<UserChatListModel> call, Throwable t) {
+                public void onFailure(Call<AvailableChatModel> call, Throwable t) {
                     sessonManager.hideProgress();
                 }
             });
