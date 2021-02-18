@@ -1,22 +1,16 @@
-package com.shopprdriver.Model.UserChatList;
+package com.shopprdriver.Model.Attendences;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserChatListModel {
+public class AttendencesModel {
 
     @SerializedName("status")
     @Expose
     private String status;
-    @SerializedName("message")
-    @Expose
-    private String message;
     @SerializedName("data")
     @Expose
     private Data data;
-    @SerializedName("type")
-    @Expose
-    private String type;
 
     public String getStatus() {
         return status;
@@ -24,14 +18,6 @@ public class UserChatListModel {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public Data getData() {
@@ -42,11 +28,5 @@ public class UserChatListModel {
         this.data = data;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
+

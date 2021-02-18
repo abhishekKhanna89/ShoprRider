@@ -68,6 +68,7 @@ import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.app.Config;
 import com.shopprdriver.util.NotificationUtils;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +81,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -131,11 +133,15 @@ public class ChatActivity extends AppCompatActivity {
     AlertDialog alertDialog;
     ImageView circleImage;
     BroadcastReceiver mMessageReceiver;
+
+    /*Todo:- UserDP*/
+    CircleImageView userDp;
+    TextView userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
        /* chat_id =getIntent().getIntExtra("id",0);
@@ -162,7 +168,9 @@ public class ChatActivity extends AppCompatActivity {
             chatMessageList(a);
         }*/
 
-
+        /*Todo:- UserDP*/
+        userDp=findViewById(R.id.userDp);
+        userName=findViewById(R.id.userName);
 
         editText = findViewById(R.id.editText);
         sendMsgBtn = findViewById(R.id.sendMsgBtn);
@@ -635,6 +643,8 @@ public class ChatActivity extends AppCompatActivity {
                             Log.d("ress",""+msg);
                             if (chatMessageModel.getData()!=null){
                                 chatList=chatMessageModel.getData().getChats();
+                                Picasso.get().load(chatMessageModel.getData().getCustomer().getImage()).into(userDp);
+                                userName.setText(chatMessageModel.getData().getCustomer().getName());
                                 ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
                                 chatRecyclerView.scrollToPosition(chatList.size()-1);
@@ -1260,7 +1270,7 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
-    /*Todo:- Option Menu*/
+    /*Todo:- Option Menu*//*
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -1277,13 +1287,13 @@ public class ChatActivity extends AppCompatActivity {
         }
         else if (id==R.id.action_video){
             initializationVideo(chat_id);
-           /* startActivity(new Intent(ChatDetailsActivity.this,VideoChatViewActivity.class)
+           *//* startActivity(new Intent(ChatDetailsActivity.this,VideoChatViewActivity.class)
                     .putExtra("chatId",chat_id)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));*/
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));*//*
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
     private void initializationVideo(int chat_id) {
         if (CommonUtils.isOnline(this)) {
             Call<InitiateVideoCallModel>call= ApiExecutor.getApiService(this)
@@ -1355,5 +1365,17 @@ public class ChatActivity extends AppCompatActivity {
         // Unregister since the activity is about to be closed.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
+    }
+
+    public void initializationVoice(View view) {
+        initializationVoice(chat_id);
+    }
+
+    public void initializationVideo(View view) {
+        initializationVideo(chat_id);
+    }
+
+    public void back(View view) {
+        onBackPressed();
     }
 }

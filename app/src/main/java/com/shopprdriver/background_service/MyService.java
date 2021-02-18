@@ -8,6 +8,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -89,6 +91,12 @@ public class MyService extends JobService implements
      * @param location - location from fused location provider
      */
     SessonManager sessonManager;
+
+
+
+
+
+
     @Override
     public void onLocationChanged(Location location) {
 
@@ -139,6 +147,9 @@ public class MyService extends JobService implements
         //here in this method you can use web service or any other thing*/
         double lat=location.getLatitude();
         double lang=location.getLongitude();
+
+        sessonManager.setLatitude(String.valueOf(lat));
+        sessonManager.setLongitude(String.valueOf(lang));
 
         UpdateLocationRequest updateLocationRequest=new UpdateLocationRequest();
         updateLocationRequest.setLat(lat);
@@ -293,5 +304,10 @@ public class MyService extends JobService implements
     public void onResult(@NonNull Status status) {
         Log.d(TAG,"result of google api client : " + status);
     }
+
+
+
+
+
 }
 

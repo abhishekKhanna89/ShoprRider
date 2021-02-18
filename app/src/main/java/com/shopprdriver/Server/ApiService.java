@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 
 import com.shopprdriver.Model.AcceptChatModel;
 import com.shopprdriver.Model.AcceptModel;
+import com.shopprdriver.Model.Attendences.AttendencesModel;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
+import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
@@ -22,9 +24,11 @@ import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
+import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
 
 import com.shopprdriver.RequestService.AccountDetailsRequest;
+import com.shopprdriver.RequestService.CheckInCheckOutRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.RequestService.RatingsRequest;
@@ -60,7 +64,11 @@ public interface ApiService {
     Call<OtpVerifyModel>otpService(@Body OtpVerifyRequest verifyRequest);
     @NonNull
     @GET("available-chats")
-    Call<AvailableChatModel> apiUserChatList(@Header("Authorization") String token);
+    Call<AvailableChatModel> apiUserAvailableChatList(@Header("Authorization") String token);
+    @NonNull
+    @GET("chats")
+    Call<UserChatListModel> apiUserChatList(@Header("Authorization") String token);
+
     @NonNull
     @GET("chat-messages/{chat_id}")
     Call<ChatMessageModel>apiChatMessage(@Header("Authorization") String token,
@@ -160,5 +168,17 @@ public interface ApiService {
     @GET("reject-chat/{chat_id}")
     Call<AcceptChatModel>apiRejectChat(@Header("Authorization") String token,
                                        @Path("chat_id") int chat_id);
+
+    @POST("check-in")
+    Call<CheckinCheckouSucessModel>apiCheckIn(@Header("Authorization") String token,
+                                              @Body CheckInCheckOutRequest checkInCheckOutRequest);
+
+    @POST("check-out")
+    Call<CheckinCheckouSucessModel>apiCheckOut(@Header("Authorization") String token,
+                                              @Body CheckInCheckOutRequest checkInCheckOutRequest);
+
+    @NonNull
+    @GET("attendences")
+    Call<AttendencesModel>apiAttendence(@Header("Authorization") String token);
 
 }

@@ -1,9 +1,9 @@
-package com.shopprdriver.Model.UserChatList;
+package com.shopprdriver.Model.CheckinCheckouSucess;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserChatListModel {
+public class CheckinCheckouSucessModel {
 
     @SerializedName("status")
     @Expose
@@ -11,12 +11,6 @@ public class UserChatListModel {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("data")
-    @Expose
-    private Data data;
-    @SerializedName("type")
-    @Expose
-    private String type;
 
     public String getStatus() {
         return status;
@@ -32,21 +26,5 @@ public class UserChatListModel {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

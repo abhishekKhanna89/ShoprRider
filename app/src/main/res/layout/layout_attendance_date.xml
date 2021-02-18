@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:text="Thursday,Jul 05,2020"
+        android:textColor="@color/white"
+        android:textAlignment="textStart"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/textColor" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/checkLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Check in"
+                android:fontFamily="@font/monster"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Check out"
+                android:textStyle="bold"
+                android:fontFamily="@font/monster"
+                android:textSize="16sp"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layoutCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkLayout"
+            android:background="@color/callBackground">
+            <TextView
+                android:id="@+id/check_inTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Check in"
+                android:fontFamily="@font/monster"
+                android:textSize="16sp"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/check_outTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Check out"
+                android:fontFamily="@font/monster"
+                android:textSize="16sp"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

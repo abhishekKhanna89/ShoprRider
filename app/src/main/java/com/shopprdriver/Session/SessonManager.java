@@ -27,6 +27,12 @@ public class SessonManager {
 
     public static final String CHAT_ID="chat_id";
 
+    public static final String Latitude="latitude";
+    public static final String Longitude="longitude";
+
+    public static final String Location="location";
+
+
     public Dialog mDialog;
     public SessonManager(Context ctx) {
         sharedPreference = ctx.getSharedPreferences(NAME, Context.MODE_PRIVATE);
@@ -103,6 +109,32 @@ public class SessonManager {
 
     public String getChatId(){
         return sharedPreference.getString(CHAT_ID,"");
+    }
+
+
+    public void setLatitude(String latitude){
+        editor.putString(Latitude,latitude);
+        editor.apply();
+    }
+    public String getLatitude(){
+       return sharedPreference.getString(Latitude,"");
+    }
+
+    public void setLongitude(String longitude){
+        editor.putString(Longitude,longitude);
+        editor.apply();
+    }
+    public String getLongitude(){
+        return sharedPreference.getString(Longitude,"");
+    }
+
+    public void setLocation(String location){
+        editor.putString(Location,location);
+        editor.apply();
+    }
+
+    public String getLocation(){
+        return sharedPreference.getString(Location,"");
     }
 
     public void hideProgress() {

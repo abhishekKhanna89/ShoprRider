@@ -26,7 +26,27 @@
         android:title="Commission Transaction"
         android:onClick="commissionTransaction"/>
 
+    <item
+        android:id="@+id/actionChatHistory"
+        android:title="Chat History"
+        android:onClick="chatHistory"/>
+    <item
+        android:id="@+id/actionCheckOut"
+        android:title="Check out"
+        android:onClick="checkout"/>
+
+    <item
+        android:id="@+id/actionCheckIn"
+        android:title="Check in"
+        android:onClick="checkin"/>
+
+    <item
+        android:id="@+id/actionAttendance"
+        android:title="Attendance"
+        android:onClick="attendance"/>
+
     <item  android:id="@+id/actionProfile"
         android:title="Profile"/>
+
 
 </menu>

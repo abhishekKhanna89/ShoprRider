@@ -70,10 +70,14 @@ public class UserChatListAdapter extends RecyclerView.Adapter<UserChatListAdapte
                                     AcceptChatModel chatsListModel=response.body();
                                     if(chatsListModel!=null) {
                                         Toast.makeText(context, chatsListModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                        userchatList.remove(position);
+                                        notifyDataSetChanged();
                                         context.startActivity(new Intent(context, ChatActivity.class)
                                                 .putExtra("id", userchat.getId())
                                                 .putExtra("image",userchat.getImage())
-                                                .putExtra("name",userchat.getName()));
+                                                .putExtra("name",userchat.getName())
+                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
                                     }else {
                                         Toast.makeText(context, chatsListModel.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
