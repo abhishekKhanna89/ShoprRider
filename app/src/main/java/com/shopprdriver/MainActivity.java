@@ -159,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
                             if(chatsListModel.getData().getUserchats()!=null) {
                                 chatsListModelList = chatsListModel.getData().getUserchats();
                                 if (chatsListModel.getData().getType().equalsIgnoreCase("checkout")){
-                                    register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(false);
-                                    register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(true);
+                                    //register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(false);
+                                    //register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(true);
                                 }else if (chatsListModel.getData().getType().equalsIgnoreCase("checkin")){
-                                    register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(true);
-                                    register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(false);
+                                    //register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(true);
+                                    //register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(false);
                                 }
 
                                 userChatListAdapter=new UserChatListAdapter(MainActivity.this,chatsListModelList);

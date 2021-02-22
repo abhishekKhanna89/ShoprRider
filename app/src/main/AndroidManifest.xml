@@ -26,7 +26,8 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.ReviewsActivity"></activity>
+        <activity android:name=".Activity.ReviewsActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.MenuActivity"
             android:screenOrientation="portrait" />

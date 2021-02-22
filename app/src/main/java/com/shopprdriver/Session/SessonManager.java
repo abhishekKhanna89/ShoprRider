@@ -32,6 +32,8 @@ public class SessonManager {
 
     public static final String Location="location";
 
+    public static final String Checkout_Status="checkout_status";
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -135,6 +137,14 @@ public class SessonManager {
 
     public String getLocation(){
         return sharedPreference.getString(Location,"");
+    }
+
+    public void setCheckout_Status(String checkout_Status){
+        editor.putString(Checkout_Status,checkout_Status);
+        editor.apply();
+    }
+    public String getCheckout_Status(){
+        return sharedPreference.getString(Checkout_Status,"");
     }
 
     public void hideProgress() {
