@@ -92,7 +92,7 @@ public class OtpActivity extends AppCompatActivity {
                                             setResult(RESULT_OK, null);
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             if (type.equalsIgnoreCase("login")){
-                                                startActivity(new Intent(OtpActivity.this, MainActivity.class)
+                                                startActivity(new Intent(OtpActivity.this, MenuActivity.class)
                                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                 finish();
                                             }else {

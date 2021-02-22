@@ -148,6 +148,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessageList(chat_id);*/
 
         chat_id = getIntent().getIntExtra("id", 0);
+
         //Log.d("ChatId+",""+chat_id);
 
         if (sessonManager.getChatId().isEmpty()){
@@ -216,6 +217,7 @@ public class ChatActivity extends AppCompatActivity {
                     chat_id=intent.getIntExtra("chat_id",0);
                     if (sessonManager.getChatId()!=null){
                         String chatid=String.valueOf(sessonManager.getChatId());
+                        Log.d("RecieveChatId",chatid);
                         chatMessageList(Integer.parseInt(chatid));
                     }
 
@@ -305,6 +307,16 @@ public class ChatActivity extends AppCompatActivity {
                     //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     // is only executed if the EditText was directly changed by the user
                 } else {
+                    if (sessonManager.getChatId().isEmpty()){
+                        sessonManager.setChatId("");
+                        chat_id = getIntent().getIntExtra("id", 0);
+                        //chatMessageList(chat_id);
+                    }else {
+                        String cId=sessonManager.getChatId();
+                        int a= Integer.parseInt(cId);
+                        chat_id=a;
+                        sessonManager.setChatId("");
+                    }
                     sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.send));
                     sendMsgBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -627,7 +639,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void chatMessageList(int chat_id) {
-        //Log.d("ress",""+id);
+        Log.d("ChhatId++",""+chat_id);
         if (CommonUtils.isOnline(ChatActivity.this)) {
 
             Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),chat_id);
@@ -1375,7 +1387,7 @@ public class ChatActivity extends AppCompatActivity {
         initializationVideo(chat_id);
     }
 
-    public void back(View view) {
-        onBackPressed();
+    public void finish(View view) {
+       onBackPressed();
     }
 }

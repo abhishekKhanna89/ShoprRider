@@ -18,6 +18,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.shopprdriver.Activity.ChatActivity;
+import com.shopprdriver.Activity.MenuActivity;
+import com.shopprdriver.MainActivity;
 import com.shopprdriver.R;
 import com.shopprdriver.Session.SessonManager;
 
@@ -80,11 +82,25 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         // Pass the intent to switch to the MainActivity
 
         JSONObject jsonObject=new JSONObject(remoteMessage.getData());
+        Log.d("notificationResponse",""+jsonObject);
         try {
             chat_id=jsonObject.getString("chat_id");
-            intent
-                    = new Intent(this, ChatActivity.class);
-            sessonManager.setChatId(chat_id);
+            String pending_order=jsonObject.getString("pending_order");
+            String chat_assigned=jsonObject.getString("chat-assigned");
+            if (chat_assigned!=null){
+                startActivity(new Intent(this,ChatActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                sessonManager.setChatId(chat_id);
+               /* intent = new Intent(this, ChatActivity.class);
+                sessonManager.setChatId(chat_id);*/
+            }
+            if (pending_order!=null){
+                startActivity(new Intent(this,ChatActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                /*intent = new Intent(this, ChatActivity.class);
+                sessonManager.setChatId(chat_id);*/
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -96,7 +112,9 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         // Here FLAG_ACTIVITY_CLEAR_TOP flag is set to clear
         // the activities present in the activity stack,
         // on the top of the Activity that is to be launched
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        intent = new Intent(this, MenuActivity.class);
+        sessonManager.setChatId(chat_id);
         // Pass the intent to PendingIntent to start the
         // next Activity
         PendingIntent pendingIntent

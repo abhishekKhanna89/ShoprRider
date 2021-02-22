@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,6 +35,7 @@ public class AttendenceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendence);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager=new SessonManager(this);
         attendanceRecyclerView=findViewById(R.id.attendanceRecyclerView);
         attendanceRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
@@ -90,8 +92,8 @@ public class AttendenceActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Attendence attendence=attendenceList.get(position);
             holder.button.setText(attendence.getDate());
-            holder.check_inTime.setText(attendence.getCheckinAddress()+","+attendence.getCheckin());
-            holder.check_outTime.setText(attendence.getCheckoutAddress()+","+attendence.getCheckout());
+            holder.check_inTime.setText(attendence.getCheckinAddress()+" , "+attendence.getCheckin());
+            holder.check_outTime.setText(attendence.getCheckoutAddress()+" , "+attendence.getCheckout());
 
         }
 
@@ -110,5 +112,14 @@ public class AttendenceActivity extends AppCompatActivity {
                 check_outTime=itemView.findViewById(R.id.check_outTime);
             }
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
