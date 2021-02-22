@@ -24,6 +24,9 @@ public class Datum {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("show_deliver_button")
+    @Expose
+    private Integer showDeliverButton;
     @SerializedName("details")
     @Expose
     private List<Detail> details = null;
@@ -74,6 +77,14 @@ public class Datum {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getShowDeliverButton() {
+        return showDeliverButton;
+    }
+
+    public void setShowDeliverButton(Integer showDeliverButton) {
+        this.showDeliverButton = showDeliverButton;
     }
 
     public List<Detail> getDetails() {

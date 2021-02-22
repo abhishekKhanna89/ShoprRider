@@ -32,21 +32,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_toLeftOf="@id/text_view_date"
+                android:layout_toLeftOf="@id/btnAccept"
                 android:textStyle="bold"
                 android:layout_alignParentLeft="true"
                 android:textColor="@color/black"/>
             <TextView
-                android:id="@+id/text_view_date"
+                android:id="@+id/text_view_customer_chat"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:singleLine="true"
+                android:layout_below="@+id/text_view_customer_name"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/btnAccept"
+                android:layout_height="wrap_content"  />
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Accept"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"/>
+            <Button
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:layout_height="40dp"
+                android:text="Reject"
+                android:textAllCaps="false"
+                android:layout_below="@+id/btnAccept"
+                android:textColor="@color/white"
                 android:layout_alignParentRight="true"/>
         </RelativeLayout>
-        <TextView
-            android:id="@+id/text_view_customer_chat"
-            android:layout_width="match_parent"
-            android:layout_marginTop="5dp"
-            android:singleLine="true"
-            android:layout_height="wrap_content"  />
+
     </LinearLayout>
 </LinearLayout>

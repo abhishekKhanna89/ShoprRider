@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,8 +81,9 @@ public class OtpActivity extends AppCompatActivity {
                             OtpVerifyModel otpVerifyModel=response.body();
                             String userId=otpVerifyModel.getUser_id();
                             String sendbird_token=otpVerifyModel.getSendbird_token();
+                            //Log.d("res",sendbird_token);
+                            String form_step=otpVerifyModel.getForm_step();
                             String savedAppId = PrefUtils.getAppId(OtpActivity.this);
-
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());
                                 if (((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
@@ -89,9 +91,19 @@ public class OtpActivity extends AppCompatActivity {
                                         if (isSuccess) {
                                             setResult(RESULT_OK, null);
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(OtpActivity.this, MainActivity.class)
-                                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                            finish();
+                                            if (type.equalsIgnoreCase("login")){
+                                                startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                finish();
+                                            }else {
+                                                //sessonManager.setForm_Step(form_step);
+                                                startActivity(new Intent(OtpActivity.this, Page1Activity.class)
+                                                        .putExtra("form_step",form_step)
+                                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                finish();
+                                                //Toast.makeText(OtpActivity.this, "register", Toast.LENGTH_SHORT).show();
+                                            }
+
                                         }
                                     });
                                 }

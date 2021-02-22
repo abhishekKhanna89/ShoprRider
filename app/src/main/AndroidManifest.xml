@@ -26,6 +26,33 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".Activity.MenuActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.AttendenceActivity"
+            android:label="Attendance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ChatHistoryActivity"
+            android:label="Chat History"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.CommissionTransactionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.WalletTransactionActivity"
+            android:label="Wallet Transaction"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Page2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Page1Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.RegisterActivity"
+            android:label="Register"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.OrderDetailsActivity"
             android:label="Order Details"
@@ -45,6 +72,7 @@
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
+            android:label="Login"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
@@ -52,23 +80,28 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.OtpActivity"
+            android:label="OTP Verify"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ChatActivity"
-            android:label="Chat"
-            android:screenOrientation="portrait" />
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:theme="@style/ChatTheme">
+            <intent-filter>
+                <action android:name="chat_screen" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activity.NotificationListActivity"
             android:label="Notification"
             android:screenOrientation="portrait" /> <!-- Firebase Notifications -->
-        <service android:name=".notifications.MyFirebaseMessagingService">
+        <service android:name=".notifications.FirebaseMessageReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".notifications.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service> <!-- ./Firebase Notifications -->
         <service

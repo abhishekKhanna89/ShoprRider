@@ -80,8 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }else {
                                 sessonManager.getToken();
-                                //sessonManager.setToken(response.body().getToken());
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class)
+                                startActivity(new Intent(LoginActivity.this, MenuActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             }
@@ -99,5 +98,10 @@ public class LoginActivity extends AppCompatActivity {
         }else {
             CommonUtils.showToastInCenter(LoginActivity.this, getString(R.string.please_check_network));
         }
+    }
+
+    public void register(View view) {
+        startActivity(new Intent(LoginActivity.this,RegisterActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 }

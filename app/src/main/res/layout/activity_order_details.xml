@@ -15,6 +15,8 @@
         android:visibility="gone"
         android:textColor="@android:color/holo_red_dark"
         android:gravity="center"/>
+
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -204,10 +206,15 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-
-
-
+            <Button
+                android:id="@+id/deliverBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deliver"
+                android:visibility="gone"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="bottom|center"/>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

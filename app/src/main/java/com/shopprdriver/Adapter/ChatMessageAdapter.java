@@ -4,6 +4,7 @@
  import android.app.Dialog;
  import android.content.Context;
  import android.content.Intent;
+ import android.net.Uri;
  import android.os.Build;
  import android.view.LayoutInflater;
  import android.view.View;
@@ -137,6 +138,13 @@
            holder.mapLayout.setVisibility(View.GONE);
        }
 
+        /*Todo:- Store Type*/
+        if (chat.getType().equalsIgnoreCase("store")){
+            holder.storeLocationText.setText(chat.getMessage());
+            holder.storeLocationTextDate.setText(chat.getCreatedAt());
+        }else {
+            holder.storeLocationLayout.setVisibility(View.GONE);
+        }
 
 
        /*Todo:- Visibility Concept*/
@@ -325,16 +333,10 @@
         holder.locationImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dialog = new Dialog(context);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setContentView(R.layout.image_layout);
-                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
-                Picasso.get().load(chat.getFilePath()).into(imageFirst);
-                PhotoViewAttacher pAttacher;
-                pAttacher = new PhotoViewAttacher(imageFirst);
-                pAttacher.update();
-                dialog.show();
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                context.startActivity(mapIntent);
             }
         });
 
@@ -367,6 +369,16 @@
                 pAttacher = new PhotoViewAttacher(imageFirst);
                 pAttacher.update();
                 dialog.show();
+            }
+        });
+        /*Todo:- Store Type*/
+        holder.storeLocationLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                context.startActivity(mapIntent);
             }
         });
     }
@@ -422,6 +434,9 @@
         /*Todo:- Audio*/
         VoicePlayerView voicePlayerView;
 
+        /*Todo:- Store Type*/
+         ChatMessageView storeLocationLayout;
+         TextView storeLocationText,storeLocationTextDate;
         public Holder(@NonNull View itemView) {
             super(itemView);
             /*Todo:- Location*/
@@ -457,15 +472,10 @@
             /*Todo:- Audio*/
             voicePlayerView=itemView.findViewById(R.id.voicePlayerView);
 
-
-
-
-
-
-
-
+            /*Todo:- Store Type*/
+            storeLocationLayout=itemView.findViewById(R.id.storeLocationLayout);
+            storeLocationText=itemView.findViewById(R.id.storeLocationText);
+            storeLocationTextDate=itemView.findViewById(R.id.storeLocationTextDate);
         }
-
-
      }
 }

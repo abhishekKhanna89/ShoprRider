@@ -82,11 +82,11 @@ public class AuthenticationUtils {
         });
     }
 
-   /* public interface CompletionWithDetailHandler {
+    public interface CompletionWithDetailHandler {
         void onCompletion(boolean isSuccess, boolean hasInvalidValue);
-    }*/
+    }
 
-    /*public static void authenticateWithEncodedAuthInfo(Activity activity, String encodedAuthInfo, CompletionWithDetailHandler handler) {
+    public static void authenticateWithEncodedAuthInfo(Activity activity, String encodedAuthInfo, CompletionWithDetailHandler handler) {
         String appId = null;
         String userId = null;
         String accessToken = null;
@@ -115,7 +115,7 @@ public class AuthenticationUtils {
                 handler.onCompletion(false, true);
             }
         }
-    }*/
+    }
 
     public interface DeauthenticateHandler {
         void onResult(boolean isSuccess);

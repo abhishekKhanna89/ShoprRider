@@ -16,7 +16,37 @@
         android:title="Order"
         android:onClick="order"/>
 
+    <item
+        android:id="@+id/walletTransaction"
+        android:title="Wallet Transaction"
+        android:onClick="walletTransaction"/>
+
+    <item
+        android:id="@+id/commissionTransaction"
+        android:title="Commission Transaction"
+        android:onClick="commissionTransaction"/>
+
+    <item
+        android:id="@+id/actionChatHistory"
+        android:title="Chat History"
+        android:onClick="chatHistory"/>
+    <item
+        android:id="@+id/actionCheckOut"
+        android:title="Check out"
+        android:onClick="checkout"/>
+
+    <item
+        android:id="@+id/actionCheckIn"
+        android:title="Check in"
+        android:onClick="checkin"/>
+
+    <item
+        android:id="@+id/actionAttendance"
+        android:title="Attendance"
+        android:onClick="attendance"/>
+
     <item  android:id="@+id/actionProfile"
-        android:title="Profile"
-        app:showAsAction="withText"/>
+        android:title="Profile"/>
+
+
 </menu>

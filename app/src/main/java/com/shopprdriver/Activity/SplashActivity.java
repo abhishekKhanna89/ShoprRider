@@ -15,14 +15,22 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.shopprdriver.MainActivity;
+import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.R;
 import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
+import com.shopprdriver.Server.ApiExecutor;
+import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.app.Config;
 import com.shopprdriver.util.NotificationUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG ="" ;
@@ -30,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private Boolean mAutoAuthenticateResult;
     private String mEncodedAuthInfo;
-
+    int step_form;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,46 +46,77 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         sessonManager = new SessonManager(SplashActivity.this);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String newToken = instanceIdResult.getToken();
+            sessonManager.setNotificationToken(newToken);
+            //Log.e("newToken", newToken);
+            //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
+        });
 
-                // checking for type intent filter
-                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
 
-                    displayFirebaseRegId();
+        AuthenticationUtils.autoAuthenticate(this, userId -> {
 
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                }
-            }
-        };
+        });
+
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(sessonManager.getToken().isEmpty()){
-
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
                 }
                 else {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
-
+                    viewStatus();
                 }
+
             }
         }, 5000);
     }
 
-    private void displayFirebaseRegId() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
-        sessonManager.setNotificationToken(regId);
-       // Log.e(TAG, "Firebase reg id: " + regId);
+    private void viewStatus() {
+        if (CommonUtils.isOnline(SplashActivity.this)) {
+            Call<ProfileStatusModel>call= ApiExecutor.getApiService(this)
+                    .apiProfileStatus("Bearer " + sessonManager.getToken());
+            call.enqueue(new Callback<ProfileStatusModel>() {
+                @Override
+                public void onResponse(Call<ProfileStatusModel> call, Response<ProfileStatusModel> response) {
+                    if (response.body()!=null) {
+                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            ProfileStatusModel profileStatusModel=response.body();
+                            if (profileStatusModel!=null){
+                                 step_form=profileStatusModel.getFormStep();
+                                if (step_form==1){
+                                    startActivity(new Intent(SplashActivity.this, Page1Activity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    finish();
+                                }else if (step_form==2){
+                                    startActivity(new Intent(SplashActivity.this, Page2Activity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    finish();
+                                }else {
+                                    startActivity(new Intent(SplashActivity.this, MenuActivity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    finish();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ProfileStatusModel> call, Throwable t) {
+
+                }
+            });
+
+        }else {
+            CommonUtils.showToastInCenter(SplashActivity.this, getString(R.string.please_check_network));
+        }
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();

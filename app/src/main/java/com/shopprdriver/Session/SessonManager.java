@@ -23,6 +23,15 @@ public class SessonManager {
     public static final String AGORA_CHANEL_NAME="agora_chanel_name";
     public static final String SendBird_USERID="user_id";
 
+    public static final String Form_Step="form_step";
+
+    public static final String CHAT_ID="chat_id";
+
+    public static final String Latitude="latitude";
+    public static final String Longitude="longitude";
+
+    public static final String Location="location";
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -67,7 +76,7 @@ public class SessonManager {
     public void setToken(String token) {
      //   Log.d("sssss", token);
         editor.putString(Token, token);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -84,6 +93,49 @@ public class SessonManager {
         return sharedPreference.getString(NOTIFICATION_TOKEN,"");
     }
 
+    public void setForm_Step(String form_Step){
+        editor.putString(Form_Step,form_Step);
+        editor.apply();
+    }
+    public String getForm_Step(){
+        return sharedPreference.getString(Form_Step,"");
+    }
+
+
+    public void setChatId(String chatId){
+        editor.putString(CHAT_ID,chatId);
+        editor.apply();
+    }
+
+    public String getChatId(){
+        return sharedPreference.getString(CHAT_ID,"");
+    }
+
+
+    public void setLatitude(String latitude){
+        editor.putString(Latitude,latitude);
+        editor.apply();
+    }
+    public String getLatitude(){
+       return sharedPreference.getString(Latitude,"");
+    }
+
+    public void setLongitude(String longitude){
+        editor.putString(Longitude,longitude);
+        editor.apply();
+    }
+    public String getLongitude(){
+        return sharedPreference.getString(Longitude,"");
+    }
+
+    public void setLocation(String location){
+        editor.putString(Location,location);
+        editor.apply();
+    }
+
+    public String getLocation(){
+        return sharedPreference.getString(Location,"");
+    }
 
     public void hideProgress() {
         while (mDialog != null && mDialog.isShowing()){
