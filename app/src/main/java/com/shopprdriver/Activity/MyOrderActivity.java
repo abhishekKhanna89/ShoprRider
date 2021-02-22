@@ -95,6 +95,9 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
             call.enqueue(new Callback<OrderDetailsModel>() {
                 @Override
                 public void onResponse(Call<OrderDetailsModel> call, Response<OrderDetailsModel> response) {
+                    String respoStr = new Gson().toJson(response.body());
+                    Log.d("djhjkhds", respoStr);
+
                     swipeRefreshLayout.setRefreshing(false);
                     sessonManager.hideProgress();
                     if (response.body() != null) {
@@ -160,36 +163,38 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
         @NonNull
         @Override
         public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new Holder(LayoutInflater.from(context)
-                    .inflate(R.layout.layout_my_order, null));
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_my_order, parent, false);
+            return new Holder(view);
+         /*   return new Holder(LayoutInflater.from(context)
+                    .inflate(R.layout.layout_my_order, null));*/
         }
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Datum datum = datumList.get(position);
 
-            Gson gson=new Gson();
-            String res=gson.toJson(datum);
+            Gson gson = new Gson();
+            String res = gson.toJson(datum);
             //Log.d("ress",res);
             if (datum.getDetails().size() == 0) {
                 Picasso.get().load(R.drawable.pin_logo).into(holder.itemImage);
             } else {
-                for (int i=0;i<datumList.get(position).getDetails().size();i++){
+                for (int i = 0; i < datumList.get(position).getDetails().size(); i++) {
                     Picasso.get().load(datumList.get(position).getDetails().get(i).getFilePath()).into(holder.itemImage);
                 }
 
             }
 
-            holder.rfIdText.setText("Order Id :" + datum.getRefid());
+            holder.rfIdText.setText(datum.getRefid());
             holder.itemDate.setText(datum.getCreatedAt());
-            holder.totalText.setText("Total :" + datum.getTotal());
-            holder.serviceChargeText.setText("Service Charge :" + datum.getServiceCharge());
+            holder.totalText.setText(datum.getTotal());
+            holder.serviceChargeText.setText(datum.getServiceCharge());
 
-            if (datum.getStatus()!=null && datum.getStatus().equalsIgnoreCase("Confirmed")) {
-                holder.statusText.setText("Status :" + datum.getStatus());
+            if (datum.getStatus() != null && datum.getStatus().equalsIgnoreCase("Confirmed")) {
+                holder.statusText.setText(datum.getStatus());
                 holder.statusText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            }else {
-                holder.statusText.setText("Status :" + datum.getStatus());
+            } else {
+                holder.statusText.setText(datum.getStatus());
                 holder.statusText.setTextColor(getResources().getColor(R.color.black));
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {

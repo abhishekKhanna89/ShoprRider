@@ -20,6 +20,7 @@ import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
+import com.shopprdriver.Model.ReviewsModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
@@ -179,6 +180,9 @@ public interface ApiService {
 
     @NonNull
     @GET("attendences")
-    Call<AttendencesModel>apiAttendence(@Header("Authorization") String token);
+    Call<AttendencesModel>apiAttendence(@Header("Authorization") String token);@NonNull
+
+    @GET("reviews")
+    Call<ReviewsModel>apiReviews(@Header("Authorization") String token);
 
 }

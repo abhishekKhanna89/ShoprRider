@@ -6,15 +6,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity.OrderDetailsActivity">
+
     <TextView
         android:id="@+id/emptyDeatils"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="Details Empty"
-        android:textSize="20sp"
-        android:visibility="gone"
         android:textColor="@android:color/holo_red_dark"
-        android:gravity="center"/>
+        android:textSize="20sp"
+        android:visibility="gone" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -61,12 +62,14 @@
                         android:textColor="@color/black"
                         android:textSize="18dp"
                         android:textStyle="bold" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@color/gray" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -86,18 +89,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.1"
-                            android:text="Total"
-                            android:textStyle="bold"
                             android:gravity="center"
+                            android:text="Total"
                             android:textColor="@color/black"
-                            android:textSize="16dp" />
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@color/gray" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -119,12 +124,14 @@
                             android:text="Total"
                             android:textSize="16dp" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@color/gray" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -173,6 +180,7 @@
                             android:text="Total"
                             android:textSize="16dp" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -191,8 +199,8 @@
                             android:layout_weight="1.9"
                             android:text="Total Paid"
                             android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="16dp" />
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/totalPaidText"
@@ -201,20 +209,81 @@
                             android:layout_weight="0.1"
                             android:text="Total"
                             android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:textSize="16dp" />
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/linearReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="6dp"
+                    app:cardMaxElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10sp"
+                            android:text="Rating"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"></TextView>
+
+                        <TextView
+                            android:id="@+id/TvRatingTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="15sp"></TextView>
+
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Message"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"></TextView>
+
+                        <TextView
+                            android:id="@+id/RatingTvMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="15sp"></TextView>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/deliverBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deliver"
-                android:visibility="gone"
+                android:layout_gravity="bottom|center"
                 android:layout_marginTop="60dp"
                 android:layout_marginBottom="10dp"
-                android:layout_gravity="bottom|center"/>
+                android:text="Deliver"
+                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

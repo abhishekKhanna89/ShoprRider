@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -10,17 +11,26 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="6dp"
         app:cardMaxElevation="10dp">
-        <TextView
-            android:id="@+id/menu_title"
+
+        <LinearLayout
+            android:id="@+id/llMainView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="hbxhxh"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textSize="20sp"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/black"
-            android:fontFamily="@font/monster"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/menu_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/monster"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="hbxhxh"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

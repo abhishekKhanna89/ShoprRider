@@ -17,9 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OrderDeatilsList.Order;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
@@ -44,7 +47,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     SessonManager sessonManager;
     RecyclerView rv_order_details;
     CardView cardOrderSummary;
-    TextView orderIdText,totalAmountText,
+    TextView orderIdText, totalAmountText,
             serviceChargeText,
             groundTotalText,
             totalPaidText;
@@ -54,15 +57,19 @@ public class OrderDetailsActivity extends AppCompatActivity {
     //int show_deliver_button,orderId;
     //String status;
     int orderId;
-    List<com.shopprdriver.Model.OrderDeatilsList.Detail>orderList;
+    TextView TvRatingTitle, RatingTvMessage;
+    RatingBar ratingbar;
+    LinearLayout linearReview;
+    List<com.shopprdriver.Model.OrderDeatilsList.Detail> orderList;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sessonManager=new SessonManager(this);
-        orderId=getIntent().getIntExtra("orderId",0);
+        sessonManager = new SessonManager(this);
+        orderId = getIntent().getIntExtra("orderId", 0);
        /* int position=getIntent().getIntExtra("position",0);
         String total=getIntent().getStringExtra("total");
         String service_charge=getIntent().getStringExtra("service_charge");
@@ -70,38 +77,43 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         status=getIntent().getStringExtra("status");*/
         /*Todo:- RecyclerView*/
-        rv_order_details=findViewById(R.id.rv_order_details);
-        rv_order_details.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
+        rv_order_details = findViewById(R.id.rv_order_details);
+        rv_order_details.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         /*Todo:- CardView*/
-        cardOrderSummary=findViewById(R.id.cardOrderSummary);
+        cardOrderSummary = findViewById(R.id.cardOrderSummary);
         /*Todo:- TextView*/
-        emptyDeatils=findViewById(R.id.emptyDeatils);
-        orderIdText=findViewById(R.id.orderIdText);
-        totalAmountText=findViewById(R.id.totalAmountText);
-        serviceChargeText=findViewById(R.id.serviceChargeText);
-        groundTotalText=findViewById(R.id.groundTotalText);
-        totalPaidText=findViewById(R.id.totalPaidText);
+        emptyDeatils = findViewById(R.id.emptyDeatils);
+        orderIdText = findViewById(R.id.orderIdText);
+        totalAmountText = findViewById(R.id.totalAmountText);
+        serviceChargeText = findViewById(R.id.serviceChargeText);
+        groundTotalText = findViewById(R.id.groundTotalText);
+        totalPaidText = findViewById(R.id.totalPaidText);
+        TvRatingTitle = findViewById(R.id.TvRatingTitle);
+        ratingbar = findViewById(R.id.ratingBar);
+        RatingTvMessage = findViewById(R.id.RatingTvMessage);
+        linearReview = findViewById(R.id.linearReview);
 
 
         /*Todo:- Btn */
-        deliverBtn=findViewById(R.id.deliverBtn);
+        deliverBtn = findViewById(R.id.deliverBtn);
         myOrderDetailsList();
         deliverBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.isOnline(OrderDetailsActivity.this)) {
                     sessonManager.showProgress(OrderDetailsActivity.this);
-                    Call<LoginModel>call= ApiExecutor.getApiService(OrderDetailsActivity.this)
-                            .apiDeliverOrder("Bearer " + sessonManager.getToken(),orderId);
+                    Call<LoginModel> call = ApiExecutor.getApiService(OrderDetailsActivity.this)
+                            .apiDeliverOrder("Bearer " + sessonManager.getToken(), orderId);
                     call.enqueue(new Callback<LoginModel>() {
                         @Override
                         public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+
                             sessonManager.hideProgress();
-                            if (response.body()!=null) {
+                            if (response.body() != null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                     Toast.makeText(OrderDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     myOrderDetailsList();
-                                }else {
+                                } else {
                                     Toast.makeText(OrderDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -112,7 +124,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             sessonManager.hideProgress();
                         }
                     });
-                }else {
+                } else {
                     CommonUtils.showToastInCenter(OrderDetailsActivity.this, getString(R.string.please_check_network));
                 }
                 //Toast.makeText(OrderDetailsActivity.this, "Jai Mata Di", Toast.LENGTH_SHORT).show();
@@ -120,41 +132,55 @@ public class OrderDetailsActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     private void myOrderDetailsList() {
         if (CommonUtils.isOnline(OrderDetailsActivity.this)) {
             sessonManager.showProgress(OrderDetailsActivity.this);
-            Call<OrderDeatilsListModel>call=ApiExecutor.getApiService(this)
-                    .apiMyOderDetails("Bearer " + sessonManager.getToken(),orderId);
+            Call<OrderDeatilsListModel> call = ApiExecutor.getApiService(this)
+                    .apiMyOderDetails("Bearer " + sessonManager.getToken(), orderId);
             call.enqueue(new Callback<OrderDeatilsListModel>() {
                 @Override
                 public void onResponse(Call<OrderDeatilsListModel> call, Response<OrderDeatilsListModel> response) {
                     sessonManager.hideProgress();
+                    String resss = new Gson().toJson(response.body());
+                    Log.d("dfjjhjk", resss);
                     if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            OrderDeatilsListModel orderDeatilsListModel=response.body();
-                            if (orderDeatilsListModel.getData().getOrder()!=null){
+                            OrderDeatilsListModel orderDeatilsListModel = response.body();
+                            if (orderDeatilsListModel.getData().getOrder() != null) {
+                                String message = orderDeatilsListModel.getData().getOrder().getReviews().get(0).getMessage();
+                                String quantity = orderDeatilsListModel.getData().getOrder().getReviews().get(0).getQuantity();
 
-                                if (orderDeatilsListModel.getData().getOrder().getShowDeliverButton()==0){
+                                if (!String.valueOf(orderDeatilsListModel.getData().getOrder().getReviews()).equalsIgnoreCase("[]")) {
+                                    linearReview.setVisibility(View.VISIBLE);
+                                    float num = Float.parseFloat(quantity);
+                                    TvRatingTitle.setText(quantity);
+                                    RatingTvMessage.setText(message);
+                                    ratingbar.setRating(num);
+                                } else {
+                                    linearReview.setVisibility(View.GONE);
+                                }
+
+
+                                if (orderDeatilsListModel.getData().getOrder().getShowDeliverButton() == 0) {
                                     deliverBtn.setVisibility(View.GONE);
-                                }else {
+                                } else {
                                     deliverBtn.setVisibility(View.VISIBLE);
                                 }
 
                                 orderIdText.setText(String.valueOf(orderId));
-                                totalAmountText.setText("₹ " +orderDeatilsListModel.getData().getOrder().getTotal());
-                                serviceChargeText.setText("₹ " +orderDeatilsListModel.getData().getOrder().getServiceCharge());
+                                totalAmountText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getTotal());
+                                serviceChargeText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getServiceCharge());
                                 double num1 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getTotal());
                                 double num2 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getServiceCharge());
                                 // add both number and store it to sum
                                 double sum = num1 + num2;
-                                groundTotalText.setText("₹ " +sum);
-                                totalPaidText.setText("₹ " +sum);
+                                groundTotalText.setText("₹ " + sum);
+                                totalPaidText.setText("₹ " + sum);
 
-                                orderList=orderDeatilsListModel.getData().getOrder().getDetails();
-                                OrderDetailsAdapter orderDetailsAdapter=new OrderDetailsAdapter(OrderDetailsActivity.this,orderList);
+                                orderList = orderDeatilsListModel.getData().getOrder().getDetails();
+                                OrderDetailsAdapter orderDetailsAdapter = new OrderDetailsAdapter(OrderDetailsActivity.this, orderList);
                                 rv_order_details.setAdapter(orderDetailsAdapter);
                             }
                         }
@@ -196,25 +222,27 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 
-    public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.Holder>{
+    public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.Holder> {
         List<com.shopprdriver.Model.OrderDeatilsList.Detail> detailList;
         Context context;
-        public OrderDetailsAdapter(Context context,List<com.shopprdriver.Model.OrderDeatilsList.Detail>detailList){
-            this.context=context;
-            this.detailList=detailList;
+
+        public OrderDetailsAdapter(Context context, List<com.shopprdriver.Model.OrderDeatilsList.Detail> detailList) {
+            this.context = context;
+            this.detailList = detailList;
         }
+
         @NonNull
         @Override
         public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return  new Holder(LayoutInflater.from(context)
-                    .inflate(R.layout.layout_order_details,null));
+            return new Holder(LayoutInflater.from(context)
+                    .inflate(R.layout.layout_order_details, null));
         }
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Picasso.get().load(detailList.get(position).getFilePath()).into(holder.productImage);
             holder.nameProductText.setText(detailList.get(position).getMessage());
-            holder.priceProductText.setText("\u20B9 "+detailList.get(position).getPrice());
+            holder.priceProductText.setText("\u20B9 " + detailList.get(position).getPrice());
             holder.quantityProductText.setText(detailList.get(position).getQuantity());
         }
 
@@ -225,20 +253,22 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         public class Holder extends RecyclerView.ViewHolder {
             ImageView productImage;
-            TextView nameProductText,priceProductText,quantityProductText;
+            TextView nameProductText, priceProductText, quantityProductText;
+
             public Holder(@NonNull View itemView) {
                 super(itemView);
-                productImage =  itemView.findViewById(R.id.productImage);
+                productImage = itemView.findViewById(R.id.productImage);
                 nameProductText = (TextView) itemView.findViewById(R.id.nameProductText);
                 priceProductText = itemView.findViewById(R.id.priceProductText);
                 quantityProductText = itemView.findViewById(R.id.quantityProductText);
             }
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id=item.getItemId();
-        if (id==android.R.id.home){
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
             onBackPressed();
         }
 

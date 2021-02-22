@@ -34,6 +34,9 @@ public class Order {
     @SerializedName("details")
     @Expose
     private List<Detail> details = null;
+    @SerializedName("reviews")
+    @Expose
+    private List<Review> reviews = null;
 
     public Integer getId() {
         return id;
@@ -105,6 +108,14 @@ public class Order {
 
     public void setDetails(List<Detail> details) {
         this.details = details;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
 }
