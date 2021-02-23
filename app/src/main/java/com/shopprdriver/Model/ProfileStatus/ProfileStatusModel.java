@@ -11,6 +11,9 @@ public class ProfileStatusModel {
     @SerializedName("form_step")
     @Expose
     private Integer formStep;
+    @SerializedName("type")
+    @Expose
+    private String type;
 
     public String getStatus() {
         return status;
@@ -28,4 +31,11 @@ public class ProfileStatusModel {
         this.formStep = formStep;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

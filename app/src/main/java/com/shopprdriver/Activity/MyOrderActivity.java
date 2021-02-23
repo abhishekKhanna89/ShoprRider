@@ -69,6 +69,7 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
+                datumList.clear();
                 orderList();
             }
         });
@@ -97,7 +98,6 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
                 public void onResponse(Call<OrderDetailsModel> call, Response<OrderDetailsModel> response) {
                     String respoStr = new Gson().toJson(response.body());
                     Log.d("djhjkhds", respoStr);
-
                     swipeRefreshLayout.setRefreshing(false);
                     sessonManager.hideProgress();
                     if (response.body() != null) {
@@ -127,6 +127,7 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
+        datumList.clear();
         orderList();
     }
 
@@ -145,6 +146,7 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
         if (isLastItemDisplaying(rv_myOrder)) {
             //Calling the method getdata again
             if (currentPage < page) {
+                datumList.clear();
                 orderList();
             }
 
@@ -232,9 +234,4 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        orderList();
-    }
 }

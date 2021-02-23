@@ -159,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
                             if(chatsListModel.getData().getUserchats()!=null) {
                                 chatsListModelList = chatsListModel.getData().getUserchats();
                                 if (chatsListModel.getData().getType().equalsIgnoreCase("checkout")){
-                                    register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(false);
-                                    register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(true);
+                                    //register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(false);
+                                    //register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(true);
                                 }else if (chatsListModel.getData().getType().equalsIgnoreCase("checkin")){
-                                    register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(true);
-                                    register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(false);
+                                    //register=menu_change_language.findItem(R.id.actionCheckOut).setVisible(true);
+                                    //register=menu_change_language.findItem(R.id.actionCheckIn).setVisible(false);
                                 }
 
                                 userChatListAdapter=new UserChatListAdapter(MainActivity.this,chatsListModelList);
@@ -185,33 +185,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu_change_language=menu;
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.log_ot_menu, menu);
-        return true;
-    }
 
-    public void logout(MenuItem item) {
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sessonManager.setToken("");
-                        Toast.makeText(MainActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        finishAffinity();
-                    }
 
-                })
-                .setNegativeButton("No", null)
-                .show();
-    }
+
 
     @Override
     protected void onRestart() {

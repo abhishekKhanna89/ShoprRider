@@ -87,6 +87,8 @@ public class SplashActivity extends AppCompatActivity {
                             ProfileStatusModel profileStatusModel=response.body();
                             if (profileStatusModel!=null){
                                  step_form=profileStatusModel.getFormStep();
+                                 String type=profileStatusModel.getType();
+                                 sessonManager.setCheckout_Status(type);
                                 if (step_form==1){
                                     startActivity(new Intent(SplashActivity.this, Page1Activity.class));
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -96,7 +98,8 @@ public class SplashActivity extends AppCompatActivity {
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                     finish();
                                 }else {
-                                    startActivity(new Intent(SplashActivity.this, MenuActivity.class));
+                                    startActivity(new Intent(SplashActivity.this, MenuActivity.class)
+                                    .putExtra("check_out_type",type));
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                     finish();
                                 }
