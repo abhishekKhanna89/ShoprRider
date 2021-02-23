@@ -1,7 +1,10 @@
 package com.shopprdriver.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -17,10 +20,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +34,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.developer.kalert.KAlertDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.Menu_Model;
@@ -49,7 +60,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String[] MANDATORY_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,   // for VoiceCall and VideoCall
             Manifest.permission.CAMERA          // for VideoCall
@@ -64,37 +76,42 @@ public class MenuActivity extends AppCompatActivity {
     SessonManager sessonManager;
     String checkout;
     /*Todo:- Address*/
-    Geocoder geocoder;
-    List<Address> addresses;
-    String address;
+    private Location location;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
+    // lists for permissions
+    /*Todo:- Check out type*/
+    String check_out_type;
+    String latitude,longitude,location_address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         sessonManager=new SessonManager(this);
+        check_out_type=getIntent().getStringExtra("check_out_type");
+
         /*Todo:- Get Address*/
-        geocoder = new Geocoder(this, Locale.getDefault());
+        // we build google api client
+        googleApiClient = new GoogleApiClient.Builder(this).
+                addApi(LocationServices.API).
+                addConnectionCallbacks(this).
+                addOnConnectionFailedListener(this).build();
+
+
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            //Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
-        }else{
-            showGPSDisabledAlertToUser();
-        }
-        checkPermissions();
         viewMenu();
 
     }
 
     private void viewMenu() {
-        if (sessonManager.getCheckout_Status().equalsIgnoreCase("checkout")){
+        if (check_out_type!=null&&check_out_type.equalsIgnoreCase("checkout")||sessonManager.getCheckout_Status().equalsIgnoreCase("checkout")){
             checkout="Check in";
             //new Menu_Model("Check in");
-        }else if (sessonManager.getCheckout_Status().equalsIgnoreCase("checkin")){
+        }else if (check_out_type!=null&&check_out_type.equalsIgnoreCase("checkin")||sessonManager.getCheckout_Status().equalsIgnoreCase("checkin")){
             checkout="Check out";
             //new Menu_Model("Check out");
         }
@@ -137,6 +154,11 @@ public class MenuActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Menu_Model menu_model = menu_models[position];
             holder.menu_title.setText(menu_model.getMenuName());
+           /* if (menu_model.getMenuName().equals("Check in")){
+                holder.menu_title.setText(menu_model.getMenuName());
+            }else if (menu_model.getMenuName().equals("Check out")){
+                holder.menu_title.setText(menu_model.getMenuName());
+            }*/
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -154,38 +176,17 @@ public class MenuActivity extends AppCompatActivity {
                         startActivity(new Intent(context,MainActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     } else if (position == 6) {
-                        /*if (CommonUtils.isOnline(MenuActivity.this)) {
+                        if (CommonUtils.isOnline(MenuActivity.this)) {
                             KAlertDialog pDialog = new KAlertDialog(MenuActivity.this, KAlertDialog.PROGRESS_TYPE);
                             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
                             pDialog.setTitleText("Loading");
                             pDialog.setCancelable(false);
                             pDialog.show();
-                            if (sessonManager.getLatitude()!=null||sessonManager.getLongitude()!=null){
-                                double latitude=Double.parseDouble(sessonManager.getLatitude());
-                                double longitude=Double.parseDouble(sessonManager.getLongitude());
-                                try {
-                                    addresses = geocoder.getFromLocation(latitude,longitude, 1);
-                                    address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                                    if (address != null) {
-                                        //Toast.makeText(this, ""+address, Toast.LENGTH_SHORT).show();
-                                        // addressText.setText(address);
-                                    }
-
-                                    String city = addresses.get(0).getLocality();
-                                    String state = addresses.get(0).getAdminArea();
-                                    String country = addresses.get(0).getCountryName();
-                                    String postalCode = addresses.get(0).getPostalCode();
-                                    String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
                             CheckInCheckOutRequest checkInCheckOutRequest=new CheckInCheckOutRequest();
-                            checkInCheckOutRequest.setLat(sessonManager.getLatitude());
-                            checkInCheckOutRequest.setLang(sessonManager.getLongitude());
-                            checkInCheckOutRequest.setAddress(address);
-                            if (menu_model.getMenuName().equalsIgnoreCase("Check out")){
+                            checkInCheckOutRequest.setLat(latitude);
+                            checkInCheckOutRequest.setLang(longitude);
+                            checkInCheckOutRequest.setAddress(location_address);
+                            if (menu_model.getMenuName().equalsIgnoreCase("Check in")){
                                 Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
                                         .apiCheckIn("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
                                 call.enqueue(new Callback<CheckinCheckouSucessModel>() {
@@ -195,18 +196,20 @@ public class MenuActivity extends AppCompatActivity {
                                         if (response.body()!=null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                                //holder.menu_title.setText("Check out");
+                                               // holder.menu_title.setText("Check out");
+
                                             }else {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     }
-
                                     @Override
                                     public void onFailure(Call<CheckinCheckouSucessModel> call, Throwable t) {
                                         pDialog.dismiss();
                                     }
                                 });
-                            }else if (menu_model.getMenuName().equalsIgnoreCase("Check in")){
+                            }else if (menu_model.getMenuName().equalsIgnoreCase("Check out")){
                                 Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
                                         .apiCheckOut("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
                                 call.enqueue(new Callback<CheckinCheckouSucessModel>() {
@@ -216,6 +219,7 @@ public class MenuActivity extends AppCompatActivity {
                                         if (response.body()!=null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                                //holder.menu_title.setText("Check in");
                                             }else {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
@@ -232,7 +236,7 @@ public class MenuActivity extends AppCompatActivity {
 
                         }else {
                             CommonUtils.showToastInCenter(MenuActivity.this, getString(R.string.please_check_network));
-                        }*/
+                        }
                     } else if (position == 7) {
                         startActivity(new Intent(context, AttendenceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
@@ -289,7 +293,29 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*Todo: - Location*/
+    private void showGPSDisabledAlertToUser() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable GPS",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+    /*@Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -297,94 +323,114 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        StartBackgroundTask();
-    }
-    @SuppressLint("NewApi")
-    public void StartBackgroundTask() {
-        jobScheduler = (JobScheduler) getApplicationContext().getSystemService(JOB_SCHEDULER_SERVICE);
-        componentName = new ComponentName(getApplicationContext(), MyService.class);
-        jobInfo = new JobInfo.Builder(1, componentName)
-                .setMinimumLatency(10000) //10 sec interval
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setRequiresCharging(false).build();
-        jobScheduler.schedule(jobInfo);
-    }
-    private void showGPSDisabledAlertToUser(){
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            }
-                        });
-        alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int id){
-                        dialog.cancel();
-                    }
-                });
-        android.app.AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-
+    }*/
     @Override
     protected void onStart() {
         super.onStart();
-        StartBackgroundTask();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        StartBackgroundTask();
+        if (googleApiClient != null) {
+            googleApiClient.connect();
+        }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
-        StartBackgroundTask();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        StartBackgroundTask();
-    }
-    private void checkPermissions() {
-        ArrayList<String> deniedPermissions = new ArrayList<>();
-        for (String permission : MANDATORY_PERMISSIONS) {
-            if (checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissions.add(permission);
-            }
-        }
-
-        if (deniedPermissions.size() > 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(deniedPermissions.toArray(new String[0]), REQUEST_PERMISSIONS_REQUEST_CODE);
-            } else {
-                ToastUtils.showToast(this, "Permission denied.");
-            }
+        // stop location updates
+        if (googleApiClient != null  &&  googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            googleApiClient.disconnect();
         }
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            boolean allowed = true;
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&  ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
 
-            for (int result : grantResults) {
-                allowed = allowed && (result == PackageManager.PERMISSION_GRANTED);
+        // Permissions ok, we get last location
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        if (location != null) {
+            //addressText.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+        }else {
+            showGPSDisabledAlertToUser();
+        }
+
+        startLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&  ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            latitude= String.valueOf(location.getLatitude());
+            longitude= String.valueOf(location.getLongitude());
+            Geocoder geocoder = new Geocoder(MenuActivity.this);
+            List<Address> list = null;
+            try {
+                list = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            if (!allowed) {
-                ToastUtils.showToast(this, "Permission denied.");
-            }
+            Address address = list.get(0);
+            String localitys = address.getLocality();
+            location_address = address.getAddressLine(0);
+
+            // addressText.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //menu_change_language=menu;
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.log_ot_menu, menu);
+        return true;
+    }
+    public void logout(MenuItem item) {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sessonManager.setToken("");
+                        Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                        finishAffinity();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
 }

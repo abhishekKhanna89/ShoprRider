@@ -27,7 +27,6 @@
                 android:fontFamily="@font/monster"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="hbxhxh"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
