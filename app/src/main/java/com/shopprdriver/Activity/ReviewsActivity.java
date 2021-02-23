@@ -37,7 +37,7 @@ public class ReviewsActivity extends AppCompatActivity {
     ReviewAdapter adapter;
     ArrayList<ReviewsModel.Review> arListReviews;
     SessonManager sessonManager;
-    TextView TvAverageRating, TvTotalReviews;
+    TextView TvAverageRating, TvTotalReviews, TvNoReviews;
     RatingBar RatingbarR;
 
     @Override
@@ -51,6 +51,7 @@ public class ReviewsActivity extends AppCompatActivity {
         TvTotalReviews = findViewById(R.id.TvTotalReviews);
 
         RvReviews = findViewById(R.id.RvReviews);
+        TvNoReviews = findViewById(R.id.TvNoReviews);
 
         arListReviews = new ArrayList<>();
         sessonManager = new SessonManager(ReviewsActivity.this);
@@ -142,15 +143,21 @@ public class ReviewsActivity extends AppCompatActivity {
                             RatingbarR.setRating(num);
                             TvTotalReviews.setText("Total reviews : " + String.valueOf(response.body().getData().getTotalreviews()));
 
-
-                            if (response.body().getData().getReviews() != null && response.body().getData().getReviews().size() > 0) {
-                                arListReviews.clear();
-                                arListReviews.addAll(response.body().getData().getReviews());
-                                adapter.notifyDataSetChanged();
+                            if (String.valueOf(response.body().getData().getReviews()).equalsIgnoreCase("[]")) {
+                                RvReviews.setVisibility(View.GONE);
+                                TvNoReviews.setVisibility(View.VISIBLE);
                             } else {
-                                arListReviews.clear();
-                                arListReviews.addAll(response.body().getData().getReviews());
-                                adapter.notifyDataSetChanged();
+                                TvNoReviews.setVisibility(View.GONE);
+                                RvReviews.setVisibility(View.VISIBLE);
+                                if (response.body().getData().getReviews() != null && response.body().getData().getReviews().size() > 0) {
+                                    arListReviews.clear();
+                                    arListReviews.addAll(response.body().getData().getReviews());
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    arListReviews.clear();
+                                    arListReviews.addAll(response.body().getData().getReviews());
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
 
                         }
