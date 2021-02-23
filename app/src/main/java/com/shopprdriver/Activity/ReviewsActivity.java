@@ -38,6 +38,7 @@ public class ReviewsActivity extends AppCompatActivity {
     ArrayList<ReviewsModel.Review> arListReviews;
     SessonManager sessonManager;
     TextView TvAverageRating, TvTotalReviews;
+    RatingBar RatingbarR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,9 @@ public class ReviewsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Reviews");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TvAverageRating = findViewById(R.id.TvAverageRating);
+        RatingbarR = findViewById(R.id.RatingbarR);
         TvTotalReviews = findViewById(R.id.TvTotalReviews);
+
         RvReviews = findViewById(R.id.RvReviews);
 
         arListReviews = new ArrayList<>();
@@ -131,8 +134,14 @@ public class ReviewsActivity extends AppCompatActivity {
                     Log.d("dfjjhjk", resss);
                     if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            TvAverageRating.setText(String.valueOf(response.body().getData().getAvgrating()));
-                            TvTotalReviews.setText(String.valueOf(response.body().getData().getTotalreviews()));
+                            float numAvg = Float.parseFloat(String.valueOf(response.body().getData().getAvgrating()));
+                            TvAverageRating.setText(String.valueOf(numAvg));
+
+                            float num = Float.parseFloat(String.valueOf(response.body().getData().getAvgrating()));
+
+                            RatingbarR.setRating(num);
+                            TvTotalReviews.setText("Total reviews : " + String.valueOf(response.body().getData().getTotalreviews()));
+
 
                             if (response.body().getData().getReviews() != null && response.body().getData().getReviews().size() > 0) {
                                 arListReviews.clear();
