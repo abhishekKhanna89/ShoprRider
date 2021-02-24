@@ -1,10 +1,5 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.shopprdriver.Model.Attendences.Attendence;
 import com.shopprdriver.Model.Attendences.AttendencesModel;
@@ -31,6 +31,7 @@ public class AttendenceActivity extends AppCompatActivity {
     RecyclerView attendanceRecyclerView;
     SessonManager sessonManager;
     List<Attendence>attendenceList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class AttendenceActivity extends AppCompatActivity {
         attendanceRecyclerView=findViewById(R.id.attendanceRecyclerView);
         attendanceRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         viewAttendanceList();
+
     }
 
     private void viewAttendanceList() {
