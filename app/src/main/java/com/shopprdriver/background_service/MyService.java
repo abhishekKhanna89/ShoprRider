@@ -2,39 +2,29 @@ package com.shopprdriver.background_service;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
-import com.shopprdriver.R;
 import com.shopprdriver.Server.ApiExecutor;
-import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 
 import retrofit2.Call;
@@ -48,8 +38,7 @@ import retrofit2.Response;
 public class MyService extends JobService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        ResultCallback<Status> {
+        LocationListener{
 
     /**
      * Update interval of location request
@@ -147,6 +136,8 @@ public class MyService extends JobService implements
         //here in this method you can use web service or any other thing*/
         double lat=location.getLatitude();
         double lang=location.getLongitude();
+
+
 
         sessonManager.setLatitude(String.valueOf(lat));
         sessonManager.setLongitude(String.valueOf(lang));
@@ -300,10 +291,10 @@ public class MyService extends JobService implements
      * this method tells the result of status of google api client
      * @param status - success or failure
      */
-    @Override
+    /*@Override
     public void onResult(@NonNull Status status) {
         Log.d(TAG,"result of google api client : " + status);
-    }
+    }*/
 
 
 

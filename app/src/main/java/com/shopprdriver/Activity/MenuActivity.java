@@ -1,29 +1,19 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,13 +23,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.Menu_Model;
@@ -49,41 +53,42 @@ import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
-import com.shopprdriver.background_service.MyService;
+import com.shopprdriver.background_service.UpdateLocationService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MenuActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String[] MANDATORY_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,   // for VoiceCall and VideoCall
             Manifest.permission.CAMERA          // for VideoCall
     };
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    /*Todo:- Background Service*/
-    private JobScheduler jobScheduler;
-    private ComponentName componentName;
-    private JobInfo jobInfo;
-
     RecyclerView menuRecyclerView;
     SessonManager sessonManager;
     String checkout;
-    /*Todo:- Address*/
-    private Location location;
-    private GoogleApiClient googleApiClient;
-    private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
+
+
     // lists for permissions
     /*Todo:- Check out type*/
     String check_out_type;
-    String latitude,longitude,location_address;
+
+    //String latitude,longitude,location_address;
+
+
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    LocationRequest mLocationRequest;
+    String location_address;
+    public MenuActivity() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,18 +97,27 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         sessonManager=new SessonManager(this);
         check_out_type=getIntent().getStringExtra("check_out_type");
 
-        /*Todo:- Get Address*/
-        // we build google api client
-        googleApiClient = new GoogleApiClient.Builder(this).
-                addApi(LocationServices.API).
-                addConnectionCallbacks(this).
-                addOnConnectionFailedListener(this).build();
-
 
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
+        //StartBackgroundTask();
         viewMenu();
+        checkPermissions();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
+
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        } else{
+            Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
+        }
+
+
+       startService(new Intent(this, UpdateLocationService.class));
 
     }
 
@@ -183,9 +197,11 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
                             pDialog.setCancelable(false);
                             pDialog.show();
                             CheckInCheckOutRequest checkInCheckOutRequest=new CheckInCheckOutRequest();
-                            checkInCheckOutRequest.setLat(latitude);
-                            checkInCheckOutRequest.setLang(longitude);
+                            checkInCheckOutRequest.setLat(String.valueOf(mLastLocation.getLatitude()));
+                            checkInCheckOutRequest.setLang(String.valueOf(mLastLocation.getLongitude()));
                             checkInCheckOutRequest.setAddress(location_address);
+                            Log.d("LocationAAA",mLastLocation.getLatitude()+":"+mLastLocation.getLongitude()
+                            +"---"+location_address);
                             if (menu_model.getMenuName().equalsIgnoreCase("Check in")){
                                 Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
                                         .apiCheckIn("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
@@ -293,119 +309,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    /*Todo: - Location*/
-    private void showGPSDisabledAlertToUser() {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            }
-                        });
-        alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        android.app.AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-    /*@Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-        }
 
-        return super.onOptionsItemSelected(item);
-    }*/
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (googleApiClient != null) {
-            googleApiClient.connect();
-        }
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // stop location updates
-        if (googleApiClient != null  &&  googleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-            googleApiClient.disconnect();
-        }
-    }
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        // Permissions ok, we get last location
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-        if (location != null) {
-            //addressText.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
-        }else {
-            showGPSDisabledAlertToUser();
-        }
-
-        startLocationUpdates();
-    }
-
-    private void startLocationUpdates() {
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(UPDATE_INTERVAL);
-        locationRequest.setFastestInterval(FASTEST_INTERVAL);
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&  ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        }
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            latitude= String.valueOf(location.getLatitude());
-            longitude= String.valueOf(location.getLongitude());
-            Geocoder geocoder = new Geocoder(MenuActivity.this);
-            List<Address> list = null;
-            try {
-                list = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            Address address = list.get(0);
-            String localitys = address.getLocality();
-            location_address = address.getAddressLine(0);
-
-            // addressText.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //menu_change_language=menu;
@@ -432,5 +336,185 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setNegativeButton("No", null)
                 .show();
     }
+    private void checkPermissions() {
+        ArrayList<String> deniedPermissions = new ArrayList<>();
+        for (String permission : MANDATORY_PERMISSIONS) {
+            if (checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissions.add(permission);
+            }
+        }
 
+        if (deniedPermissions.size() > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(deniedPermissions.toArray(new String[0]), REQUEST_PERMISSIONS_REQUEST_CODE);
+            } else {
+                ToastUtils.showToast(this, "Permission denied.");
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            boolean allowed = true;
+
+            for (int result : grantResults) {
+                allowed = allowed && (result == PackageManager.PERMISSION_GRANTED);
+            }
+
+            if (!allowed) {
+                ToastUtils.showToast(this, "Permission denied.");
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        settingRequest();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(this, "Connection Suspended!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_SHORT).show();
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, 90000);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.i("Current Location", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    /*Method to get the enable location settings dialog*/
+    public void settingRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);    // 10 seconds, in milliseconds
+        mLocationRequest.setFastestInterval(1000);   // 1 second, in milliseconds
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        getLocation();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(MenuActivity.this, 1000);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+                        break;
+                }
+            }
+
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case 1000:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        getLocation();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        Toast.makeText(this, "Location Service not Enabled", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
+    public void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        } else {
+            /*Getting the location after aquiring location service*/
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+
+            if (mLastLocation != null) {
+                    Geocoder geocoder = new Geocoder(MenuActivity.this);
+                    List<Address> list = null;
+                    try {
+                        list = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Address address = list.get(0);
+                    String localitys = address.getLocality();
+                    location_address = address.getAddressLine(0);
+                    Log.d("AAAAA",location_address);
+                //_progressBar.setVisibility(View.INVISIBLE);
+               // _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
+                //_longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+            } else {
+                /*if there is no last known location. Which means the device has no data for the loction currently.
+                 * So we will get the current location.
+                 * For this we'll implement Location Listener and override onLocationChanged*/
+                //Log.i("Current Location", "No data for location found");
+
+                if (!mGoogleApiClient.isConnected())
+                    mGoogleApiClient.connect();
+
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MenuActivity.this);
+            }
+        }
+    }
+
+    /*When Location changes, this method get called. */
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+    }
 }
