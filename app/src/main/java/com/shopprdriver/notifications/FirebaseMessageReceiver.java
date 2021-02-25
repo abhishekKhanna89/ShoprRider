@@ -1,5 +1,6 @@
 package com.shopprdriver.notifications;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 public class FirebaseMessageReceiver extends FirebaseMessagingService {
     SessonManager sessonManager;
     Uri notification;
@@ -69,7 +71,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.message, message);
         remoteViews.setImageViewResource(R.id.icon,
-                R.mipmap.ic_launcher);
+                R.drawable.splash);
         return remoteViews;
     }
 
@@ -79,7 +81,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         // Pass the intent to switch to the MainActivity
 
         JSONObject jsonObject = new JSONObject(remoteMessage.getData());
-        Log.d("ChatId+",""+jsonObject);
+        //Log.d("ChatId+",""+jsonObject);
         try {
             chat_id = jsonObject.getString("chat_id");
 
@@ -119,7 +121,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                 = new NotificationCompat
                 .Builder(getApplicationContext(),
                 channel_id)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.splash)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000,
                         1000, 1000})

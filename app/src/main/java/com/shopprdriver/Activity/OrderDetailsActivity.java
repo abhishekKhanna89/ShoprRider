@@ -1,12 +1,5 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,21 +15,23 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.google.gson.Gson;
 import com.shopprdriver.Model.Login.LoginModel;
-import com.shopprdriver.Model.OrderDeatilsList.Order;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.Detail;
-import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.R;
-import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,6 +57,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     LinearLayout linearReview;
     List<com.shopprdriver.Model.OrderDeatilsList.Detail> orderList;
 
+    String message,quantity;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +86,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         totalPaidText = findViewById(R.id.totalPaidText);
         TvRatingTitle = findViewById(R.id.TvRatingTitle);
         ratingbar = findViewById(R.id.ratingBar);
+        ratingbar.setIsIndicator(true);
         RatingTvMessage = findViewById(R.id.RatingTvMessage);
         linearReview = findViewById(R.id.linearReview);
 
@@ -149,8 +146,11 @@ public class OrderDetailsActivity extends AppCompatActivity {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             OrderDeatilsListModel orderDeatilsListModel = response.body();
                             if (orderDeatilsListModel.getData().getOrder() != null) {
-                                String message = orderDeatilsListModel.getData().getOrder().getReviews().get(0).getMessage();
-                                String quantity = orderDeatilsListModel.getData().getOrder().getReviews().get(0).getQuantity();
+                                for (int i=0;i< orderDeatilsListModel.getData().getOrder().getReviews().size();i++){
+                                    message = orderDeatilsListModel.getData().getOrder().getReviews().get(i).getMessage();
+                                    quantity = orderDeatilsListModel.getData().getOrder().getReviews().get(i).getQuantity();
+                                }
+
 
                                 if (!String.valueOf(orderDeatilsListModel.getData().getOrder().getReviews()).equalsIgnoreCase("[]")) {
                                     linearReview.setVisibility(View.VISIBLE);

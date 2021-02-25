@@ -46,6 +46,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
+import com.shopprdriver.Model.CheckoutStatus.CheckoutStatusModel;
 import com.shopprdriver.Model.Menu_Model;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
@@ -72,7 +73,7 @@ public class MenuActivity extends AppCompatActivity implements
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     RecyclerView menuRecyclerView;
     SessonManager sessonManager;
-    String checkout;
+    public static String checkout;
 
 
     // lists for permissions
@@ -86,6 +87,8 @@ public class MenuActivity extends AppCompatActivity implements
     Location mLastLocation;
     LocationRequest mLocationRequest;
     String location_address;
+
+    List<Menu_Model>menuModelList;
     public MenuActivity() {
     }
 
@@ -95,13 +98,13 @@ public class MenuActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_menu);
 
         sessonManager=new SessonManager(this);
-        check_out_type=getIntent().getStringExtra("check_out_type");
+        //check_out_type=getIntent().getStringExtra("check_out_type");
 
 
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        //StartBackgroundTask();
-        viewMenu();
+
+
         checkPermissions();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -116,32 +119,57 @@ public class MenuActivity extends AppCompatActivity implements
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
         }
 
-
        startService(new Intent(this, UpdateLocationService.class));
+
+
+        menuModelList=new ArrayList<>();
+
+        viewCheckoutStatus();
 
     }
 
-    private void viewMenu() {
-        if (check_out_type!=null&&check_out_type.equalsIgnoreCase("checkout")||sessonManager.getCheckout_Status().equalsIgnoreCase("checkout")){
-            checkout="Check in";
-            //new Menu_Model("Check in");
-        }else if (check_out_type!=null&&check_out_type.equalsIgnoreCase("checkin")||sessonManager.getCheckout_Status().equalsIgnoreCase("checkin")){
-            checkout="Check out";
-            //new Menu_Model("Check out");
-        }
-        Menu_Model[] menuModelList = new Menu_Model[]{
-                new Menu_Model("Notification"),
-                new Menu_Model("Past Order"),
-                new Menu_Model("Wallet Transaction"),
-                new Menu_Model("Commission Transaction"),
-                new Menu_Model("Chat History"),
-                new Menu_Model("Open Order"),
-                new Menu_Model(checkout),
-                new Menu_Model("Attendance"),
-                new Menu_Model("Profile"),
-                new Menu_Model("Reviews"),
+    private void viewCheckoutStatus() {
+        Call<CheckoutStatusModel> call= ApiExecutor.getApiService(MenuActivity.this)
+                .apiCheckoutStatus("Bearer "+sessonManager.getToken());
+        call.enqueue(new Callback<CheckoutStatusModel>() {
+            @Override
+            public void onResponse(Call<CheckoutStatusModel> call, Response<CheckoutStatusModel> response) {
+               // pDialog.dismiss();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        CheckoutStatusModel checkoutStatusModel=response.body();
+                        if (checkoutStatusModel!=null){
+                            check_out_type=checkoutStatusModel.getType();
+                            viewMenu();
 
-        };
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<CheckoutStatusModel> call, Throwable t) {
+               // pDialog.dismiss();
+            }
+        });
+    }
+
+    private void viewMenu() {
+        if (check_out_type !=null&& check_out_type.equalsIgnoreCase("checkin")){
+            checkout="Check out";
+        }else if (check_out_type !=null&& check_out_type.equalsIgnoreCase("checkout")){
+            checkout="Check in";
+        }
+        menuModelList.clear();
+        menuModelList.add(new Menu_Model("Notification"));
+        menuModelList.add(new Menu_Model("Past Order"));
+        menuModelList.add(new Menu_Model("Wallet Transaction"));
+        menuModelList.add(new Menu_Model("Commission Transaction"));
+        menuModelList.add(new Menu_Model("Chat History"));
+        menuModelList.add(new Menu_Model("Open Order"));
+        menuModelList.add(new Menu_Model(checkout));
+        menuModelList.add(new Menu_Model("Attendance"));
+        menuModelList.add(new Menu_Model("Profile"));
+        menuModelList.add(new Menu_Model("Reviews"));
 
         Menu_Adapter menu_adapter = new Menu_Adapter(MenuActivity.this, menuModelList);
         menuRecyclerView.setAdapter(menu_adapter);
@@ -149,12 +177,12 @@ public class MenuActivity extends AppCompatActivity implements
     }
 
     public class Menu_Adapter extends RecyclerView.Adapter<Menu_Adapter.Holder> {
-        Menu_Model[] menu_models;
+        List<Menu_Model>menuModelList;
         Context context;
 
-        public Menu_Adapter(Context context, Menu_Model[] menu_models) {
+        public Menu_Adapter(Context context, List<Menu_Model>menuModelLists) {
             this.context = context;
-            this.menu_models = menu_models;
+            this.menuModelList = menuModelLists;
         }
 
         @NonNull
@@ -166,13 +194,8 @@ public class MenuActivity extends AppCompatActivity implements
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
-            Menu_Model menu_model = menu_models[position];
+            Menu_Model menu_model = menuModelList.get(position);
             holder.menu_title.setText(menu_model.getMenuName());
-           /* if (menu_model.getMenuName().equals("Check in")){
-                holder.menu_title.setText(menu_model.getMenuName());
-            }else if (menu_model.getMenuName().equals("Check out")){
-                holder.menu_title.setText(menu_model.getMenuName());
-            }*/
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -200,8 +223,7 @@ public class MenuActivity extends AppCompatActivity implements
                             checkInCheckOutRequest.setLat(String.valueOf(mLastLocation.getLatitude()));
                             checkInCheckOutRequest.setLang(String.valueOf(mLastLocation.getLongitude()));
                             checkInCheckOutRequest.setAddress(location_address);
-                            Log.d("LocationAAA",mLastLocation.getLatitude()+":"+mLastLocation.getLongitude()
-                            +"---"+location_address);
+
                             if (menu_model.getMenuName().equalsIgnoreCase("Check in")){
                                 Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
                                         .apiCheckIn("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
@@ -212,9 +234,7 @@ public class MenuActivity extends AppCompatActivity implements
                                         if (response.body()!=null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                                //holder.menu_title.setText("Check out");
-                                               // holder.menu_title.setText("Check out");
-
+                                                viewCheckoutStatus();
                                             }else {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
@@ -235,7 +255,7 @@ public class MenuActivity extends AppCompatActivity implements
                                         if (response.body()!=null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                                //holder.menu_title.setText("Check in");
+                                                viewCheckoutStatus();
                                             }else {
                                                 Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
@@ -294,7 +314,7 @@ public class MenuActivity extends AppCompatActivity implements
 
         @Override
         public int getItemCount() {
-            return menu_models.length;
+            return menuModelList.size();
         }
 
         public class Holder extends RecyclerView.ViewHolder {
@@ -483,6 +503,7 @@ public class MenuActivity extends AppCompatActivity implements
                     mGoogleApiClient);
 
             if (mLastLocation != null) {
+
                     Geocoder geocoder = new Geocoder(MenuActivity.this);
                     List<Address> list = null;
                     try {
@@ -494,7 +515,7 @@ public class MenuActivity extends AppCompatActivity implements
                     Address address = list.get(0);
                     String localitys = address.getLocality();
                     location_address = address.getAddressLine(0);
-                    Log.d("AAAAA",location_address);
+                    Log.d("AAAAA",""+mLastLocation);
                 //_progressBar.setVisibility(View.INVISIBLE);
                // _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
                 //_longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
@@ -515,6 +536,8 @@ public class MenuActivity extends AppCompatActivity implements
     /*When Location changes, this method get called. */
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("BBBBB",""+location);
         mLastLocation = location;
+
     }
 }

@@ -1,47 +1,46 @@
  package com.shopprdriver.Adapter;
 
  import android.app.Activity;
- import android.app.Dialog;
- import android.content.Context;
- import android.content.Intent;
- import android.net.Uri;
- import android.os.Build;
- import android.view.LayoutInflater;
- import android.view.View;
- import android.view.ViewGroup;
- import android.view.Window;
- import android.view.WindowManager;
- import android.widget.ImageView;
- import android.widget.LinearLayout;
- import android.widget.RatingBar;
- import android.widget.TextView;
- import android.widget.Toast;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
- import androidx.annotation.NonNull;
- import androidx.annotation.RequiresApi;
- import androidx.appcompat.widget.AppCompatRatingBar;
- import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatRatingBar;
+import androidx.recyclerview.widget.RecyclerView;
 
- import com.shopprdriver.Model.AcceptModel;
- import com.shopprdriver.Model.CancelModel;
- import com.shopprdriver.Model.ChatMessage.Chat;
- import com.shopprdriver.Model.RatingsModel;
- import com.shopprdriver.Model.RejectedModel;
- import com.shopprdriver.R;
- import com.shopprdriver.RequestService.RatingsRequest;
- import com.shopprdriver.Server.ApiExecutor;
- import com.shopprdriver.Session.CommonUtils;
- import com.shopprdriver.Session.SessonManager;
- import com.squareup.picasso.Picasso;
+import com.shopprdriver.Model.AcceptModel;
+import com.shopprdriver.Model.CancelModel;
+import com.shopprdriver.Model.ChatMessage.Chat;
+import com.shopprdriver.Model.RatingsModel;
+import com.shopprdriver.Model.RejectedModel;
+import com.shopprdriver.R;
+import com.shopprdriver.RequestService.RatingsRequest;
+import com.shopprdriver.Server.ApiExecutor;
+import com.shopprdriver.Session.CommonUtils;
+import com.shopprdriver.Session.SessonManager;
+import com.squareup.picasso.Picasso;
 
- import java.util.List;
+import java.util.List;
 
- import me.himanshusoni.chatmessageview.ChatMessageView;
- import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
- import retrofit2.Call;
- import retrofit2.Callback;
- import retrofit2.Response;
- import uk.co.senab.photoview.PhotoViewAttacher;
+import me.himanshusoni.chatmessageview.ChatMessageView;
+import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 
  public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.Holder> {
@@ -101,7 +100,10 @@
            holder.textLayout.setVisibility(View.GONE);
        }
        if (chat.getType().equalsIgnoreCase("product")){
-           Picasso.get().load(chat.getFilePath()).into(holder.productImage);
+           if (chat.getFilePath().length()==0){
+           }else {
+               Picasso.get().load(chat.getFilePath()).into(holder.productImage);
+           }
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
            holder.pqText.setText(chat.getQuantity()+" / "+"₹"+chat.getPrice());

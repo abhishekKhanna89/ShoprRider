@@ -148,21 +148,22 @@ public class ChatActivity extends AppCompatActivity {
             String chat_status = getIntent().getStringExtra("chat_status");
             if (chat_status != null && chat_status.equalsIgnoreCase("0")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
-                chatMessageList(chat_id);
+                //chatMessageList(chat_id);
             } else if (chat_status != null && chat_status.equalsIgnoreCase("1")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
-                chatMessageList(chat_id);
+                //chatMessageList(chat_id);
             }else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
                 chat_id = Integer.parseInt(extras.getString("chat_id"));
-                chatMessageList(chat_id);
+                //chatMessageList(chat_id);
 
             }else {
                 String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
                 chat_id= Integer.parseInt(value);
-                chatMessageList(chat_id);
+
             }
 
         }
+        chatMessageList(chat_id);
 
         /*Todo:- UserDP*/
         userDp=findViewById(R.id.userDp);
@@ -302,16 +303,6 @@ public class ChatActivity extends AppCompatActivity {
                     //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     // is only executed if the EditText was directly changed by the user
                 } else {
-                    if (sessonManager.getChatId().isEmpty()){
-                        sessonManager.setChatId("");
-                        chat_id = getIntent().getIntExtra("id", 0);
-                        //chatMessageList(chat_id);
-                    }else {
-                        String cId=sessonManager.getChatId();
-                        int a= Integer.parseInt(cId);
-                        chat_id=a;
-                        sessonManager.setChatId("");
-                    }
                     sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.send));
                     sendMsgBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -407,22 +398,6 @@ public class ChatActivity extends AppCompatActivity {
         EditText editPrice=dialogView.findViewById(R.id.editPrice);
         EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
         Button submitBtn=dialogView.findViewById(R.id.submitBtn);
-
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-
-        insertImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inserImageFile();
-            }
-        });
-
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -447,7 +422,6 @@ public class ChatActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Authorization", "Bearer "+sessonManager.getToken());
                     ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
@@ -478,6 +452,22 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        insertImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inserImageFile();
+            }
+        });
+
+
 
         //Now we need an AlertDialog.Builder object
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

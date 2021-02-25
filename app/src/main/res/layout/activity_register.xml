@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     tools:context=".Activity.RegisterActivity">
     <ScrollView
         android:layout_width="match_parent"
@@ -67,6 +68,7 @@
                     android:background="@drawable/eddittext"
                     android:drawableLeft="@drawable/ic_baseline_person_24"
                     android:hint="Name"
+                    android:drawablePadding="10dp"
                     android:inputType="textPersonName"
                     android:padding="10dp" />
             </androidx.cardview.widget.CardView>
@@ -85,8 +87,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/eddittext"
-                    android:drawableLeft="@drawable/ic_baseline_phone"
+                    android:drawableLeft="@drawable/ic_baseline_phone_black"
                     android:hint="Mobile no"
+                    android:drawablePadding="10dp"
                     android:inputType="number"
                     android:maxLength="10"
                     android:padding="10dp" />
@@ -106,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/eddittext"
-                    android:drawableLeft="@drawable/ic_baseline_lock"
+                    android:drawableLeft="@drawable/ic_baseline_lock_black"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:padding="10dp"

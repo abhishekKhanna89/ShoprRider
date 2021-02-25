@@ -1,16 +1,14 @@
 package com.shopprdriver.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.shopprdriver.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
@@ -40,8 +38,8 @@ public class OtpActivity extends AppCompatActivity {
         type=getIntent().getStringExtra("type");
         mobile=getIntent().getStringExtra("mobile");
 
-        btnVerify=findViewById(R.id.btnVerify);
-        editOtp=findViewById(R.id.editOtp);
+        btnVerify=findViewById(R.id.btnsubmit);
+        editOtp=findViewById(R.id.editusername);
 
         btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override

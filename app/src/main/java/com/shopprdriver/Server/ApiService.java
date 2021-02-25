@@ -9,6 +9,7 @@ import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
+import com.shopprdriver.Model.CheckoutStatus.CheckoutStatusModel;
 import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
@@ -184,5 +185,9 @@ public interface ApiService {
 
     @GET("reviews")
     Call<ReviewsModel>apiReviews(@Header("Authorization") String token);
+
+    @NonNull
+    @GET("checkin-status")
+    Call<CheckoutStatusModel>apiCheckoutStatus(@Header("Authorization") String token);
 
 }

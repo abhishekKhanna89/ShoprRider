@@ -5,30 +5,19 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:clipToPadding="false"
-    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/SwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/userChatListRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="#fff"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-    <TextView
-        android:id="@+id/TvNoOpenOrder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="@color/black"
-        android:visibility="gone"
-        android:text="No Open Orders"
-        android:gravity="center"
-        android:textSize="20sp"></TextView>
 
 
 </LinearLayout>

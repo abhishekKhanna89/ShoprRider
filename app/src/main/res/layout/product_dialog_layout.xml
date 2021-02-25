@@ -45,7 +45,8 @@
             android:layout_width="160dp"
             android:layout_centerInParent="true"
             android:layout_height="160dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:scaleType="fitXY"
+            android:src="@drawable/empty"/>
             <ImageView
                 android:id="@+id/insertImage"
                 android:layout_width="35dp"
@@ -70,7 +71,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:hint="Price"
-            android:inputType="number"
+            android:inputType="textCapSentences"
             android:textColorHint="@color/black"
             android:layout_marginTop="10sp"
             android:background="@drawable/eddittext"/>
@@ -92,9 +93,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@drawable/button_background"
             android:text="Submit"
-            android:textColor="@color/colorPrimary" />
+            android:backgroundTint="@color/colo_home_bg"
+            android:textColor="@color/white" />
 
     </LinearLayout>
     </LinearLayout>

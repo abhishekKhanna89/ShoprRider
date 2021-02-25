@@ -17,6 +17,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
     <application
         android:name=".SendBird.BaseApplication"
         android:allowBackup="true"
@@ -78,7 +80,7 @@
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
-            android:label="Login"
+            android:theme="@style/ChatTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
@@ -86,7 +88,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.OtpActivity"
-            android:label="OTP Verify"
+            android:theme="@style/ChatTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ChatActivity"

@@ -1,18 +1,14 @@
 package com.shopprdriver.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.shopprdriver.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.LoginRequest;
@@ -27,7 +23,6 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     EditText editMobile;
     Button btnLogin;
-    TextView textRegister;
     SessonManager sessonManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +31,9 @@ public class LoginActivity extends AppCompatActivity {
 
         sessonManager=new SessonManager(this);
 
-        editMobile=findViewById(R.id.editMobile);
-        btnLogin=findViewById(R.id.btnLogin);
-        textRegister=findViewById(R.id.textRegister);
+        editMobile=findViewById(R.id.editusername);
+        btnLogin=findViewById(R.id.btnsubmit);
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
