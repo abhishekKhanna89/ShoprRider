@@ -1,78 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="10sp"
+    android:layout_marginTop="5sp"
+    android:layout_marginRight="10sp"
+    android:layout_marginBottom="5sp"
     android:orientation="vertical">
-    <Button
+
+    <TextView
         android:id="@+id/button"
         android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/textColor"
+        android:gravity="center|left"
+        android:paddingLeft="10sp"
         android:text="Thursday,Jul 05,2020"
-        android:textColor="@color/white"
-        android:textAlignment="textStart"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/textColor" />
+        android:textColor="@color/white"></TextView>
+
+    <!-- <Button
+         android:id="@+id/button"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:backgroundTint="@color/textColor"
+         android:text="Thursday,Jul 05,2020"
+         android:textAlignment="textStart"
+         android:textColor="@color/white" />-->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/checkLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/monster"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="Check in"
-                android:fontFamily="@font/monster"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:padding="5dp"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Check out"
-                android:textStyle="bold"
                 android:fontFamily="@font/monster"
-                android:textSize="16sp"
+                android:gravity="center"
                 android:padding="5dp"
+                android:text="Check out"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layoutCheck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/checkLayout"
             android:background="@color/callBackground">
+
             <TextView
                 android:id="@+id/check_inTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Check in"
                 android:fontFamily="@font/monster"
-                android:textSize="16sp"
+                android:gravity="center"
                 android:padding="5dp"
+                android:text="Check in"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/check_outTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Check out"
                 android:fontFamily="@font/monster"
-                android:textSize="16sp"
+                android:gravity="center"
                 android:padding="5dp"
+                android:text="Check out"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:textSize="16sp" />
         </LinearLayout>
 
     </RelativeLayout>

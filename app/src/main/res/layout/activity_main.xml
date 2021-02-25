@@ -19,4 +19,16 @@
             android:divider="#fff"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+
+    <TextView
+        android:id="@+id/TvNoOpenOrder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:text="No Open Orders"
+        android:gravity="center"
+        android:textSize="20sp"></TextView>
+
+
 </LinearLayout>

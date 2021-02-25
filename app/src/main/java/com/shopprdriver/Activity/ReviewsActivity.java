@@ -37,7 +37,8 @@ public class ReviewsActivity extends AppCompatActivity {
     ReviewAdapter adapter;
     ArrayList<ReviewsModel.Review> arListReviews;
     SessonManager sessonManager;
-    TextView TvAverageRating, TvTotalReviews;
+    TextView TvAverageRating, TvTotalReviews, TvNoReviews;
+    RatingBar RatingbarR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,11 @@ public class ReviewsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Reviews");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TvAverageRating = findViewById(R.id.TvAverageRating);
+        RatingbarR = findViewById(R.id.RatingbarR);
         TvTotalReviews = findViewById(R.id.TvTotalReviews);
+
         RvReviews = findViewById(R.id.RvReviews);
+        TvNoReviews = findViewById(R.id.TvNoReviews);
 
         arListReviews = new ArrayList<>();
         sessonManager = new SessonManager(ReviewsActivity.this);
@@ -131,17 +135,29 @@ public class ReviewsActivity extends AppCompatActivity {
                     Log.d("dfjjhjk", resss);
                     if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            TvAverageRating.setText(String.valueOf(response.body().getData().getAvgrating()));
-                            TvTotalReviews.setText(String.valueOf(response.body().getData().getTotalreviews()));
+                            float numAvg = Float.parseFloat(String.valueOf(response.body().getData().getAvgrating()));
+                            TvAverageRating.setText(String.valueOf(numAvg));
 
-                            if (response.body().getData().getReviews() != null && response.body().getData().getReviews().size() > 0) {
-                                arListReviews.clear();
-                                arListReviews.addAll(response.body().getData().getReviews());
-                                adapter.notifyDataSetChanged();
+                            float num = Float.parseFloat(String.valueOf(response.body().getData().getAvgrating()));
+
+                            RatingbarR.setRating(num);
+                            TvTotalReviews.setText("Total reviews : " + String.valueOf(response.body().getData().getTotalreviews()));
+
+                            if (String.valueOf(response.body().getData().getReviews()).equalsIgnoreCase("[]")) {
+                                RvReviews.setVisibility(View.GONE);
+                                TvNoReviews.setVisibility(View.VISIBLE);
                             } else {
-                                arListReviews.clear();
-                                arListReviews.addAll(response.body().getData().getReviews());
-                                adapter.notifyDataSetChanged();
+                                TvNoReviews.setVisibility(View.GONE);
+                                RvReviews.setVisibility(View.VISIBLE);
+                                if (response.body().getData().getReviews() != null && response.body().getData().getReviews().size() > 0) {
+                                    arListReviews.clear();
+                                    arListReviews.addAll(response.body().getData().getReviews());
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    arListReviews.clear();
+                                    arListReviews.addAll(response.body().getData().getReviews());
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
 
                         }
