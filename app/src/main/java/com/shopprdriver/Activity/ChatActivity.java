@@ -155,6 +155,7 @@ public class ChatActivity extends AppCompatActivity {
             }else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
                 chat_id = Integer.parseInt(extras.getString("chat_id"));
                 chatMessageList(chat_id);
+
             }else {
                 String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
                 chat_id= Integer.parseInt(value);
