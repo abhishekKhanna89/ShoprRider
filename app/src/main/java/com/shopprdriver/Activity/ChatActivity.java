@@ -1,15 +1,5 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -36,8 +26,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +35,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.gson.Gson;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
@@ -145,29 +142,26 @@ public class ChatActivity extends AppCompatActivity {
         sessonManager = new SessonManager(this);
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
        /* chat_id =getIntent().getIntExtra("id",0);
-        chatMessageList(chat_id);*/
+        */
+        Bundle extras = getIntent().getExtras();
+        if (extras!=null) {
+            String chat_status = getIntent().getStringExtra("chat_status");
+            if (chat_status != null && chat_status.equalsIgnoreCase("0")) {
+                chat_id = getIntent().getIntExtra("chat_id", 0);
+                chatMessageList(chat_id);
+            } else if (chat_status != null && chat_status.equalsIgnoreCase("1")) {
+                chat_id = getIntent().getIntExtra("chat_id", 0);
+                chatMessageList(chat_id);
+            }else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
+                chat_id = Integer.parseInt(extras.getString("chat_id"));
+                chatMessageList(chat_id);
+            }else {
+                String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
+                chat_id= Integer.parseInt(value);
+                chatMessageList(chat_id);
+            }
 
-        chat_id = getIntent().getIntExtra("id", 0);
-
-        //Log.d("ChatId+",""+chat_id);
-
-        if (sessonManager.getChatId().isEmpty()){
-            sessonManager.setChatId("");
-            chatMessageList(chat_id);
-        }else {
-            String cId=sessonManager.getChatId();
-            int a=Integer.parseInt(cId);
-            sessonManager.setChatId("");
-            chatMessageList(a);
-            // Log.d("ChatId+",""+a);
         }
-       /* if (sessonManager.getChatId().isEmpty()){
-            chatMessageList(chat_id);
-        }else {
-            String cId=sessonManager.getChatId();
-            int a=Integer.parseInt(cId);
-            chatMessageList(a);
-        }*/
 
         /*Todo:- UserDP*/
         userDp=findViewById(R.id.userDp);
@@ -213,15 +207,15 @@ public class ChatActivity extends AppCompatActivity {
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getStringExtra("chat_id")!=null){
+                chatMessageList(Integer.parseInt(String.valueOf(chat_id)));
+                /*if (intent.getStringExtra("chat_id")!=null){
                     chat_id=intent.getIntExtra("chat_id",0);
                     if (sessonManager.getChatId()!=null){
                         String chatid=String.valueOf(sessonManager.getChatId());
-                        Log.d("RecieveChatId",chatid);
                         chatMessageList(Integer.parseInt(chatid));
                     }
 
-                }
+                }*/
             }
         };
         IntentFilter i = new IntentFilter();

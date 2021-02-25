@@ -14,9 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopprdriver.Activity.ChatActivity;
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.AcceptChatModel;
-import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.AvailableChat.Userchat;
 import com.shopprdriver.R;
 import com.shopprdriver.Server.ApiExecutor;
@@ -73,7 +71,8 @@ public class UserChatListAdapter extends RecyclerView.Adapter<UserChatListAdapte
                                         userchatList.remove(position);
                                         notifyDataSetChanged();
                                         context.startActivity(new Intent(context, ChatActivity.class)
-                                                .putExtra("id", userchat.getId())
+                                                .putExtra("chat_id", userchat.getId())
+                                                .putExtra("chat_status","1")
                                                 .putExtra("image",userchat.getImage())
                                                 .putExtra("name",userchat.getName())
                                                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

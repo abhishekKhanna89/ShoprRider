@@ -1,16 +1,11 @@
 package com.shopprdriver;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,12 +15,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.AvailableChat.Userchat;
-import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,10 +28,6 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
-
-
 
     SessonManager sessonManager;
     RecyclerView userChatListRecyclerView;

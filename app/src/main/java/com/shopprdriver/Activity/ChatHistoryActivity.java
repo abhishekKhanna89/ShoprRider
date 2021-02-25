@@ -1,12 +1,5 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.shopprdriver.Adapter.UserChatListAdapter;
-import com.shopprdriver.MainActivity;
-import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
@@ -27,8 +23,6 @@ import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -134,7 +128,8 @@ public class ChatHistoryActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(context, ChatActivity.class)
-                            .putExtra("id", userchat.getId())
+                            .putExtra("chat_id", userchat.getId())
+                            .putExtra("chat_status","0")
                             .putExtra("image",userchat.getImage())
                             .putExtra("name",userchat.getName())
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

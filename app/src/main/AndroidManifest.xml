@@ -90,14 +90,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ChatActivity"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
             android:theme="@style/ChatTheme">
             <intent-filter>
                 <action android:name="chat_screen" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

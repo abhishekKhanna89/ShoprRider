@@ -106,15 +106,14 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            sendLocation(location);
-           /* handler = new Handler();
+            handler = new Handler();
             runnable = new Runnable() {
                 public void run() {
-
+                    sendLocation(location);
                     handler.postDelayed(runnable, 3000);
                 }
             };
-            handler.postDelayed(runnable, 5000);*/
+            handler.postDelayed(runnable, 5000);
 
         }
     }
