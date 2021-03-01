@@ -13,14 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView userChatListRecyclerView;
     List<Userchat> chatsListModelList;
     private LinearLayoutManager linearLayoutManager;
-    SwipeRefreshLayout swipeRefreshLayout;
+   // SwipeRefreshLayout swipeRefreshLayout;
     UserChatListAdapter userChatListAdapter;
     MenuItem register;
     Menu menu_change_language;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     List<Address> addresses;
     String address;
 
+    ImageView emptyPageGif;
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,10 @@ public class MainActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
 
         userChatListRecyclerView = findViewById(R.id.userChatListRecyclerView);
-        swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
+        //swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
+        emptyPageGif=findViewById(R.id.emptyPageGif);
+        Glide.with(this).load(R.drawable.no_result).into(emptyPageGif);
+        //swipeRefreshLayout.setOnRefreshListener(this);
        // TvNoOpenOrder = findViewById(R.id.TvNoOpenOrder);
 
         linearLayoutManager = new LinearLayoutManager(this);
@@ -83,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 linearLayoutManager.getOrientation());
         userChatListRecyclerView.addItemDecoration(dividerItemDecoration);
         userChatListRecyclerView.setNestedScrollingEnabled(true);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+       /* swipeRefreshLayout.post(new Runnable() {
             @Override
-            public void onRefresh() {
-                viewUserChatList();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
 
+            }
+        });*/
+        viewUserChatList();
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -99,10 +105,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showGPSDisabledAlertToUser();
         }
-
-
-        viewUserChatList();
-
 
         checkPermissions();
 
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void viewUserChatList() {
         if (CommonUtils.isOnline(this)) {
-            sessonManager.showProgress(this);
+            //sessonManager.showProgress(this);
             //Log.d("token",sessonManager.getToken());
             Call<AvailableChatModel> call = ApiExecutor.getApiService(this)
                     .apiUserAvailableChatList("Bearer " + sessonManager.getToken());
@@ -122,25 +124,34 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<AvailableChatModel> call, Response<AvailableChatModel> response) {
 
-
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
                     if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             AvailableChatModel chatsListModel = response.body();
                             Gson gson=new Gson();
                             String Strd=gson.toJson(chatsListModel);
-                            Log.d("dhjhgdjh",Strd);
+                            //Log.d("dhjhgdjh",Strd);
+                            if (chatsListModel.getData().getUserchats().size()==0){
+                                emptyPageGif.setVisibility(View.VISIBLE);
+                                //swipeRefreshLayout.setVisibility(View.GONE);
+                            }else {
+                                emptyPageGif.setVisibility(View.GONE);
+                                //swipeRefreshLayout.setVisibility(View.VISIBLE);
+                            }
+
                             chatsListModelList = chatsListModel.getData().getUserchats();
                             userChatListAdapter = new UserChatListAdapter(MainActivity.this, chatsListModelList);
                             userChatListRecyclerView.setAdapter(userChatListAdapter);
                             userChatListAdapter.notifyDataSetChanged();
                         }
                     }
+                    //swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(Call<AvailableChatModel> call, Throwable t) {
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
+                    //swipeRefreshLayout.setRefreshing(false);
                 }
             });
         } else {
@@ -153,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         viewUserChatList();
-
     }
 
 
@@ -218,4 +228,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+   /* @Override
+    public void onRefresh() {
+        viewUserChatList();
+    }*/
 }

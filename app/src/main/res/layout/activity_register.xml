@@ -33,8 +33,8 @@
                 android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/empty"
-                android:scaleType="fitXY" />
+                android:src="@drawable/empty"
+                android:scaleType="fitCenter" />
 
             <RelativeLayout
                 android:layout_width="50dp"
@@ -69,7 +69,7 @@
                     android:drawableLeft="@drawable/ic_baseline_person_24"
                     android:hint="Name"
                     android:drawablePadding="10dp"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapSentences"
                     android:padding="10dp" />
             </androidx.cardview.widget.CardView>
 
@@ -132,7 +132,7 @@
                     android:background="@drawable/eddittext"
                     android:gravity="top|left"
                     android:hint="Address"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:lines="4"
                     android:padding="10dp" />
             </androidx.cardview.widget.CardView>

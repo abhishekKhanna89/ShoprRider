@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.shopprdriver.Model.NotificationList.Datum;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.R;
@@ -32,9 +33,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class NotificationListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+public class NotificationListActivity extends AppCompatActivity implements
         RecyclerView.OnScrollChangeListener{
-    SwipeRefreshLayout swipeRefreshLayout;
+    //SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView rv_notification;
     SessonManager sessonManager;
     List<Datum>notificationList=new ArrayList<>();
@@ -42,6 +43,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     int currentPage =1;
     int page;
     NotificationListAdapter notificationListAdapter;
+
+    ImageView emptyPageGif;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,23 +52,26 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager=new SessonManager(this);
         //Log.d("token",sessonManager.getToken());
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        //swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         rv_notification = (RecyclerView) findViewById(R.id.rv_notification);
+        emptyPageGif=findViewById(R.id.emptyPageGif);
+        Glide.with(this).load(R.drawable.no_result).into(emptyPageGif);
         linearLayoutManager = new LinearLayoutManager(this);
         rv_notification.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rv_notification.getContext(),
                 linearLayoutManager.getOrientation());
         rv_notification.addItemDecoration(dividerItemDecoration);
         rv_notification.setNestedScrollingEnabled(true);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        //swipeRefreshLayout.setOnRefreshListener(this);
         rv_notification.setOnScrollChangeListener(this);
-        swipeRefreshLayout.post(new Runnable() {
+      /*  swipeRefreshLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        notificationList();
+
                                     }
-                                });
+                                });*/
+        notificationList();
 
          notificationListAdapter=new NotificationListAdapter(NotificationListActivity.this,notificationList);
         rv_notification.setAdapter(notificationListAdapter);
@@ -81,7 +87,6 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     }
 
     private void notificationList() {
-        swipeRefreshLayout.setRefreshing(true);
         if (CommonUtils.isOnline(NotificationListActivity.this)) {
             sessonManager.showProgress(NotificationListActivity.this);
             Call<NotificationListModel>call= ApiExecutor.getApiService(this)
@@ -90,12 +95,19 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                 @Override
                 public void onResponse(Call<NotificationListModel> call, Response<NotificationListModel> response) {
 // stopping swipe refresh
-                    swipeRefreshLayout.setRefreshing(false);
+                    //swipeRefreshLayout.setRefreshing(false);
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             NotificationListModel notificationListModel=response.body();
                             if (notificationListModel.getData().getNotifications().getData()!=null){
+                                if (notificationListModel.getData().getNotifications().getData().size()==0){
+                                    emptyPageGif.setVisibility(View.VISIBLE);
+                                    rv_notification.setVisibility(View.GONE);
+                                }else {
+                                    emptyPageGif.setVisibility(View.GONE);
+                                    rv_notification.setVisibility(View.VISIBLE);
+                                }
                                 page=notificationListModel.getData().getNotifications().getLastPage();
                                 notificationList.addAll(notificationListModel.getData().getNotifications().getData());
                                 notificationListAdapter.notifyDataSetChanged();
@@ -110,7 +122,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                 @Override
                 public void onFailure(Call<NotificationListModel> call, Throwable t) {
 // stopping swipe refresh
-                    swipeRefreshLayout.setRefreshing(false);
+                    //swipeRefreshLayout.setRefreshing(false);
                     sessonManager.hideProgress();
                 }
             });
@@ -122,15 +134,16 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 
     }
 
-    @Override
+    /*@Override
     public void onRefresh() {
         notificationList();
-    }
+    }*/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id=item.getItemId();
         if (id==android.R.id.home){
             onBackPressed();
+
         }
 
         return super.onOptionsItemSelected(item);

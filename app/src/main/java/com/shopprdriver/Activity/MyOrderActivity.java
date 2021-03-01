@@ -1,24 +1,24 @@
 package com.shopprdriver.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.shopprdriver.Model.OrderDetails.Datum;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
@@ -37,9 +37,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+public class MyOrderActivity extends AppCompatActivity implements
         RecyclerView.OnScrollChangeListener {
-    SwipeRefreshLayout swipeRefreshLayout;
+   // SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView rv_myOrder;
     SessonManager sessonManager;
     public static List<Datum> datumList = new ArrayList<>();
@@ -47,15 +47,17 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
     int currentPage = 1;
     int page;
     MyOrderListAdapter myOrderListAdapter;
-
+    ImageView emptyPageGif;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
-        Log.d("token", sessonManager.getToken());
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        //Log.d("token", sessonManager.getToken());
+        //swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        emptyPageGif=findViewById(R.id.emptyPageGif);
+        Glide.with(this).load(R.drawable.no_result).into(emptyPageGif);
         rv_myOrder = (RecyclerView) findViewById(R.id.rv_myOrder);
         linearLayoutManager = new LinearLayoutManager(this);
         rv_myOrder.setLayoutManager(linearLayoutManager);
@@ -63,19 +65,23 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
                 linearLayoutManager.getOrientation());
         rv_myOrder.addItemDecoration(dividerItemDecoration);
         rv_myOrder.setNestedScrollingEnabled(true);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        //swipeRefreshLayout.setOnRefreshListener(this);
         rv_myOrder.setOnScrollChangeListener(this);
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                datumList.clear();
-                orderList();
-            }
-        });
         myOrderListAdapter = new MyOrderListAdapter(this, datumList);
         rv_myOrder.setAdapter(myOrderListAdapter);
         myOrderListAdapter.notifyDataSetChanged();
+
+        /*swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                swipeRefreshLayout.setRefreshing(true);
+                orderList();
+            }
+        });*/
+        datumList.clear();
+        orderList();
+
     }
 
     private boolean isLastItemDisplaying(RecyclerView recyclerView) {
@@ -88,22 +94,29 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     private void orderList() {
-        swipeRefreshLayout.setRefreshing(true);
+        //swipeRefreshLayout.setRefreshing(true);
         if (CommonUtils.isOnline(MyOrderActivity.this)) {
-            sessonManager.showProgress(MyOrderActivity.this);
+            //sessonManager.showProgress(MyOrderActivity.this);
             Call<OrderDetailsModel> call = ApiExecutor.getApiService(this)
                     .apiMyOrderDetails("Bearer " + sessonManager.getToken(), currentPage);
             call.enqueue(new Callback<OrderDetailsModel>() {
                 @Override
                 public void onResponse(Call<OrderDetailsModel> call, Response<OrderDetailsModel> response) {
                     String respoStr = new Gson().toJson(response.body());
-                    Log.d("djhjkhds", respoStr);
-                    swipeRefreshLayout.setRefreshing(false);
-                    sessonManager.hideProgress();
+                    //Log.d("djhjkhds", respoStr);
+
+                    //sessonManager.hideProgress();
                     if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             OrderDetailsModel orderDetailsModel = response.body();
                             if (orderDetailsModel.getData().getOrders().getData() != null) {
+                                if (orderDetailsModel.getData().getOrders().getData().size()==0){
+                                    emptyPageGif.setVisibility(View.VISIBLE);
+                                    rv_myOrder.setVisibility(View.GONE);
+                                }else {
+                                    emptyPageGif.setVisibility(View.GONE);
+                                    rv_myOrder.setVisibility(View.VISIBLE);
+                                }
                                 page = orderDetailsModel.getData().getOrders().getLastPage();
                                 datumList.addAll(orderDetailsModel.getData().getOrders().getData());
                                 myOrderListAdapter.notifyDataSetChanged();
@@ -113,11 +126,13 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
                             }
                         }
                     }
+                    //swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(Call<OrderDetailsModel> call, Throwable t) {
-
+                    //sessonManager.hideProgress();
+                    //swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -125,11 +140,11 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
 
     }
 
-    @Override
+    /*@Override
     public void onRefresh() {
-        datumList.clear();
         orderList();
-    }
+
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -182,7 +197,12 @@ public class MyOrderActivity extends AppCompatActivity implements SwipeRefreshLa
                 Picasso.get().load(R.drawable.pin_logo).into(holder.itemImage);
             } else {
                 for (int i = 0; i < datumList.get(position).getDetails().size(); i++) {
-                    Picasso.get().load(datumList.get(position).getDetails().get(i).getFilePath()).into(holder.itemImage);
+                    if (datumList.get(position).getDetails().get(i).getFilePath().length()==0){
+
+                    }else {
+                        Picasso.get().load(datumList.get(position).getDetails().get(i).getFilePath()).into(holder.itemImage);
+                    }
+
                 }
 
             }

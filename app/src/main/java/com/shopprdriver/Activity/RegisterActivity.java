@@ -1,11 +1,5 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,8 +10,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.location.Address;
-import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -28,17 +20,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.shopprdriver.MainActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
@@ -106,6 +98,12 @@ public class RegisterActivity extends AppCompatActivity {
         spinnerState = findViewById(R.id.spinnerState);
         textCity = findViewById(R.id.textCity);
         imageShow = findViewById(R.id.imageShow);
+        imageShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDialog();
+            }
+        });
 
         stateName = new ArrayList<>();
         cityName = new ArrayList<>();

@@ -89,6 +89,10 @@ public class MenuActivity extends AppCompatActivity implements
     String location_address;
 
     List<Menu_Model>menuModelList;
+
+
+
+
     public MenuActivity() {
     }
 
@@ -140,6 +144,7 @@ public class MenuActivity extends AppCompatActivity implements
                         CheckoutStatusModel checkoutStatusModel=response.body();
                         if (checkoutStatusModel!=null){
                             check_out_type=checkoutStatusModel.getType();
+
                             viewMenu();
 
                         }
@@ -196,6 +201,10 @@ public class MenuActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Menu_Model menu_model = menuModelList.get(position);
             holder.menu_title.setText(menu_model.getMenuName());
+            viewCount(position,holder);
+
+
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -289,6 +298,7 @@ public class MenuActivity extends AppCompatActivity implements
 
 
             if (position == 0) {
+                //holder.countText.setVisibility(View.VISIBLE);
                 holder.llMainView.setBackgroundColor(Color.parseColor("#cd644c"));
             } else if (position == 1) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#d26088"));
@@ -299,6 +309,7 @@ public class MenuActivity extends AppCompatActivity implements
             } else if (position == 4) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#d99e4a"));
             } else if (position == 5) {
+                //holder.countText.setVisibility(View.VISIBLE);
                 holder.llMainView.setBackgroundColor(Color.parseColor("#d94646"));
             } else if (position == 6) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#91be55"));
@@ -318,15 +329,56 @@ public class MenuActivity extends AppCompatActivity implements
         }
 
         public class Holder extends RecyclerView.ViewHolder {
-            TextView menu_title;
+            TextView menu_title,countText;
             LinearLayout llMainView;
 
             public Holder(@NonNull View itemView) {
                 super(itemView);
                 menu_title = itemView.findViewById(R.id.menu_title);
                 llMainView = itemView.findViewById(R.id.llMainView);
+                countText=itemView.findViewById(R.id.countText);
             }
         }
+
+    }
+
+    private void viewCount(int position, Menu_Adapter.Holder holder) {
+        Call<CheckoutStatusModel> call= ApiExecutor.getApiService(MenuActivity.this)
+                .apiCheckoutStatus("Bearer "+sessonManager.getToken());
+        call.enqueue(new Callback<CheckoutStatusModel>() {
+            @Override
+            public void onResponse(Call<CheckoutStatusModel> call, Response<CheckoutStatusModel> response) {
+                // pDialog.dismiss();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        CheckoutStatusModel checkoutStatusModel=response.body();
+                        if (checkoutStatusModel!=null){
+                            if (position==0){
+                                if (checkoutStatusModel.getNotifications().equalsIgnoreCase("0")){
+                                    holder.countText.setVisibility(View.GONE);
+                                }else {
+                                    holder.countText.setVisibility(View.VISIBLE);
+                                    holder.countText.setText(checkoutStatusModel.getNotifications());
+                                }
+                            }else if (position==5){
+                                if (checkoutStatusModel.getOrders().equalsIgnoreCase("0")){
+                                    holder.countText.setVisibility(View.GONE);
+                                }else {
+                                    holder.countText.setVisibility(View.VISIBLE);
+                                    holder.countText.setText(checkoutStatusModel.getOrders());
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<CheckoutStatusModel> call, Throwable t) {
+                // pDialog.dismiss();
+            }
+        });
     }
 
 
@@ -515,7 +567,7 @@ public class MenuActivity extends AppCompatActivity implements
                     Address address = list.get(0);
                     String localitys = address.getLocality();
                     location_address = address.getAddressLine(0);
-                    Log.d("AAAAA",""+mLastLocation);
+                    //Log.d("AAAAA",""+mLastLocation);
                 //_progressBar.setVisibility(View.INVISIBLE);
                // _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
                 //_longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
@@ -539,5 +591,11 @@ public class MenuActivity extends AppCompatActivity implements
         Log.d("BBBBB",""+location);
         mLastLocation = location;
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        viewCheckoutStatus();
     }
 }

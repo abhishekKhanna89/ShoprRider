@@ -1,4 +1,341 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/dashbord_bg" />
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" xmlns:card_view="http://schemas.android.com/tools"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@color/gray"
+                android:layout_margin="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardCornerRadius="10dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/frontAadhar"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/empty"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:id="@+id/productName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:textStyle="bold"
+                        android:text="Aadhar Card"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:id="@+id/productDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:text="Front"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <ImageView android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="frontAadhar"
+                        android:src="@drawable/ic_baseline_photo_camera"
+                        android:layout_gravity="bottom|right" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" xmlns:card_view="http://schemas.android.com/tools"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@color/gray"
+                android:layout_margin="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardCornerRadius="10dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/backAadhar"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/empty"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:textStyle="bold"
+                        android:text="Aadhar Card"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:text="Back"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <ImageView android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="backAadhar"
+                        android:src="@drawable/ic_baseline_photo_camera"
+                        android:layout_gravity="bottom|right" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" xmlns:card_view="http://schemas.android.com/tools"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@color/gray"
+                android:layout_margin="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardCornerRadius="10dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/frontDlno"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/empty"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:textStyle="bold"
+                        android:text="DL no"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:text="Front"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <ImageView android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="frontDlno"
+                        android:src="@drawable/ic_baseline_photo_camera"
+                        android:layout_gravity="bottom|right" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" xmlns:card_view="http://schemas.android.com/tools"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@color/gray"
+                android:layout_margin="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardCornerRadius="10dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/backDlno"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/empty"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:textStyle="bold"
+                        android:text="DL no"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:text="Back"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+                    <ImageView android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="backDlno"
+                        android:src="@drawable/ic_baseline_photo_camera"
+                        android:layout_gravity="bottom|right" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6sp">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content" xmlns:card_view="http://schemas.android.com/tools"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@color/gray"
+                android:layout_margin="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardCornerRadius="10dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/panCard"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/empty"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:textStyle="bold"
+                        android:text="Pan Card"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/monster"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/black"/>
+
+                    <ImageView android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="panCard"
+                        android:src="@drawable/ic_baseline_photo_camera"
+                        android:layout_gravity="bottom|right" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:onClick="submit"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Submit" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+<!--
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -240,4 +577,4 @@
             android:onClick="submit"
             android:text="Submit" />
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>-->

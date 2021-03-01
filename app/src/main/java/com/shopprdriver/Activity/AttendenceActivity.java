@@ -1,19 +1,20 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.bumptech.glide.Glide;
 import com.shopprdriver.Model.Attendences.Attendence;
 import com.shopprdriver.Model.Attendences.AttendencesModel;
 import com.shopprdriver.R;
@@ -31,7 +32,7 @@ public class AttendenceActivity extends AppCompatActivity {
     RecyclerView attendanceRecyclerView;
     SessonManager sessonManager;
     List<Attendence> attendenceList;
-
+    ImageView emptyPageGif;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,8 @@ public class AttendenceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         attendanceRecyclerView = findViewById(R.id.attendanceRecyclerView);
+        emptyPageGif=findViewById(R.id.emptyPageGif);
+        Glide.with(this).load(R.drawable.no_result).into(emptyPageGif);
         attendanceRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         viewAttendanceList();
     }
@@ -57,6 +60,13 @@ public class AttendenceActivity extends AppCompatActivity {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             AttendencesModel attendencesModel = response.body();
                             if (attendencesModel.getData().getAttendences() != null) {
+                                if (attendencesModel.getData().getAttendences().size()==0){
+                                    emptyPageGif.setVisibility(View.VISIBLE);
+                                    attendanceRecyclerView.setVisibility(View.GONE);
+                                }else {
+                                    emptyPageGif.setVisibility(View.GONE);
+                                    attendanceRecyclerView.setVisibility(View.VISIBLE);
+                                }
                                 attendenceList = attendencesModel.getData().getAttendences();
                                 AttendanceAdapter attendanceAdapter = new AttendanceAdapter(AttendenceActivity.this,
                                         attendenceList);

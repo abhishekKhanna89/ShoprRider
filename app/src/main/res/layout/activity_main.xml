@@ -5,19 +5,26 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".MainActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <ImageView
+        android:id="@+id/emptyPageGif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userChatListRecyclerView"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+        android:divider="#fff"/>
+   <!-- <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/SwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/userChatListRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="#fff"/>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
 
 </LinearLayout>

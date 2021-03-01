@@ -11,6 +11,12 @@ public class CheckoutStatusModel {
     @SerializedName("type")
     @Expose
     private String type;
+    @SerializedName("notifications")
+    @Expose
+    private String notifications;
+    @SerializedName("orders")
+    @Expose
+    private String orders;
 
     public String getStatus() {
         return status;
@@ -28,4 +34,19 @@ public class CheckoutStatusModel {
         this.type = type;
     }
 
+    public String getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(String notifications) {
+        this.notifications = notifications;
+    }
+
+    public String getOrders() {
+        return orders;
+    }
+
+    public void setOrders(String orders) {
+        this.orders = orders;
+    }
 }
