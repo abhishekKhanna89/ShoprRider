@@ -3,7 +3,6 @@ package com.shopprdriver.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 
 import com.shopprdriver.Model.NotificationList.Datum;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
@@ -50,7 +48,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         setContentView(R.layout.activity_notification_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager=new SessonManager(this);
-        Log.d("token",sessonManager.getToken());
+        //Log.d("token",sessonManager.getToken());
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         rv_notification = (RecyclerView) findViewById(R.id.rv_notification);
         linearLayoutManager = new LinearLayoutManager(this);
