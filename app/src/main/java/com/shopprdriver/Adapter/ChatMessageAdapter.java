@@ -383,6 +383,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
                 context.startActivity(mapIntent);
             }
         });
+        holder.setIsRecyclable(false);
     }
 
 

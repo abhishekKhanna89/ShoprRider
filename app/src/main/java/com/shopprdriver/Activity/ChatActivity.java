@@ -342,24 +342,7 @@ public class ChatActivity extends AppCompatActivity {
                                 }else {
                                     CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
                                 }
-                                // Add a new sent message to the list.
-                                /*ChatModel msgDto = new ChatModel(ChatModel.MSG_TYPE_SENT, msgContent);
-                                msgDtoList.add(msgDto);
 
-                                chatAppMsgAdapter = new ChatAppMsgAdapter(msgDtoList);
-
-                                // Set data adapter to RecyclerView.
-                                chatRecyclerView.setAdapter(chatAppMsgAdapter);
-                                int newMsgPosition = msgDtoList.size() - 1;
-
-                                // Notify recycler view insert one new data.
-                                chatAppMsgAdapter.notifyItemInserted(newMsgPosition);
-
-                                // Scroll RecyclerView to the last message.
-                                chatRecyclerView.scrollToPosition(newMsgPosition);
-
-                                // Empty the input edit text box.
-                                editText.setText("");*/
                             }
                         }
                     });
