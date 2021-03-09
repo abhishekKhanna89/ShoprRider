@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.shopprdriver.Adapter.CommissionTransactionAdapter;
-import com.shopprdriver.Model.CommissionTransactions.CommissionTransaction;
-import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
-import com.shopprdriver.Model.CommissionTransactions.Transaction;
+import com.shopprdriver.Model.TravelingDetails.TravelingDetailsModel;
 import com.shopprdriver.R;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -33,20 +30,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CommissionTransactionActivity extends AppCompatActivity {
+public class TravelingDetailsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     SessonManager sessonManager;
     TextView balanceText,deliveryChargeText;
-    List<CommissionTransaction> historyList;
+    List<TravelingDetailsModel.CommissionTransaction> travelingDetailsModelList;
     String from_date,to_date;
     BottomSheetDialog bottomSheetDialog;
     int mYear,mMonth,mDay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_commission_transaction);
-        getSupportActionBar().setTitle("Commission");
+        setContentView(R.layout.activity_traveling_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         sessonManager=new SessonManager(this);
 
 
@@ -59,25 +56,25 @@ public class CommissionTransactionActivity extends AppCompatActivity {
 
 
         viewData();
-    }
 
+    }
     private void viewData() {
-        if (CommonUtils.isOnline(CommissionTransactionActivity.this)) {
-            sessonManager.showProgress(CommissionTransactionActivity.this);
-            Call<CommissionTransactionsModel>call= ApiExecutor.getApiService(this)
-                    .apiCommissionTransaction("Bearer "+sessonManager.getToken(),from_date,to_date);
-            call.enqueue(new Callback<CommissionTransactionsModel>() {
+        if (CommonUtils.isOnline(TravelingDetailsActivity.this)) {
+            sessonManager.showProgress(TravelingDetailsActivity.this);
+            Call<TravelingDetailsModel>call= ApiExecutor.getApiService(this)
+                    .apiTravelingDetails("Bearer "+sessonManager.getToken(),from_date,to_date);
+            call.enqueue(new Callback<TravelingDetailsModel>() {
                 @Override
-                public void onResponse(Call<CommissionTransactionsModel> call, Response<CommissionTransactionsModel> response) {
+                public void onResponse(Call<TravelingDetailsModel> call, Response<TravelingDetailsModel> response) {
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            CommissionTransactionsModel commissionTransactionsModel=response.body();
+                            TravelingDetailsModel commissionTransactionsModel=response.body();
                             if (commissionTransactionsModel.getData()!=null){
                                 balanceText.setText("\u20B9 "+commissionTransactionsModel.getData().getCommission());
-                                deliveryChargeText.setText("\u20B9 "+commissionTransactionsModel.getData().getDelivery_charge());
-                                historyList= commissionTransactionsModel.getData().getCommissionTransactions();
-                                RecyclerAdapter recyclerAdapter=new RecyclerAdapter(CommissionTransactionActivity.this,historyList);
+                                deliveryChargeText.setText(commissionTransactionsModel.getData().getTotalKm()+" Km");
+                                travelingDetailsModelList= commissionTransactionsModel.getData().getCommissionTransactions();
+                                RecyclerAdapter recyclerAdapter=new RecyclerAdapter(TravelingDetailsActivity.this,travelingDetailsModelList);
                                 recyclerView.setAdapter(recyclerAdapter);
                                 recyclerAdapter.notifyDataSetChanged();
                             }
@@ -86,16 +83,15 @@ public class CommissionTransactionActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<CommissionTransactionsModel> call, Throwable t) {
+                public void onFailure(Call<TravelingDetailsModel> call, Throwable t) {
                     sessonManager.hideProgress();
                 }
             });
         }else {
-            CommonUtils.showToastInCenter(CommissionTransactionActivity.this, getString(R.string.please_check_network));
+            CommonUtils.showToastInCenter(TravelingDetailsActivity.this, getString(R.string.please_check_network));
         }
 
     }
-
     public void filterCommission(View view) {
         bottomSheetDialog=new BottomSheetDialog(this,R.style.CustomBottomSheetDialog);
         bottomSheetDialog.setContentView(getLayoutInflater().inflate(R.layout.layout_filter_commission,null));
@@ -115,7 +111,7 @@ public class CommissionTransactionActivity extends AppCompatActivity {
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CommissionTransactionActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(TravelingDetailsActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -136,7 +132,7 @@ public class CommissionTransactionActivity extends AppCompatActivity {
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CommissionTransactionActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(TravelingDetailsActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -163,12 +159,12 @@ public class CommissionTransactionActivity extends AppCompatActivity {
         applyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               from_date=fromDateText.getText().toString();
-               to_date=toDateText.getText().toString();
-               sessonManager.setFromDate(from_date);
-               sessonManager.setToDate(to_date);
-               viewData();
-               bottomSheetDialog.dismiss();
+                from_date=fromDateText.getText().toString();
+                to_date=toDateText.getText().toString();
+                sessonManager.setFromDate(from_date);
+                sessonManager.setToDate(to_date);
+                viewData();
+                bottomSheetDialog.dismiss();
             }
         });
         bottomSheetDialog.show();
@@ -177,28 +173,27 @@ public class CommissionTransactionActivity extends AppCompatActivity {
 
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Holder> {
-        List<CommissionTransaction>historyList;
+        List<TravelingDetailsModel.CommissionTransaction>historyList;
         Context context;
-        public RecyclerAdapter(Context context,List<CommissionTransaction>historyList){
+        public RecyclerAdapter(Context context,List<TravelingDetailsModel.CommissionTransaction>historyList){
             this.historyList=historyList;
             this.context=context;
         }
         @NonNull
         @Override
-        public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new Holder(LayoutInflater.from(context).inflate(R.layout.layout_recycler,null));
         }
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
-            CommissionTransaction history=historyList.get(position);
+            TravelingDetailsModel.CommissionTransaction history=historyList.get(position);
             holder.button.setText(history.getDate());
-            List<Transaction>transactionList=history.getTransactions();
+            List<TravelingDetailsModel.Transaction>transactionList=history.getTransactions();
             holder.transactionListRecycler.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
             CommissionTransactionAdapter commissionTransactionAdapter=new CommissionTransactionAdapter(context,transactionList);
             holder.transactionListRecycler.setAdapter(commissionTransactionAdapter);
-            /*CreditAdapter creditAdapter=new CreditAdapter(context,transactionList);
-            holder.transactionListRecycler.setAdapter(creditAdapter);*/
+
 
         }
 
@@ -214,6 +209,42 @@ public class CommissionTransactionActivity extends AppCompatActivity {
                 super(itemView);
                 button=itemView.findViewById(R.id.button);
                 transactionListRecycler=itemView.findViewById(R.id.transactionListRecycler);
+            }
+        }
+    }
+    public  class CommissionTransactionAdapter extends RecyclerView.Adapter<CommissionTransactionAdapter.Holder>{
+        List<TravelingDetailsModel.Transaction>transactionList;
+        Context context;
+        public CommissionTransactionAdapter(Context context,List<TravelingDetailsModel.Transaction>transactionList){
+            this.context=context;
+            this.transactionList=transactionList;
+        }
+        @NonNull
+        @Override
+        public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new Holder(LayoutInflater.from(context).inflate(R.layout.layout_traveling_details,null));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull Holder holder, int position) {
+            holder.t.setText("Km Travel "+transactionList.get(position).getKm());
+            holder.price.setText(String.valueOf("\u20B9 "+transactionList.get(position).getRiderCommission()));
+            holder.timeT.setText(transactionList.get(position).getTime());
+        }
+
+        @Override
+        public int getItemCount() {
+            return transactionList.size();
+        }
+
+        public class Holder extends RecyclerView.ViewHolder {
+            TextView t,price,bal,timeT;
+            public Holder(@NonNull View itemView) {
+                super(itemView);
+                t=itemView.findViewById(R.id.t);
+                price=itemView.findViewById(R.id.price);
+                bal=itemView.findViewById(R.id.bal);
+                timeT=itemView.findViewById(R.id.timeT);
             }
         }
     }

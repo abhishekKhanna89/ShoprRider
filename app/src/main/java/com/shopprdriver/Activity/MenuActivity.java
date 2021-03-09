@@ -47,6 +47,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.CheckoutStatus.CheckoutStatusModel;
+import com.shopprdriver.Model.Logout.LogoutModel;
 import com.shopprdriver.Model.Menu_Model;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
@@ -102,14 +103,14 @@ public class MenuActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_menu);
 
         sessonManager=new SessonManager(this);
+        Log.d("Token",sessonManager.getToken());
         //check_out_type=getIntent().getStringExtra("check_out_type");
-
+        checkPermissions();
 
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
 
-        checkPermissions();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
@@ -130,6 +131,8 @@ public class MenuActivity extends AppCompatActivity implements
 
         viewCheckoutStatus();
 
+
+
     }
 
     private void viewCheckoutStatus() {
@@ -144,9 +147,9 @@ public class MenuActivity extends AppCompatActivity implements
                         CheckoutStatusModel checkoutStatusModel=response.body();
                         if (checkoutStatusModel!=null){
                             check_out_type=checkoutStatusModel.getType();
-
                             viewMenu();
-
+                        }else {
+                            Toast.makeText(MenuActivity.this,response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -175,6 +178,7 @@ public class MenuActivity extends AppCompatActivity implements
         menuModelList.add(new Menu_Model("Attendance"));
         menuModelList.add(new Menu_Model("Profile"));
         menuModelList.add(new Menu_Model("Reviews"));
+        menuModelList.add(new Menu_Model("Traveling Details"));
 
         Menu_Adapter menu_adapter = new Menu_Adapter(MenuActivity.this, menuModelList);
         menuRecyclerView.setAdapter(menu_adapter);
@@ -290,6 +294,8 @@ public class MenuActivity extends AppCompatActivity implements
 
                     } else if (position == 9) {
                         startActivity(new Intent(context, ReviewsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    }else if (position==10){
+                        startActivity(new Intent(context, TravelingDetailsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     }
                 }
 
@@ -319,6 +325,8 @@ public class MenuActivity extends AppCompatActivity implements
                 holder.llMainView.setBackgroundColor(Color.parseColor("#2fc8a3"));
             } else if (position == 9) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#F8A9A3"));
+            }else if (position==10){
+                holder.llMainView.setBackgroundColor(Color.parseColor("#ba55d3"));
             }
 
         }
@@ -398,10 +406,31 @@ public class MenuActivity extends AppCompatActivity implements
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        sessonManager.setToken("");
-                        Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
-                        finishAffinity();
+                        Call<LogoutModel>call=ApiExecutor.getApiService(MenuActivity.this)
+                                .apiLogoutStatus("Bearer "+sessonManager.getToken());
+                        call.enqueue(new Callback<LogoutModel>() {
+                            @Override
+                            public void onResponse(Call<LogoutModel> call, Response<LogoutModel> response) {
+                                if (response.body()!=null) {
+                                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                                        sessonManager.setToken("");
+                                        Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                        finishAffinity();
+                                        Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        /*startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                        finishAffinity();*/
+                                        //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LogoutModel> call, Throwable t) {
+
+                            }
+                        });
                     }
 
                 })
@@ -448,6 +477,7 @@ public class MenuActivity extends AppCompatActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         settingRequest();
+
     }
 
     @Override
@@ -508,6 +538,7 @@ public class MenuActivity extends AppCompatActivity implements
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
                         break;
@@ -548,6 +579,8 @@ public class MenuActivity extends AppCompatActivity implements
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
+
             return;
         } else {
             /*Getting the location after aquiring location service*/
@@ -555,7 +588,6 @@ public class MenuActivity extends AppCompatActivity implements
                     mGoogleApiClient);
 
             if (mLastLocation != null) {
-
                     Geocoder geocoder = new Geocoder(MenuActivity.this);
                     List<Address> list = null;
                     try {
@@ -576,7 +608,6 @@ public class MenuActivity extends AppCompatActivity implements
                  * So we will get the current location.
                  * For this we'll implement Location Listener and override onLocationChanged*/
                 //Log.i("Current Location", "No data for location found");
-
                 if (!mGoogleApiClient.isConnected())
                     mGoogleApiClient.connect();
 

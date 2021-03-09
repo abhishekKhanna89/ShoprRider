@@ -123,6 +123,18 @@ import uk.co.senab.photoview.PhotoViewAttacher;
        }else {
            holder.voicePlayerView.setVisibility(View.GONE);
        }
+       if (chat.getType().equalsIgnoreCase("add-money")){
+           holder.addMoneyMessage.setText(chat.getMessage());
+           holder.addMoneyDate.setText(chat.getCreatedAt());
+           holder.addMoneyLayout.setVisibility(View.VISIBLE);
+       }
+       if (chat.getType().equalsIgnoreCase("recharge")){
+           holder.rechargeTypeMessage.setText(chat.getMessage());
+           holder.rechargeTypeDate.setText(chat.getCreatedAt());
+           holder.rechargeTypeLayout.setVisibility(View.VISIBLE);
+       }
+
+
 
        if (chat.getType().equalsIgnoreCase("address")){
            String lat =chat.getLat();
@@ -440,6 +452,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
         /*Todo:- Store Type*/
          ChatMessageView storeLocationLayout;
          TextView storeLocationText,storeLocationTextDate;
+         /*Todo:- AddMoney Type*/
+         ChatMessageView addMoneyLayout;
+         TextView addMoneyMessage,addMoneyDate;
+         /*Todo:- Recharge Type*/
+         ChatMessageView rechargeTypeLayout;
+         TextView rechargeTypeMessage,rechargeTypeDate;
         public Holder(@NonNull View itemView) {
             super(itemView);
             /*Todo:- Location*/
@@ -479,6 +497,15 @@ import uk.co.senab.photoview.PhotoViewAttacher;
             storeLocationLayout=itemView.findViewById(R.id.storeLocationLayout);
             storeLocationText=itemView.findViewById(R.id.storeLocationText);
             storeLocationTextDate=itemView.findViewById(R.id.storeLocationTextDate);
+            /*Todo:- AddMoney Type*/
+            addMoneyLayout=(ChatMessageView) itemView.findViewById(R.id.addMoneyTypeLayout);
+            addMoneyMessage=itemView.findViewById(R.id.addMoneyMessage);
+            addMoneyDate=itemView.findViewById(R.id.addMoneyDate);
+
+            /*Todo:- Recharge Type*/
+            rechargeTypeLayout=(ChatMessageView)itemView.findViewById(R.id.rechargeTypeLayout);
+            rechargeTypeMessage=itemView.findViewById(R.id.rechargeTypeMessage);
+            rechargeTypeDate=itemView.findViewById(R.id.rechargeTypeDate);
         }
      }
 }

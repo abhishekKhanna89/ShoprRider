@@ -14,6 +14,12 @@ public class Transaction {
     @SerializedName("rider_commission")
     @Expose
     private Integer riderCommission;
+    @SerializedName("rider_delivery_charge")
+    @Expose
+    private Integer rider_delivery_charge;
+    @SerializedName("time")
+    @Expose
+    private String time;
 
     public String getRefid() {
         return refid;
@@ -39,4 +45,19 @@ public class Transaction {
         this.riderCommission = riderCommission;
     }
 
+    public Integer getRider_delivery_charge() {
+        return rider_delivery_charge;
+    }
+
+    public void setRider_delivery_charge(Integer rider_delivery_charge) {
+        this.rider_delivery_charge = rider_delivery_charge;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

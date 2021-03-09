@@ -14,6 +14,7 @@ import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
+import com.shopprdriver.Model.Logout.LogoutModel;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
@@ -24,6 +25,7 @@ import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.ReviewsModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
+import com.shopprdriver.Model.TravelingDetails.TravelingDetailsModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
@@ -35,6 +37,7 @@ import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.RequestService.RatingsRequest;
 import com.shopprdriver.RequestService.TextTypeRequest;
+import com.shopprdriver.RequestService.WalletRequest;
 
 
 import java.util.Map;
@@ -131,13 +134,16 @@ public interface ApiService {
     @NonNull
     @GET("state-list")
     Call<StateListModel>apiStateList();
+
     @Multipart
     @POST("upload-document")
     Call<UploadDocumentModel>apiUploadDocument(@HeaderMap Map<String, String> token,@Part MultipartBody.Part  pan_card,
                                                @Part MultipartBody.Part front_aadhaar_card,
                                                @Part MultipartBody.Part back_aadhaar_card,
                                                @Part MultipartBody.Part front_dl_no,
-                                               @Part MultipartBody.Part back_dl_no);
+                                               @Part MultipartBody.Part back_dl_no,
+                                               @Part MultipartBody.Part front_bike,
+                                               @Part MultipartBody.Part back_bike);
     @NonNull
     @GET("wallet-history")
     Call<WalletHistoryModel>apiWalletHistory(@Header("Authorization") String token);
@@ -152,7 +158,9 @@ public interface ApiService {
                                                 @Path("order_id")int order_id);
 
     @POST("commission-history")
-    Call<CommissionTransactionsModel>apiCommissionTransaction(@Header("Authorization") String token);
+    Call<CommissionTransactionsModel>apiCommissionTransaction(@Header("Authorization") String token,
+                                                              @Query("from_date")String from_date,
+                                                              @Query("to_date")String to_date);
 
     @POST("update-details")
     Call<UploadDocumentModel>apiUpdateDetails(@Header("Authorization") String token,
@@ -190,4 +198,15 @@ public interface ApiService {
     @GET("checkin-status")
     Call<CheckoutStatusModel>apiCheckoutStatus(@Header("Authorization") String token);
 
+
+    @POST("time-history")
+    Call<TravelingDetailsModel>apiTravelingDetails(@Header("Authorization") String token,
+                                                   @Query("from_date")String from_date,
+                                                   @Query("to_date")String to_date);
+    @NonNull
+    @GET("logout")
+    Call<LogoutModel>apiLogoutStatus(@Header("Authorization") String token);
+    @POST("send-message/{chat_id}")
+    Call<SendModel>apiWalletRequest(@Header("Authorization") String token,
+                           @Path("chat_id")int chat_id, @Body WalletRequest walletRequest);
 }

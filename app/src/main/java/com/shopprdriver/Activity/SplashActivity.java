@@ -1,26 +1,18 @@
 package com.shopprdriver.Activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.WindowManager;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.WindowManager;
-
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.R;
-import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -72,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
             }
-        }, 5000);
+        }, 3000);
     }
 
     private void viewStatus() {

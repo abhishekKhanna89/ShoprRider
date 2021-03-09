@@ -5,4 +5,8 @@
         android:id="@+id/fab_product"
         android:icon="@drawable/ic_product"
         android:title="Product" />
+    <item
+        android:id="@+id/action_wallet"
+        android:icon="@drawable/wallet"
+        android:title="Wallet"/>
 </menu>

@@ -50,7 +50,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delivery Charge"
+                    android:text="Total Km"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:textSize="15dp"/>
@@ -58,7 +58,7 @@
                     android:id="@+id/deliveryChargeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\u20B9 300.00"
+                    android:text="300.00 Km"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"

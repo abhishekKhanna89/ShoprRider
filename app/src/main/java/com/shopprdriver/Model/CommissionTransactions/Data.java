@@ -1,8 +1,9 @@
 package com.shopprdriver.Model.CommissionTransactions;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Data {
 
@@ -12,6 +13,9 @@ public class Data {
     @SerializedName("commission")
     @Expose
     private String commission;
+    @SerializedName("delivery_charge")
+    @Expose
+    private String delivery_charge;
 
     public List<CommissionTransaction> getCommissionTransactions() {
         return commissionTransactions;
@@ -29,4 +33,11 @@ public class Data {
         this.commission = commission;
     }
 
+    public String getDelivery_charge() {
+        return delivery_charge;
+    }
+
+    public void setDelivery_charge(String delivery_charge) {
+        this.delivery_charge = delivery_charge;
+    }
 }

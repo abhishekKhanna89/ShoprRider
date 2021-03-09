@@ -34,6 +34,10 @@ public class SessonManager {
 
     public static final String Checkout_Status="checkout_status";
 
+    public static final String FROM_DATE="from_date";
+    public static final String TO_DATE="to_date";
+
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -147,6 +151,22 @@ public class SessonManager {
         return sharedPreference.getString(Checkout_Status,"");
     }
 
+
+
+    public void setFromDate(String fromDate){
+        editor.putString(FROM_DATE,fromDate);
+        editor.apply();
+    }
+    public String getFromDate(){
+        return sharedPreference.getString(FROM_DATE,"");
+    }
+    public void setToDate(String toDate){
+        editor.putString(TO_DATE,toDate);
+        editor.apply();
+    }
+    public String getToDate(){
+        return  sharedPreference.getString(TO_DATE,"");
+    }
     public void hideProgress() {
         while (mDialog != null && mDialog.isShowing()){
             mDialog.dismiss();

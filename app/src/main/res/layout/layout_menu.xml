@@ -41,7 +41,7 @@
                     android:fontFamily="@font/monster"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>

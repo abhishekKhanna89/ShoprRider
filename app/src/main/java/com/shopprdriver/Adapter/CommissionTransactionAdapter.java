@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shopprdriver.Model.CommissionTransactions.CommissionTransaction;
 import com.shopprdriver.Model.CommissionTransactions.Transaction;
 import com.shopprdriver.R;
 
@@ -32,8 +31,12 @@ public class CommissionTransactionAdapter extends RecyclerView.Adapter<Commissio
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         holder.t.setText("Order Id : "+transactionList.get(position).getRefid());
-        holder.price.setText(String.valueOf(transactionList.get(position).getRiderCommission()));
-        holder.bal.setText(transactionList.get(position).getCreatedAt());
+        int x = transactionList.get(position).getRiderCommission();
+        int y = transactionList.get(position).getRider_delivery_charge();
+        int sum = x + y;
+        holder.price.setText(String.valueOf("\u20B9 "+sum));
+        holder.bal.setText("("+"\u20B9 "+x+" + "+"\u20B9 "+y+")");
+        holder.timeT.setText(transactionList.get(position).getTime());
     }
 
     @Override
@@ -42,12 +45,13 @@ public class CommissionTransactionAdapter extends RecyclerView.Adapter<Commissio
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        TextView t,price,bal;
+        TextView t,price,bal,timeT;
         public Holder(@NonNull View itemView) {
             super(itemView);
             t=itemView.findViewById(R.id.t);
             price=itemView.findViewById(R.id.price);
             bal=itemView.findViewById(R.id.bal);
+            timeT=itemView.findViewById(R.id.timeT);
         }
     }
 }

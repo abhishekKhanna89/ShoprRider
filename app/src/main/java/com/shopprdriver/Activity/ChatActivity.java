@@ -55,6 +55,7 @@ import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.TextTypeRequest;
+import com.shopprdriver.RequestService.WalletRequest;
 import com.shopprdriver.SendBird.call.CallService;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
@@ -162,6 +163,7 @@ public class ChatActivity extends AppCompatActivity {
 
             }
 
+            Log.d("chatId",""+chat_id);
         }
         chatMessageList(chat_id);
 
@@ -192,6 +194,9 @@ public class ChatActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
                     case R.id.fab_product:
                         showCustomDialog();
+                        break;
+                    case R.id.action_wallet:
+                        showWalletDialog();
                         break;
                 }
                 return false;
@@ -365,6 +370,62 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyclerView.setNestedScrollingEnabled(false);
 
 
+    }
+
+    private void showWalletDialog() {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.layout_wallet, viewGroup, false);
+
+        EditText editName=dialogView.findViewById(R.id.editName);
+        Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CommonUtils.isOnline(ChatActivity.this)) {
+                    //sessonManager.showProgress(ChatActivity.this);
+                    WalletRequest walletRequest=new WalletRequest();
+                    walletRequest.setType("add-money");
+                    walletRequest.setMessage(editName.getText().toString());
+                    ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
+                    iApiServices.apiWalletRequest("Bearer "+sessonManager.getToken(), chat_id,walletRequest)
+                            .enqueue(new Callback<SendModel>() {
+                                @Override
+                                public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                    //sessonManager.hideProgress();
+                                    if (response.body()!=null) {
+                                        if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                                            chatMessageList(chat_id);
+
+                                            alertDialog.dismiss();
+                                            // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<SendModel> call, Throwable t) {
+                                    //sessonManager.hideProgress();
+                                }
+                            });
+                }else {
+                    CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
+                }
+            }
+        });
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void showCustomDialog() {

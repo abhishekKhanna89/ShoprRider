@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/eddittext"
                     android:gravity="top|left"
-                    android:hint="Address"
+                    android:hint="Current Address"
                     android:inputType="textMultiLine|textCapSentences"
                     android:lines="4"
                     android:padding="10dp" />

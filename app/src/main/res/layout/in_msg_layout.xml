@@ -422,5 +422,45 @@
                     android:textSize="10sp" />
             </LinearLayout>
         </me.himanshusoni.chatmessageview.ChatMessageView>
+        <!--Todo:- ADD Money Type -->
+        <me.himanshusoni.chatmessageview.ChatMessageView
+            android:id="@+id/addMoneyTypeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            app:cmv_arrowPosition="left"
+            app:cmv_backgroundColor="#e0ffc6"
+            app:cmv_backgroundColorPressed="#FFBABABA"
+            app:cmv_cornerRadius="3dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/addMoneyMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:elevation="2dp"
+                    android:padding="10dp"
+                    android:textColor="#000"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/addMoneyDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="5dp"
+                    android:text="11:00 AM"
+                    android:textColor="#000000"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </me.himanshusoni.chatmessageview.ChatMessageView>
     </LinearLayout>
 </ScrollView>

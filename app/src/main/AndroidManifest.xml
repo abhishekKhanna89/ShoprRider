@@ -8,16 +8,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:name=".SendBird.BaseApplication"
@@ -31,8 +27,15 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.ReviewsActivity"
+        <activity android:name=".Activity.PersionalDetailsActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.TravelingDetailsActivity"
+            android:label="Traveling Details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ReviewsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.MenuActivity"
             android:screenOrientation="portrait" />
@@ -80,22 +83,23 @@
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
-            android:theme="@style/ChatTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatTheme" />
         <activity
             android:name=".MainActivity"
             android:label="Open Order"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.OtpActivity"
-            android:theme="@style/ChatTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatTheme" />
         <activity
             android:name=".Activity.ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ChatTheme">
             <intent-filter>
                 <action android:name="chat_screen" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -108,16 +112,17 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service> <!-- ./Firebase Notifications -->
-        <!--<service
+        <!--
+<service
             android:name=".background_service.MyService"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />-->
-
-       <service android:name=".background_service.UpdateLocationService"
-           android:exported="true"
-           android:enabled="true"
-           android:stopWithTask="false"/>
-
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        -->
+        <service
+            android:name=".background_service.UpdateLocationService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -156,8 +161,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-        <!-- Add the service created in services package !-->
     </application>
 
 </manifest>

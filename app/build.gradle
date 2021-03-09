@@ -71,5 +71,8 @@ dependencies {
 
     implementation 'com.github.TutorialsAndroid:KAlertDialog:v4.0.19'
 
+    /*Todo:- From To Date Picker with duration*/
+    implementation 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

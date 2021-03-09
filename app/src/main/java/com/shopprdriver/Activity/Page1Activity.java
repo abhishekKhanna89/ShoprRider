@@ -44,7 +44,7 @@ public class Page1Activity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int SELECT_IMAGE = 2;
     ImageView frontAadhar, backAadhar,
-            frontDlno, backDlno, panCard;
+            frontDlno, backDlno,frontBke,backBike, panCard;
 
 
     Bitmap bitmapAadharFront;
@@ -53,7 +53,7 @@ public class Page1Activity extends AppCompatActivity {
     private static String baseUrl = "http://shoppr.avaskmcompany.xyz/api/shoppr/";
     SessonManager sessonManager;
     byte[] byteArrayAdharFront,byteArrayAdharBack,
-            byteArrayDlNoFront,byteArrayDlNoBack,byteArrayPan;
+            byteArrayDlNoFront,byteArrayDlNoBack,byteArrayFrontBike,byteArrayBakeBike,byteArrayPan;
     File finalFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,8 @@ public class Page1Activity extends AppCompatActivity {
         frontDlno = findViewById(R.id.frontDlno);
         backDlno = findViewById(R.id.backDlno);
         panCard = findViewById(R.id.panCard);
-
+        frontBke=findViewById(R.id.frontBke);
+        backBike=findViewById(R.id.backBike);
 
     }
 
@@ -234,6 +235,79 @@ public class Page1Activity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
         select = "4";
+    }
+    public void frontBake(View view) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Page1Activity.this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                showGallery6();
+                                break;
+                            case 1:
+                                showCamera6();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
+    private void showCamera6() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        select = "6";
+    }
+
+    private void showGallery6() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
+        select = "6";
+    }
+
+    public void backBike(View view) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Page1Activity.this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                showGallery7();
+                                break;
+                            case 1:
+                                showCamera7();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
+    private void showCamera7() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        select = "7";
+    }
+
+    private void showGallery7() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
+        select = "7";
     }
 
     public void panCard(View view) {
@@ -456,6 +530,76 @@ public class Page1Activity extends AppCompatActivity {
                     }
                 }
             }
+        }else if (select.equalsIgnoreCase("6")) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                bitmapAadharFront = (Bitmap) extras.get("data");
+                bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
+                frontBke.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayFrontBike = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                finalFile = new File(getRealPathFromURI(tempUri));
+                //savebitmap(bitmapAadharFront);
+            }
+
+            if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
+                if (data != null) {
+                    try {
+                        bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
+                        frontBke.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayFrontBike = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                        finalFile = new File(getRealPathFromURI(tempUri));
+                        //savebitmap(bitmapAadharFront);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }else if (select.equalsIgnoreCase("7")) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                bitmapAadharFront = (Bitmap) extras.get("data");
+                bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
+                backBike.setImageBitmap(bitmapAadharFront);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArrayBakeBike = stream.toByteArray();
+                Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                finalFile = new File(getRealPathFromURI(tempUri));
+                //savebitmap(bitmapAadharFront);
+            }
+
+            if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
+                if (data != null) {
+                    try {
+                        bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        bitmapAadharFront = Bitmap.createScaledBitmap(bitmapAadharFront, 800, 800, false);
+                        backBike.setImageBitmap(bitmapAadharFront);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmapAadharFront.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArrayBakeBike = stream.toByteArray();
+                        Uri tempUri = getImageUri(getApplicationContext(), bitmapAadharFront);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                        finalFile = new File(getRealPathFromURI(tempUri));
+                        //savebitmap(bitmapAadharFront);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
 
@@ -486,15 +630,28 @@ public class Page1Activity extends AppCompatActivity {
             Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
         } else if (byteArrayPan.length==0) {
             Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
-        } else {
-            uploadDocument();
+        } else if(byteArrayFrontBike.length==0){
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
             //Toast.makeText(this, "Good", Toast.LENGTH_SHORT).show();
+        }else if (byteArrayBakeBike.length==0){
+            Toast.makeText(this, "Please select all image", Toast.LENGTH_SHORT).show();
+        }else {
+            uploadDocument();
         }
     }
 
     private void uploadDocument() {
         if (CommonUtils.isOnline(Page1Activity.this)) {
             sessonManager.showProgress(Page1Activity.this);
+            RequestBody frontBike = RequestBody
+                    .create(MediaType.parse("image/*"),byteArrayFrontBike);
+            MultipartBody.Part filePartFrontBike = MultipartBody.Part.createFormData("bike_front", finalFile.getName(), frontBike);
+
+            RequestBody backBike = RequestBody
+                    .create(MediaType.parse("image/*"),byteArrayBakeBike);
+            MultipartBody.Part filePartBackBike = MultipartBody.Part.createFormData("bike_back", finalFile.getName(), backBike);
+
+
             RequestBody pan_card = RequestBody
                     .create(MediaType.parse("image/*"),byteArrayPan);
             MultipartBody.Part filePartPan = MultipartBody.Part.createFormData("pan_card", finalFile.getName(), pan_card);
@@ -517,7 +674,7 @@ public class Page1Activity extends AppCompatActivity {
             headers.put("Authorization", "Bearer " + sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
             iApiServices.apiUploadDocument(headers,filePartPan,filePartAdharFront,filePartAdharBack,filePartDlFront,
-                    filePartback_dl_no)
+                    filePartback_dl_no,filePartFrontBike,filePartBackBike)
                     .enqueue(new Callback<UploadDocumentModel>() {
                         @Override
                         public void onResponse(Call<UploadDocumentModel> call, Response<UploadDocumentModel> response) {
@@ -547,4 +704,7 @@ public class Page1Activity extends AppCompatActivity {
 
         }
     }
+
+
+
 }
