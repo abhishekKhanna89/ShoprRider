@@ -20,4 +20,9 @@ public class AccountInfoActivity extends AppCompatActivity {
         startActivity(new Intent(AccountInfoActivity.this,ViewDocumentActivity.class)
         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
+
+    public void bankDetails(View view) {
+        startActivity(new Intent(AccountInfoActivity.this,BankDetailsActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    }
 }

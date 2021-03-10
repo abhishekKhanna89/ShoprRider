@@ -1,16 +1,14 @@
 package com.shopprdriver.Activity;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.shopprdriver.Model.BankDetailsGet.BankDetailsGetModel;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
@@ -24,34 +22,57 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Page2Activity extends AppCompatActivity {
+public class BankDetailsActivity extends AppCompatActivity {
+    SessonManager sessonManager;
     EditText editHolderName, editBankName,
             editAccountNo, editIfsc;
-    SessonManager sessonManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_page2);
-        String form_step = getIntent().getStringExtra("form_step");
-        if (form_step != null) {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + "Form Step " + form_step + "</font>")));
-        } else {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + "Form Step " + 2 + "</font>")));
-        }
-
+        setContentView(R.layout.activity_bank_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
-
-        Log.d("Token",sessonManager.getToken());
         /*Todo:- EditText Find Id*/
         editHolderName = findViewById(R.id.editHolderName);
         editBankName = findViewById(R.id.editBankName);
         editAccountNo = findViewById(R.id.editAccountNo);
         editIfsc = findViewById(R.id.editIfsc);
-
+        viewBankDetails();
     }
+    private void viewBankDetails() {
+        if (CommonUtils.isOnline(BankDetailsActivity.this)) {
+            sessonManager.showProgress(BankDetailsActivity.this);
+            Call<BankDetailsGetModel> call= ApiExecutor.getApiService(this)
+                    .apiViewBankDetails("Bearer " + sessonManager.getToken());
+            call.enqueue(new Callback<BankDetailsGetModel>() {
+                @Override
+                public void onResponse(Call<BankDetailsGetModel> call, Response<BankDetailsGetModel> response) {
+                    sessonManager.hideProgress();
+                    if (response.body()!=null) {
+                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                            BankDetailsGetModel bankDetailsGetModel=response.body();
+                            if (bankDetailsGetModel.getData().getUser()!=null){
+                                editHolderName.setText(bankDetailsGetModel.getData().getUser().getAccountHolder());
+                                editBankName.setText(bankDetailsGetModel.getData().getUser().getBankName());
+                                editAccountNo.setText(bankDetailsGetModel.getData().getUser().getAccountNo());
+                                editIfsc.setText(bankDetailsGetModel.getData().getUser().getIfscCode());
+                            }
+                        }else {
+                            Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<BankDetailsGetModel> call, Throwable t) {
+                    sessonManager.hideProgress();
+                }
+            });
+        }else {
+            CommonUtils.showToastInCenter(BankDetailsActivity.this, getString(R.string.please_check_network));
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -79,10 +100,9 @@ public class Page2Activity extends AppCompatActivity {
             apiAccountDetails();
         }
     }
-
     private void apiAccountDetails() {
-        if (CommonUtils.isOnline(Page2Activity.this)) {
-            sessonManager.showProgress(Page2Activity.this);
+        if (CommonUtils.isOnline(BankDetailsActivity.this)) {
+            sessonManager.showProgress(BankDetailsActivity.this);
             AccountDetailsRequest accountDetailsRequest=new AccountDetailsRequest();
             accountDetailsRequest.setAccount_holder(editHolderName.getText().toString());
             accountDetailsRequest.setBank_name(editBankName.getText().toString());
@@ -96,17 +116,10 @@ public class Page2Activity extends AppCompatActivity {
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            Toast.makeText(Page2Activity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            UploadDocumentModel uploadDocumentModel=response.body();
-                            int step=uploadDocumentModel.getFormStep();
-                            String form_step=String.valueOf(step);
-                            startActivity(new Intent(Page2Activity.this, PersionalDetailsActivity.class)
-                                    .putExtra("form_step",form_step)
-                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                            finish();
-                            finishAffinity();
+                            Toast.makeText(BankDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            viewBankDetails();
                         }else {
-                            Toast.makeText(Page2Activity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BankDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -119,7 +132,7 @@ public class Page2Activity extends AppCompatActivity {
 
 
         }else {
-            CommonUtils.showToastInCenter(Page2Activity.this, getString(R.string.please_check_network));
+            CommonUtils.showToastInCenter(BankDetailsActivity.this, getString(R.string.please_check_network));
         }
     }
 }

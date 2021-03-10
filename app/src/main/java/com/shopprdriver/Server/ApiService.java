@@ -6,6 +6,7 @@ import com.shopprdriver.Model.AcceptChatModel;
 import com.shopprdriver.Model.AcceptModel;
 import com.shopprdriver.Model.Attendences.AttendencesModel;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
+import com.shopprdriver.Model.BankDetailsGet.BankDetailsGetModel;
 import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
@@ -236,18 +237,9 @@ public interface ApiService {
     @POST("update-documents")
     Call<DocumentModel>apiDocument(@HeaderMap Map<String, String> token,
                                    @Part MultipartBody.Part front_aadhaar_card);
-    /*@Multipart
-    @POST("update-documents")
-    Call<DocumentModel>apiDocument(@HeaderMap Map<String, String> token,
-                                   @Part MultipartBody.Part  pan_card,
-                                   @Part MultipartBody.Part front_aadhaar_card,
-                                   @Part MultipartBody.Part back_aadhaar_card,
-                                   @Part MultipartBody.Part front_dl_no,
-                                   @Part MultipartBody.Part back_dl_no,
-                                   @Part MultipartBody.Part bike_front,
-                                   @Part MultipartBody.Part bike_back);*/
 
 
-
-
+    @NonNull
+    @GET("get-bank-info")
+    Call<BankDetailsGetModel>apiViewBankDetails(@Header("Authorization") String token);
 }

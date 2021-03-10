@@ -51,11 +51,14 @@ public class ViewDocumentActivity extends AppCompatActivity {
             frontDlno, backDlno,frontBke,backBike, panCard;
 
     SessonManager sessonManager;
+    /*Todo:- FrontAadhar*/
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+
     private String userChoosenTask;
     byte[] byteArrayAdharFront,byteArrayAdharBack,
             byteArrayDlNoFront,byteArrayDlNoBack,byteArrayFrontBike,byteArrayBakeBike,byteArrayPan;
     File destination;
+    String select;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,32 +119,39 @@ public class ViewDocumentActivity extends AppCompatActivity {
 
     public void frontAadhar(View view) {
         selectImage();
+        select="1";
     }
 
 
 
     public void backAadhar(View view) {
-
+        selectImage();
+        select="2";
     }
 
     public void frontDlno(View view) {
-
+        selectImage();
+        select="3";
     }
 
     public void backDlno(View view) {
-
+        selectImage();
+        select="4";
     }
 
     public void frontBake(View view) {
-
+        selectImage();
+        select="5";
     }
 
     public void backBike(View view) {
-
+        selectImage();
+        select="6";
     }
 
     public void panCard(View view) {
-
+        selectImage();
+        select="7";
     }
 
     @Override
@@ -206,23 +216,581 @@ public class ViewDocumentActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+        if (select.equalsIgnoreCase("1")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult(data);
+            }
+        }else if (select.equalsIgnoreCase("2")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult1(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult1(data);
+            }
+        }else if (select.equalsIgnoreCase("3")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult3(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult3(data);
+            }
+        }else if (select.equalsIgnoreCase("4")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult4(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult4(data);
+            }
+        }else if (select.equalsIgnoreCase("5")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult5(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult5(data);
+            }
+        }else if (select.equalsIgnoreCase("6")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult6(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult6(data);
+            }
+        }else if (select.equalsIgnoreCase("7")){
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult7(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult7(data);
+            }
         }
+
     }
 
+    /*Todo:- Seven*/
+    private void onCaptureImageResult7(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayPan=bytes.toByteArray();
+        panCard.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload7();
+    }
+
+
+    private void onSelectFromGalleryResult7(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayPan=stream.toByteArray();
+        panCard.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload7();
+    }
+
+    private void adhaarUpload7() {
+        RequestBody pan_card = RequestBody
+                .create(MediaType.parse("image/*"),byteArrayPan);
+        MultipartBody.Part filePartPan = MultipartBody.Part.createFormData("pan_card", destination.getName(), pan_card);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartPan);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    /*Todo:- Six*/
+    private void onCaptureImageResult6(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayBakeBike=bytes.toByteArray();
+        backBike.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload6();
+    }
+
+    private void onSelectFromGalleryResult6(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayBakeBike=stream.toByteArray();
+        backBike.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload6();
+    }
+
+    private void adhaarUpload6() {
+        RequestBody backBike = RequestBody
+                .create(MediaType.parse("image/*"),byteArrayBakeBike);
+        MultipartBody.Part filePartBackBike = MultipartBody.Part.createFormData("bike_back", destination.getName(), backBike);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartBackBike);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    /*Todo:- Five*/
+    private void onCaptureImageResult5(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayFrontBike=bytes.toByteArray();
+        frontBke.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload5();
+    }
+
+    private void onSelectFromGalleryResult5(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayFrontBike=stream.toByteArray();
+        frontBke.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload5();
+    }
+
+    private void adhaarUpload5() {
+        RequestBody frontBike = RequestBody
+                .create(MediaType.parse("image/*"),byteArrayFrontBike);
+        MultipartBody.Part filePartFrontBike = MultipartBody.Part.createFormData("bike_front", destination.getName(), frontBike);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartFrontBike);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    /*Todo:- Four*/
+    private void onCaptureImageResult4(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayDlNoBack=bytes.toByteArray();
+        backDlno.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload4();
+    }
+
+    private void onSelectFromGalleryResult4(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayDlNoBack=stream.toByteArray();
+        backDlno.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload4();
+    }
+
+    private void adhaarUpload4() {
+        RequestBody back_dl_no = RequestBody
+                .create(MediaType.parse("image/*"), byteArrayDlNoBack);
+        MultipartBody.Part filePartback_dl_no = MultipartBody.Part.createFormData("back_dl_no", destination.getName(), back_dl_no);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartback_dl_no);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    /*Todo:- Third*/
+    private void onCaptureImageResult3(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayDlNoFront=bytes.toByteArray();
+        frontDlno.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload3();
+    }
+
+    /*Todo:- Third*/
+    private void onSelectFromGalleryResult3(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayDlNoFront=stream.toByteArray();
+        frontDlno.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload3();
+    }
+
+    private void adhaarUpload3() {
+        RequestBody front_dl_no = RequestBody
+                .create(MediaType.parse("image/*"), byteArrayDlNoFront);
+        MultipartBody.Part filePartDlFront = MultipartBody.Part.createFormData("front_dl_no", destination.getName(), front_dl_no);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartDlFront);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    /*Todo:- Second*/
+    private void onCaptureImageResult1(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        byteArrayAdharBack=bytes.toByteArray();
+        backAadhar.setImageBitmap(thumbnail);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        adhaarUpload1();
+    }
+
+    private void adhaarUpload1() {
+        RequestBody back_aadhaar_card = RequestBody
+                .create(MediaType.parse("image/*"), byteArrayAdharBack);
+        MultipartBody.Part filePartAdharBack = MultipartBody.Part.createFormData("back_aadhaar_card", destination.getName(), back_aadhaar_card);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        Call<DocumentModel>call=ApiExecutor.getApiService(this)
+                .apiDocument(headers,filePartAdharBack);
+        call.enqueue(new Callback<DocumentModel>() {
+            @Override
+            public void onResponse(Call<DocumentModel> call, Response<DocumentModel> response) {
+                sessonManager.hideProgress();
+                if (response.body()!=null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        viewDocument();
+                    }else {
+                        Toast.makeText(ViewDocumentActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DocumentModel> call, Throwable t) {
+                sessonManager.hideProgress();
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult1(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byteArrayAdharBack=stream.toByteArray();
+        backAadhar.setImageBitmap(bm);
+        destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(stream.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adhaarUpload1();
+    }
+
+    /*Todo:- first*/
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         byteArrayAdharFront=bytes.toByteArray();
+        frontAadhar.setImageBitmap(thumbnail);
          destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
-
         FileOutputStream fo;
         try {
             destination.createNewFile();
@@ -238,9 +806,6 @@ public class ViewDocumentActivity extends AppCompatActivity {
         adhaarUpload();
 
     }
-
-
-
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
         Bitmap bm=null;
@@ -277,10 +842,6 @@ public class ViewDocumentActivity extends AppCompatActivity {
                 .create(MediaType.parse("image/*"), byteArrayAdharFront);
         MultipartBody.Part filePartAdharFront = MultipartBody.Part.createFormData("front_aadhaar_card", destination.getName(), front_aadhaar_card);
 
-/*
-        RequestBody back_aadhaar_card = RequestBody
-                .create(MediaType.parse("image/*"), byteArrayAdharBack);
-        MultipartBody.Part filePartAdharBack = MultipartBody.Part.createFormData("back_aadhaar_card", destination.getName(), back_aadhaar_card);*/
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + sessonManager.getToken());
         Call<DocumentModel>call=ApiExecutor.getApiService(this)
