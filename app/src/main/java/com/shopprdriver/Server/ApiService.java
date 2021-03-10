@@ -19,6 +19,7 @@ import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
+import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
@@ -27,19 +28,23 @@ import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.Model.TravelingDetails.TravelingDetailsModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
+import com.shopprdriver.Model.UploadDocument.DocumentModel;
+import com.shopprdriver.Model.UploadDocument.GetDocumentModel;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
-
+import com.shopprdriver.Model.WorkDetails.WorkDetailsModel;
+import com.shopprdriver.Model.WorkLocation.WorkLocationModel;
 import com.shopprdriver.RequestService.AccountDetailsRequest;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
+import com.shopprdriver.RequestService.PersonalDetailsRequest;
 import com.shopprdriver.RequestService.RatingsRequest;
 import com.shopprdriver.RequestService.TextTypeRequest;
 import com.shopprdriver.RequestService.WalletRequest;
 
-
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -209,4 +214,40 @@ public interface ApiService {
     @POST("send-message/{chat_id}")
     Call<SendModel>apiWalletRequest(@Header("Authorization") String token,
                            @Path("chat_id")int chat_id, @Body WalletRequest walletRequest);
+
+
+    @POST("update-personal-details")
+    Call<PersonalDetailsModel>apiPersonalDetails(@Header("Authorization") String token,
+                                                 @Body PersonalDetailsRequest personalDetailsRequest);
+
+    @GET("work-locations")
+    Call<WorkLocationModel>apiWorkLocation();
+
+    @POST("update-work-details")
+    Call<WorkDetailsModel>apiWorkDetails(@Header("Authorization") String token,
+                                         @Query("locations[]") List<Integer>locationWorkId,
+                                         @Query("work_type")String work_type);
+
+    @NonNull
+    @GET("get-documents")
+    Call<GetDocumentModel>apiViewDocument(@Header("Authorization") String token);
+
+    @Multipart
+    @POST("update-documents")
+    Call<DocumentModel>apiDocument(@HeaderMap Map<String, String> token,
+                                   @Part MultipartBody.Part front_aadhaar_card);
+    /*@Multipart
+    @POST("update-documents")
+    Call<DocumentModel>apiDocument(@HeaderMap Map<String, String> token,
+                                   @Part MultipartBody.Part  pan_card,
+                                   @Part MultipartBody.Part front_aadhaar_card,
+                                   @Part MultipartBody.Part back_aadhaar_card,
+                                   @Part MultipartBody.Part front_dl_no,
+                                   @Part MultipartBody.Part back_dl_no,
+                                   @Part MultipartBody.Part bike_front,
+                                   @Part MultipartBody.Part bike_back);*/
+
+
+
+
 }

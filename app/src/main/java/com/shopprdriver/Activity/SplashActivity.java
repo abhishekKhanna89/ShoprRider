@@ -14,6 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.R;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -50,7 +51,6 @@ public class SplashActivity extends AppCompatActivity {
 
         });
 
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -66,7 +66,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 3000);
     }
-
     private void viewStatus() {
         if (CommonUtils.isOnline(SplashActivity.this)) {
             Call<ProfileStatusModel>call= ApiExecutor.getApiService(this)
@@ -89,9 +88,18 @@ public class SplashActivity extends AppCompatActivity {
                                     startActivity(new Intent(SplashActivity.this, Page2Activity.class));
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                     finish();
+                                }else if (step_form==3){
+                                    startActivity(new Intent(SplashActivity.this, PersionalDetailsActivity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    finish();
+                                }else if (step_form==4){
+                                    startActivity(new Intent(SplashActivity.this, WorkLocationActivity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                    finish();
                                 }else {
+                                    PrefUtils.getAppId(SplashActivity.this);
                                     startActivity(new Intent(SplashActivity.this, MenuActivity.class)
-                                    .putExtra("check_out_type",type));
+                                            .putExtra("check_out_type",type));
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                     finish();
                                 }

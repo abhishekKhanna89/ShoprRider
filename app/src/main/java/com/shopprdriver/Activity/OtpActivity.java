@@ -80,7 +80,7 @@ public class OtpActivity extends AppCompatActivity {
                             String userId=otpVerifyModel.getUser_id();
                             String sendbird_token=otpVerifyModel.getSendbird_token();
                             //Log.d("res",sendbird_token);
-                            String form_step=otpVerifyModel.getForm_step();
+                            int form_step=otpVerifyModel.getForm_step();
                             String savedAppId = PrefUtils.getAppId(OtpActivity.this);
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());
@@ -90,9 +90,39 @@ public class OtpActivity extends AppCompatActivity {
                                             setResult(RESULT_OK, null);
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             if (type.equalsIgnoreCase("login")){
-                                                startActivity(new Intent(OtpActivity.this, MenuActivity.class)
-                                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                finish();
+                                                if (form_step==1){
+                                                    startActivity(new Intent(OtpActivity.this, Page1Activity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else if (form_step==2){
+                                                    startActivity(new Intent(OtpActivity.this, Page2Activity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else if (form_step==3){
+                                                    startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else if (form_step==4){
+                                                    startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else {
+                                                    PrefUtils.getAppId(OtpActivity.this);
+                                                    startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                    finish();
+                                                }
+                                                /*if (form_step.equalsIgnoreCase("1")){
+                                                    startActivity(new Intent(OtpActivity.this, Page1Activity.class)
+                                                            .putExtra("form_step",form_step)
+                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                    finish();
+                                                }else {
+                                                    startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                    finish();
+                                                }*/
+
                                             }else {
                                                 //sessonManager.setForm_Step(form_step);
                                                 startActivity(new Intent(OtpActivity.this, Page1Activity.class)

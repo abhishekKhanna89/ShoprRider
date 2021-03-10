@@ -27,8 +27,19 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.PersionalDetailsActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.ViewDocumentActivity"
+            android:screenOrientation="portrait"
+            android:label="Document"/>
+        <activity
+            android:name=".Activity.AccountInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatTheme" />
+        <activity
+            android:name=".Activity.WorkLocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.PersionalDetailsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.TravelingDetailsActivity"
             android:label="Traveling Details"

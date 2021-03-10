@@ -1,10 +1,9 @@
-package com.shopprdriver.Model.PersonalDetails;
+package com.shopprdriver.Model.WorkDetails;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PersonalDetailsModel {
-
+public class WorkDetailsModel {
     @SerializedName("status")
     @Expose
     private String status;
@@ -13,7 +12,8 @@ public class PersonalDetailsModel {
     private String message;
     @SerializedName("form_step")
     @Expose
-    private int form_step;
+    private int formStep;
+
     public String getStatus() {
         return status;
     }
@@ -30,11 +30,11 @@ public class PersonalDetailsModel {
         this.message = message;
     }
 
-    public int getForm_step() {
-        return form_step;
+    public int getFormStep() {
+        return formStep;
     }
 
-    public void setForm_step(int form_step) {
-        this.form_step = form_step;
+    public void setFormStep(int formStep) {
+        this.formStep = formStep;
     }
 }

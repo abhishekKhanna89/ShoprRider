@@ -11,7 +11,7 @@ public class OtpVerifyModel {
 
     @SerializedName("form_step")
     @Expose
-    private String form_step;
+    private int form_step;
 
 
     @SerializedName("message")
@@ -35,11 +35,11 @@ public class OtpVerifyModel {
         this.status = status;
     }
 
-    public String getForm_step() {
+    public int getForm_step() {
         return form_step;
     }
 
-    public void setForm_step(String form_step) {
+    public void setForm_step(int form_step) {
         this.form_step = form_step;
     }
 

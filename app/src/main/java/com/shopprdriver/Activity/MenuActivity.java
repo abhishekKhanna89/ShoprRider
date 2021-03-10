@@ -51,6 +51,7 @@ import com.shopprdriver.Model.Logout.LogoutModel;
 import com.shopprdriver.Model.Menu_Model;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -288,10 +289,8 @@ public class MenuActivity extends AppCompatActivity implements
                         }
                     } else if (position == 7) {
                         startActivity(new Intent(context, AttendenceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-
                     } else if (position == 8) {
-
-
+                        startActivity(new Intent(context, AccountInfoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     } else if (position == 9) {
                         startActivity(new Intent(context, ReviewsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     }else if (position==10){
@@ -414,15 +413,16 @@ public class MenuActivity extends AppCompatActivity implements
                                 if (response.body()!=null) {
                                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                         sessonManager.setToken("");
+                                        PrefUtils.setAppId(MenuActivity.this,"");
                                         Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(MenuActivity.this, LoginActivity.class));
                                         finishAffinity();
-                                        Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }else {
-                                        /*startActivity(new Intent(MenuActivity.this, LoginActivity.class));
-                                        finishAffinity();*/
                                         //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
+                                    }/*else {
+                                        *//*startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                        finishAffinity();*//*
+                                        //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }*/
                                 }
                             }
 
