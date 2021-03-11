@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.shopprdriver.Model.BankDetailsGet.BankDetailsGetModel;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.AccountDetailsRequest;
@@ -100,6 +99,7 @@ public class Page2Activity extends AppCompatActivity {
                             UploadDocumentModel uploadDocumentModel=response.body();
                             int step=uploadDocumentModel.getFormStep();
                             String form_step=String.valueOf(step);
+                            sessonManager.setAccountUpdateDetails("step2");
                             startActivity(new Intent(Page2Activity.this, PersionalDetailsActivity.class)
                                     .putExtra("form_step",form_step)
                                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

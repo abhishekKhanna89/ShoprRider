@@ -21,6 +21,7 @@ import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
+import com.shopprdriver.Model.PersonalInfoView.PersonalInfoViewModel;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
@@ -35,6 +36,7 @@ import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
 import com.shopprdriver.Model.WorkDetails.WorkDetailsModel;
+import com.shopprdriver.Model.WorkDetailsView.WorkDetailsViewModel;
 import com.shopprdriver.Model.WorkLocation.WorkLocationModel;
 import com.shopprdriver.RequestService.AccountDetailsRequest;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
@@ -242,4 +244,13 @@ public interface ApiService {
     @NonNull
     @GET("get-bank-info")
     Call<BankDetailsGetModel>apiViewBankDetails(@Header("Authorization") String token);
+
+
+    @NonNull
+    @GET("get-work-info")
+    Call<WorkDetailsViewModel>apiWorkDetailsView(@Header("Authorization") String token);
+
+    @NonNull
+    @GET("get-personal-info")
+    Call<PersonalInfoViewModel>apiPersonalDetailsView(@Header("Authorization") String token);
 }

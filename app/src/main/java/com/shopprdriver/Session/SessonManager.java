@@ -38,6 +38,8 @@ public class SessonManager {
     public static final String TO_DATE="to_date";
 
 
+    public static final String AccountUpdateDetails="aud";
+
 
     public Dialog mDialog;
     public SessonManager(Context ctx) {
@@ -151,7 +153,13 @@ public class SessonManager {
         return sharedPreference.getString(Checkout_Status,"");
     }
 
-
+    public void setAccountUpdateDetails(String accountUpdateDetails){
+        editor.putString(AccountUpdateDetails,accountUpdateDetails);
+        editor.apply();
+    }
+    public String getAccountUpdateDetails(){
+        return sharedPreference.getString(AccountUpdateDetails,"");
+    }
 
     public void setFromDate(String fromDate){
         editor.putString(FROM_DATE,fromDate);

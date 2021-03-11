@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.PersonalInfoActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:src="@drawable/splash_transparent"/>
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/monster"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:layout_marginLeft="30dp"
+                android:layout_gravity="start"
+                android:textColor="#000"
+                android:lineSpacingExtra="-13sp"
+                android:text="Personal Details"
+                />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:background="@drawable/corner_green" />
+
+            <LinearLayout
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/round_react_green"
+                android:orientation="vertical"
+                android:padding="40dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        app:cardElevation="10dp">
+
+                        <EditText
+                            android:id="@+id/editPAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/eddittext"
+                            android:hint="Permanent Address"
+                            android:inputType="textPersonName|textCapSentences"
+                            android:padding="10dp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginRight="2dp">
+
+                            <Spinner
+                                android:id="@+id/spinnerState"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp" />
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_weight="1">
+
+                            <Spinner
+                                android:id="@+id/textCity"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"/>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:layout_marginTop="10dp"
+                        app:cardElevation="10dp">
+
+                        <EditText
+                            android:id="@+id/editPPNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/eddittext"
+                            android:hint="Permanent Pin Code."
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:padding="10dp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:layout_marginTop="10dp"
+                        app:cardElevation="10dp">
+
+                        <EditText
+                            android:id="@+id/editSMNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/eddittext"
+                            android:hint="Secondary Mobile No."
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:padding="10dp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:layout_marginTop="10dp"
+                        app:cardElevation="10dp">
+
+                        <EditText
+                            android:id="@+id/editEMNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/eddittext"
+                            android:hint="Emergency Mobile No."
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:padding="10dp" />
+                    </androidx.cardview.widget.CardView>
+
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:fontFamily="sans-serif"
+                        android:onClick="submit"
+                        android:text="Submit"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -27,9 +27,17 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.BankDetailsActivity"
+        <activity android:name=".Activity.PersonalInfoActivity"
+            android:screenOrientation="portrait"
+            android:label="Personal Info"/>
+        <activity
+            android:name=".Activity.WorkDetailsViewActivity"
+            android:label="Work Details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.BankDetailsActivity"
             android:label="Bank Details"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ViewDocumentActivity"
             android:label="Document"

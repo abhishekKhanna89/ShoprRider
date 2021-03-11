@@ -1,14 +1,13 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.shopprdriver.Model.BankDetailsGet.BankDetailsGetModel;
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
@@ -41,16 +40,16 @@ public class BankDetailsActivity extends AppCompatActivity {
     }
     private void viewBankDetails() {
         if (CommonUtils.isOnline(BankDetailsActivity.this)) {
-            sessonManager.showProgress(BankDetailsActivity.this);
+            //sessonManager.showProgress(BankDetailsActivity.this);
             Call<BankDetailsGetModel> call= ApiExecutor.getApiService(this)
                     .apiViewBankDetails("Bearer " + sessonManager.getToken());
             call.enqueue(new Callback<BankDetailsGetModel>() {
                 @Override
                 public void onResponse(Call<BankDetailsGetModel> call, Response<BankDetailsGetModel> response) {
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
                             BankDetailsGetModel bankDetailsGetModel=response.body();
                             if (bankDetailsGetModel.getData().getUser()!=null){
                                 editHolderName.setText(bankDetailsGetModel.getData().getUser().getAccountHolder());
@@ -59,14 +58,14 @@ public class BankDetailsActivity extends AppCompatActivity {
                                 editIfsc.setText(bankDetailsGetModel.getData().getUser().getIfscCode());
                             }
                         }else {
-                            Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(BankDetailsActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<BankDetailsGetModel> call, Throwable t) {
-                    sessonManager.hideProgress();
+                    //sessonManager.hideProgress();
                 }
             });
         }else {
@@ -116,6 +115,7 @@ public class BankDetailsActivity extends AppCompatActivity {
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            sessonManager.setAccountUpdateDetails("step1");
                             Toast.makeText(BankDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             viewBankDetails();
                         }else {

@@ -3,13 +3,11 @@ package com.shopprdriver.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -35,13 +33,14 @@ public class WorkLocationActivity extends AppCompatActivity {
     SessonManager sessonManager;
     RadioGroup groupRadio;
     Spinner spinnerWorkList;
-    RadioButton work_time;
     List<WorkLocationModel.Location>locationList;
     ArrayList<Integer>locationIdList=new ArrayList<>();
     ArrayList<String>locationNameList=new ArrayList<>();
     int locationWorkId,selectedItem;
-    String locationWorkName,workPart;
+    String locationWorkName;
     List<Integer>lll=new ArrayList<>();
+    String radioV;
+    int selectedId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +59,15 @@ public class WorkLocationActivity extends AppCompatActivity {
         groupRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                int selectedId=groupRadio.getCheckedRadioButtonId();
-                work_time=(RadioButton)findViewById(selectedId);
-                String work=work_time.getText().toString();
-                if (work.equals("Part Time")){
-                    workPart="part-time";
-                }else if (work.equals("Permanent")){
-                    workPart="permanent";
+                selectedId=groupRadio.getCheckedRadioButtonId();
+                radioV=String.valueOf(selectedId);
+                switch (selectedId){
+                    case R.id.ptRadio:
+                        radioV="0";
+                        break;
+                    case R.id.ftRadio:
+                        radioV="1";
+                        break;
                 }
                 //Toast.makeText(WorkLocationActivity.this, ""+selectedId, Toast.LENGTH_SHORT).show();
             }
@@ -88,8 +89,8 @@ public class WorkLocationActivity extends AppCompatActivity {
                             for (int i=0;i<workLocationModel.getData().getLocations().size();i++){
                                 locationWorkId=workLocationModel.getData().getLocations().get(i).getId();
                                 locationWorkName=workLocationModel.getData().getLocations().get(i).getName();
-                               locationIdList.add(locationWorkId);
-                               locationNameList.add(locationWorkName);
+                                locationIdList.add(locationWorkId);
+                                locationNameList.add(locationWorkName);
                             }
                         }
                         //locationIdList.add(0,0);
@@ -117,8 +118,8 @@ public class WorkLocationActivity extends AppCompatActivity {
     }
 
     public void submit(View view) {
-        if (TextUtils.isEmpty(workPart)){
-            Toast.makeText(this, "Please select any option( Permanent / Part Time )", Toast.LENGTH_SHORT).show();
+        if (radioV.length()==0){
+            Toast.makeText(this, "Please select any option( Part Time / Full Time )", Toast.LENGTH_SHORT).show();
         }else {
             service();
         }
@@ -128,7 +129,7 @@ public class WorkLocationActivity extends AppCompatActivity {
         if (CommonUtils.isOnline(WorkLocationActivity.this)) {
             sessonManager.showProgress(WorkLocationActivity.this);
             Call<WorkDetailsModel>call=ApiExecutor.getApiService(this)
-                    .apiWorkDetails("Bearer " + sessonManager.getToken(),lll,workPart);
+                    .apiWorkDetails("Bearer " + sessonManager.getToken(),lll,radioV);
             call.enqueue(new Callback<WorkDetailsModel>() {
                 @Override
                 public void onResponse(Call<WorkDetailsModel> call, Response<WorkDetailsModel> response) {
@@ -167,8 +168,8 @@ public class WorkLocationActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             lll.clear();
             selectedItem = locationList.get(position).getId();
-            lll.add(selectedItem)
-                    /*parent.getItemAtPosition(position).toString()*/;
+            lll.add(selectedItem);
+                    /*parent.getItemAtPosition(position).toString()*/
             //Toast.makeText(WorkLocationActivity.this, ""+selectedItem, Toast.LENGTH_SHORT).show();
         }
 

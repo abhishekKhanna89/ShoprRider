@@ -1,8 +1,7 @@
 package com.shopprdriver.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,9 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
-import com.shopprdriver.Model.StateList.City;
-import com.shopprdriver.Model.StateList.State;
-import com.shopprdriver.Model.StateList.StateListModel;
+import com.shopprdriver.Model.PersonalInfoView.PersonalInfoViewModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.PersonalDetailsRequest;
 import com.shopprdriver.Server.ApiExecutor;
@@ -31,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PersionalDetailsActivity extends AppCompatActivity {
+public class PersonalInfoActivity extends AppCompatActivity {
     SessonManager sessonManager;
 
     EditText editPAddress,editPPNo,editSMNo,editEMNo;
@@ -39,22 +36,26 @@ public class PersionalDetailsActivity extends AppCompatActivity {
     /*Todo:- State List*/
     Spinner textCity;
     Spinner spinnerState;
-    List<State> stateList;
-    List<City> cityList;
-    List<String> stateName;
-    List<String> cityName;
+    /*Todo:- Get Value Spinner*/
+    List<PersonalInfoViewModel.State>stateList;
+    List<PersonalInfoViewModel.City>cityList;
+    /*Todo:- State*/
+    ArrayList<Integer>stateIdList=new ArrayList<>();
+    ArrayList<String>stateNameList=new ArrayList<>();
+    /*Todo:- City*/
+    ArrayList<Integer>cityIdList=new ArrayList<>();
+    ArrayList<String>cityNameList=new ArrayList<>();
+
+    List<Integer>lll=new ArrayList<>();
+
+    String stateIdU, cityIdU;
     int stateId,cityId;
+    ArrayAdapter<String> stateAdaoter;
+    ArrayAdapter<String> cityAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_persional_details);
-        String form_step = getIntent().getStringExtra("form_step");
-        if (form_step != null) {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + "Form Step " + form_step + "</font>")));
-        } else {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + "Form Step " + 3 + "</font>")));
-        }
-
+        setContentView(R.layout.activity_personal_info);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         /*Todo:- Find EditText Id*/
@@ -62,32 +63,33 @@ public class PersionalDetailsActivity extends AppCompatActivity {
         editPPNo=findViewById(R.id.editPPNo);
         editSMNo=findViewById(R.id.editSMNo);
         editEMNo=findViewById(R.id.editEMNo);
-
         /*Todo:- State List*/
         spinnerState = findViewById(R.id.spinnerState);
         textCity = findViewById(R.id.textCity);
-
-        stateName = new ArrayList<>();
-        cityName = new ArrayList<>();
-
-        viewStateList();
 
 
         spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 stateId=stateList.get(position).getId();
-                cityName.clear();
+                Log.d("StateSpinnerId",""+stateId);
+                cityNameList.clear();
                 if (stateList.get(position).getCities().size() != 0) {
                     cityList = stateList.get(position).getCities();
+                    Log.d("citySize",""+cityList.size());
                     for (int i = 0; i < cityList.size(); i++) {
-                        cityName.add(cityList.get(i).getName());
-                        ArrayAdapter cityAdapter = new ArrayAdapter(PersionalDetailsActivity.this, android.R.layout.simple_list_item_1, cityName);
+                        cityNameList.add(cityList.get(i).getName());
+                        cityAdapter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, cityNameList);
                         textCity.setAdapter(cityAdapter);
+
                     }
+
+
+                    //textCity.setSelection(Integer.parseInt(cityIdU));
                 } else {
                     //Toast.makeText(RegisterActivity.this, "elsePart", Toast.LENGTH_SHORT).show();
                     textCity.setAdapter(null);
+
                 }
             }
 
@@ -99,50 +101,75 @@ public class PersionalDetailsActivity extends AppCompatActivity {
         textCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                cityId=cityList.get(position).getId();
-                /*city=textCity.getItemAtPosition(position).toString();
-                String id = textCity.get(position).getId();*/
+                //cityId=cityList.get(position).getId();
+                //Log.d("ressCity",""+cityId);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
 
-    }
-    private void viewStateList() {
-        if (CommonUtils.isOnline(PersionalDetailsActivity.this)) {
-            Call<StateListModel> call = ApiExecutor.getApiService(this)
-                    .apiStateList();
-            call.enqueue(new Callback<StateListModel>() {
-                @Override
-                public void onResponse(Call<StateListModel> call, Response<StateListModel> response) {
-                    if (response.body() != null) {
-                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            StateListModel stateListModel = response.body();
-                            if (stateListModel.getData().getStates() != null) {
-                                stateList = stateListModel.getData().getStates();
-                                for (int i = 0; i < stateListModel.getData().getStates().size(); i++) {
-                                    String state = stateList.get(i).getName();
-                                    stateName.add(state);
-                                }
-                                ArrayAdapter stateAdaoter = new ArrayAdapter(PersionalDetailsActivity.this, android.R.layout.simple_list_item_1, stateName);
-                                spinnerState.setAdapter(stateAdaoter);
+        viewPersonalView();
 
+    }
+
+    private void viewPersonalView() {
+        if (CommonUtils.isOnline(PersonalInfoActivity.this)) {
+            Call<PersonalInfoViewModel>call= ApiExecutor.getApiService(this)
+                    .apiPersonalDetailsView("Bearer " + sessonManager.getToken());
+            call.enqueue(new Callback<PersonalInfoViewModel>() {
+                @Override
+                public void onResponse(Call<PersonalInfoViewModel> call, Response<PersonalInfoViewModel> response) {
+                    if (response.body()!=null) {
+                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                            PersonalInfoViewModel personalInfoViewModel=response.body();
+                            if (personalInfoViewModel.getData()!=null){
+                                /*Todo:- User */
+                                editPAddress.setText(personalInfoViewModel.getData().getUser().getPermanentAddress());
+                                editPPNo.setText(personalInfoViewModel.getData().getUser().getPermanentPin());
+                                editSMNo.setText(personalInfoViewModel.getData().getUser().getSecondaryMobile());
+                                editEMNo.setText(personalInfoViewModel.getData().getUser().getEmergencyMobile());
+                                /*Todo:- State Spinner*/
+                                stateIdU =personalInfoViewModel.getData().getUser().getPermanentState();
+
+                                /*Todo:- City Spinner*/
+                                cityIdU = personalInfoViewModel.getData().getUser().getPermanentCity();
+
+                                //Log.d("responseC",cityIdU);
+
+                                stateList=personalInfoViewModel.getData().getStates();
+                                for (int i=0;i<stateList.size();i++){
+                                    int stateI=stateList.get(i).getId();
+
+                                    String stateN=stateList.get(i).getName();
+                                    stateIdList.add(stateI);
+                                    stateNameList.add(stateN);
+
+                                }
+                                stateAdaoter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, stateNameList);
+                                spinnerState.setAdapter(stateAdaoter);
+                                if (stateIdU!=null){
+                                    spinnerState.setSelection(Integer.parseInt(stateIdU));
+                                }
+                                /*if (cityIdU!=null){
+                                    textCity.setSelection(Integer.parseInt(cityIdU));
+                                }*/
                             }
+
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<StateListModel> call, Throwable t) {
+                public void onFailure(Call<PersonalInfoViewModel> call, Throwable t) {
 
                 }
             });
 
-        } else {
-            CommonUtils.showToastInCenter(PersionalDetailsActivity.this, getString(R.string.please_check_network));
+
+        }else {
+            CommonUtils.showToastInCenter(PersonalInfoActivity.this, getString(R.string.please_check_network));
         }
     }
 
@@ -174,10 +201,9 @@ public class PersionalDetailsActivity extends AppCompatActivity {
             personalDetailsAPI();
         }
     }
-
     private void personalDetailsAPI() {
-        if (CommonUtils.isOnline(PersionalDetailsActivity.this)) {
-            sessonManager.showProgress(PersionalDetailsActivity.this);
+        if (CommonUtils.isOnline(PersonalInfoActivity.this)) {
+            sessonManager.showProgress(PersonalInfoActivity.this);
             PersonalDetailsRequest personalDetailsRequest = new PersonalDetailsRequest();
             personalDetailsRequest.setPermanent_address(editPAddress.getText().toString());
             personalDetailsRequest.setPermanent_pin(editPPNo.getText().toString());
@@ -193,18 +219,19 @@ public class PersionalDetailsActivity extends AppCompatActivity {
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            Toast.makeText(PersionalDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            PersonalDetailsModel uploadDocumentModel=response.body();
+                            sessonManager.setAccountUpdateDetails("step3");
+                             Toast.makeText(PersonalInfoActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                             viewPersonalView();
+                            /*PersonalDetailsModel uploadDocumentModel=response.body();
                             int step=uploadDocumentModel.getForm_step();
                             String form_step=String.valueOf(step);
-                            sessonManager.setAccountUpdateDetails("step4");
-                            startActivity(new Intent(PersionalDetailsActivity.this, WorkLocationActivity.class)
+                            startActivity(new Intent(PersonalInfoActivity.this, WorkLocationActivity.class)
                                     .putExtra("form_step",form_step)
                                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             finish();
-                            finishAffinity();
+                            finishAffinity();*/
                         }else {
-                            Toast.makeText(PersionalDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PersonalInfoActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -215,10 +242,9 @@ public class PersionalDetailsActivity extends AppCompatActivity {
                 }
             });
         }else {
-            CommonUtils.showToastInCenter(PersionalDetailsActivity.this, getString(R.string.please_check_network));
+            CommonUtils.showToastInCenter(PersonalInfoActivity.this, getString(R.string.please_check_network));
         }
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();

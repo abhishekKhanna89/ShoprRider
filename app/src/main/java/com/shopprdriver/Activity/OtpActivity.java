@@ -99,31 +99,46 @@ public class OtpActivity extends AppCompatActivity {
                                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                                     finish();
                                                 }else if (form_step==3){
-                                                    startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
-                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                    finish();
+                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step1")){
+                                                        PrefUtils.getAppId(OtpActivity.this);
+                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                        finish();
+                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step2")){
+                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }else {
+                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }
                                                 }else if (form_step==4){
+                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step3")){
+                                                        PrefUtils.getAppId(OtpActivity.this);
+                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                        finish();
+                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step4")){
+                                                        startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }else {
                                                     startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
                                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                                     finish();
+                                                    }
+
                                                 }else {
                                                     PrefUtils.getAppId(OtpActivity.this);
                                                     startActivity(new Intent(OtpActivity.this, MenuActivity.class)
                                                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                     finish();
                                                 }
-                                                /*if (form_step.equalsIgnoreCase("1")){
-                                                    startActivity(new Intent(OtpActivity.this, Page1Activity.class)
-                                                            .putExtra("form_step",form_step)
-                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                    finish();
-                                                }else {
-                                                    startActivity(new Intent(OtpActivity.this, MenuActivity.class)
-                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                    finish();
-                                                }*/
+
 
                                             }else {
+
                                                 //sessonManager.setForm_Step(form_step);
                                                 startActivity(new Intent(OtpActivity.this, Page1Activity.class)
                                                         .putExtra("form_step",form_step)
@@ -137,7 +152,7 @@ public class OtpActivity extends AppCompatActivity {
                                 }
                             }
                         }else {
-                            Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OtpActivity.this, "OTP is not correct", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

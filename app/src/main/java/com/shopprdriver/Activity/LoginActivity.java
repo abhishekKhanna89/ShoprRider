@@ -80,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             }
-                        }else {
-                            Toast.makeText(LoginActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Account is not registered. Please register to continue", Toast.LENGTH_SHORT).show();
                     }
                 }
 
