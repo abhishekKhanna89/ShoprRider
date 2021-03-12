@@ -43,15 +43,18 @@ public class PersonalInfoActivity extends AppCompatActivity {
     ArrayList<Integer>stateIdList=new ArrayList<>();
     ArrayList<String>stateNameList=new ArrayList<>();
     /*Todo:- City*/
-    ArrayList<Integer>cityIdList=new ArrayList<>();
+    ArrayList<String>cityIdList=new ArrayList<>();
     ArrayList<String>cityNameList=new ArrayList<>();
 
     List<Integer>lll=new ArrayList<>();
 
-    String stateIdU, cityIdU;
+    String stateIdU;
     int stateId,cityId;
     ArrayAdapter<String> stateAdaoter;
     ArrayAdapter<String> cityAdapter;
+
+    String cityN,value;
+    int cityI,cityIdU;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,16 +81,19 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     cityList = stateList.get(position).getCities();
                     Log.d("citySize",""+cityList.size());
                     for (int i = 0; i < cityList.size(); i++) {
-                        cityNameList.add(cityList.get(i).getName());
-                        cityAdapter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, cityNameList);
-                        textCity.setAdapter(cityAdapter);
-
+                        cityI=cityList.get(i).getId();
+                        cityN=cityList.get(i).getName();
+                        if(cityI==cityIdU){
+                            value=cityN;
+                        }
+                        cityNameList.add(cityN);
                     }
-
-
-                    //textCity.setSelection(Integer.parseInt(cityIdU));
+                    cityAdapter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, cityNameList);
+                    textCity.setAdapter(cityAdapter);
+                    if (value!=null){
+                        textCity.setSelection(((ArrayAdapter<String>)textCity.getAdapter()).getPosition(value));
+                    }
                 } else {
-                    //Toast.makeText(RegisterActivity.this, "elsePart", Toast.LENGTH_SHORT).show();
                     textCity.setAdapter(null);
 
                 }
@@ -101,8 +107,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         textCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //cityId=cityList.get(position).getId();
-                //Log.d("ressCity",""+cityId);
+                cityId=cityList.get(position).getId();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -134,14 +139,12 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 stateIdU =personalInfoViewModel.getData().getUser().getPermanentState();
 
                                 /*Todo:- City Spinner*/
-                                cityIdU = personalInfoViewModel.getData().getUser().getPermanentCity();
+                                cityIdU = Integer.parseInt(personalInfoViewModel.getData().getUser().getPermanentCity());
 
-                                //Log.d("responseC",cityIdU);
 
                                 stateList=personalInfoViewModel.getData().getStates();
                                 for (int i=0;i<stateList.size();i++){
                                     int stateI=stateList.get(i).getId();
-
                                     String stateN=stateList.get(i).getName();
                                     stateIdList.add(stateI);
                                     stateNameList.add(stateN);
@@ -152,9 +155,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 if (stateIdU!=null){
                                     spinnerState.setSelection(Integer.parseInt(stateIdU));
                                 }
-                                /*if (cityIdU!=null){
-                                    textCity.setSelection(Integer.parseInt(cityIdU));
-                                }*/
                             }
 
                         }
