@@ -77,11 +77,13 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
 
     // Method to display the notifications
     public void showNotification(String title, String message, RemoteMessage remoteMessage) {
+        Log.d("ChatNotification",""+remoteMessage.getNotification());
+        Log.d("ChatNotificationData",""+remoteMessage.getData());
         //Log.d("title",title);
         // Pass the intent to switch to the MainActivity
 
         JSONObject jsonObject = new JSONObject(remoteMessage.getData());
-        //Log.d("ChatId+",""+jsonObject);
+        Log.d("Chatjson",""+jsonObject);
         try {
             chat_id = jsonObject.getString("chat_id");
 

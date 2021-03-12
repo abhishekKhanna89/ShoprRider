@@ -110,11 +110,11 @@ import uk.co.senab.photoview.PhotoViewAttacher;
        }else {
            holder.productLayout.setVisibility(View.GONE);
        }
-       if (chat.getType().equalsIgnoreCase("ratings")){
+       if (chat.getType().equalsIgnoreCase("rating")){
            holder.ratingsMessage.setText(chat.getMessage());
            holder.dateRating.setText(chat.getCreatedAt());
-           holder.ratingBar.setRating(Float.parseFloat(chat.getQuantity()));
 
+           holder.ratingBar.setRating(Float.parseFloat(chat.getQuantity()));
        }else {
            holder.ratingLayout.setVisibility(View.GONE);
        }
@@ -134,7 +134,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
            holder.rechargeTypeLayout.setVisibility(View.VISIBLE);
        }
 
-
+       /*Todo:- Type Paid*/
+        if (chat.getType().equalsIgnoreCase("paid")){
+            holder.paymentReceiveLayout.setVisibility(View.VISIBLE);
+            holder.paymentReceiveMsg.setText(chat.getMessage());
+            holder.paymentReceiveDateText.setText(chat.getCreatedAt());
+        }
 
        if (chat.getType().equalsIgnoreCase("address")){
            String lat =chat.getLat();
@@ -458,6 +463,10 @@ import uk.co.senab.photoview.PhotoViewAttacher;
          /*Todo:- Recharge Type*/
          ChatMessageView rechargeTypeLayout;
          TextView rechargeTypeMessage,rechargeTypeDate;
+
+         /*Tod:- Type Paid*/
+         ChatMessageView paymentReceiveLayout;
+         TextView paymentReceiveMsg,paymentReceiveDateText;
         public Holder(@NonNull View itemView) {
             super(itemView);
             /*Todo:- Location*/
@@ -506,6 +515,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
             rechargeTypeLayout=(ChatMessageView)itemView.findViewById(R.id.rechargeTypeLayout);
             rechargeTypeMessage=itemView.findViewById(R.id.rechargeTypeMessage);
             rechargeTypeDate=itemView.findViewById(R.id.rechargeTypeDate);
+
+            /*Todo:- Paid*/
+            paymentReceiveLayout=itemView.findViewById(R.id.paymentReceiveLayout);
+            paymentReceiveMsg=itemView.findViewById(R.id.paymentReceiveMsg);
+            paymentReceiveDateText=itemView.findViewById(R.id.paymentReceiveDateText);
+
         }
      }
 }

@@ -253,4 +253,11 @@ public interface ApiService {
     @NonNull
     @GET("get-personal-info")
     Call<PersonalInfoViewModel>apiPersonalDetailsView(@Header("Authorization") String token);
+
+    @POST("send-message/{chat_id}")
+    Call<SendModel>apiSendPaymentRequest(@Header("Authorization") String token,
+                                         @Path("chat_id")int chat_id,
+                                         @Query("type")String type);
+
+
 }

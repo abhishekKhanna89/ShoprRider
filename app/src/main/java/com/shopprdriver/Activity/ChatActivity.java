@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -163,8 +164,9 @@ public class ChatActivity extends AppCompatActivity {
 
             }
 
-            Log.d("chatId",""+chat_id);
+            //Log.d("chatId",""+chat_id);
         }
+        //Log.d("chatId",""+chat_id);
         chatMessageList(chat_id);
 
         /*Todo:- UserDP*/
@@ -197,6 +199,26 @@ public class ChatActivity extends AppCompatActivity {
                         break;
                     case R.id.action_wallet:
                         showWalletDialog();
+                        break;
+                    case R.id.action_ask_payment:
+                        Call<SendModel>call=ApiExecutor.getApiService(ChatActivity.this)
+                                .apiSendPaymentRequest("Bearer "+sessonManager.getToken(),chat_id,"payment");
+                        call.enqueue(new Callback<SendModel>() {
+                            @Override
+                            public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                if (response.body()!=null) {
+                                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                                        chatMessageList(chat_id);
+                                        Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<SendModel> call, Throwable t) {
+
+                            }
+                        });
                         break;
                 }
                 return false;

@@ -9,4 +9,8 @@
         android:id="@+id/action_wallet"
         android:icon="@drawable/wallet"
         android:title="Wallet"/>
+    <item
+        android:id="@+id/action_ask_payment"
+        android:icon="@drawable/request"
+        android:title="Ask for payment"/>
 </menu>
