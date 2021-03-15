@@ -418,11 +418,7 @@ public class MenuActivity extends AppCompatActivity implements
                                         startActivity(new Intent(MenuActivity.this, LoginActivity.class));
                                         finishAffinity();
                                         //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }/*else {
-                                        *//*startActivity(new Intent(MenuActivity.this, LoginActivity.class));
-                                        finishAffinity();*//*
-                                        //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }*/
+                                    }
                                 }
                             }
 

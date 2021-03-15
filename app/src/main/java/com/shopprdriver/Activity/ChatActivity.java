@@ -49,6 +49,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.gson.Gson;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
+import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.ChatMessage.Chat;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.ChatModel;
@@ -717,6 +718,13 @@ public class ChatActivity extends AppCompatActivity {
                                 chatMessageAdapter.notifyDataSetChanged();
 
                             }
+                        }else {
+                            sessonManager.setToken("");
+                            PrefUtils.setAppId(ChatActivity.this,"");
+                            Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(ChatActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+                            finishAffinity();
                         }
                     }
                 }

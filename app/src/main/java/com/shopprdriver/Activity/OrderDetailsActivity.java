@@ -1,6 +1,7 @@
 package com.shopprdriver.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.gson.Gson;
+import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.Detail;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -110,8 +113,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                     Toast.makeText(OrderDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     myOrderDetailsList();
-                                } else {
-                                    Toast.makeText(OrderDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                }else {
+                                    sessonManager.setToken("");
+                                    PrefUtils.setAppId(OrderDetailsActivity.this,"");
+                                    Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(OrderDetailsActivity.this, LoginActivity.class));
+                                    finishAffinity();
                                 }
                             }
                         }

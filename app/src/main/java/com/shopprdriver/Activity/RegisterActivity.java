@@ -31,11 +31,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Server.ApiFactory;
 import com.shopprdriver.Server.ApiService;
@@ -170,6 +172,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 spinnerState.setAdapter(stateAdaoter);
 
                             }
+                        }else {
+                            sessonManager.setToken("");
+                            PrefUtils.setAppId(RegisterActivity.this,"");
+                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finishAffinity();
                         }
                     }
                 }
