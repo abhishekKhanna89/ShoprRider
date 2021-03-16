@@ -189,53 +189,49 @@
                         android:textColor="#000000" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:background="@drawable/layout_bg"
+                        android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="10dp">
-
+                        android:layout_marginTop="1dp"
+                        style="android:style/ButtonBar">
                         <TextView
                             android:id="@+id/pqText"
-                            android:layout_width="wrap_content"
+                            android:text="5/₹ 500"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="₹ 500 -5 kg"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
+                            android:textColor="@android:color/black"
+                            android:layout_marginRight="5dp" />
+                        <Button
                             android:id="@+id/acceptText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:text="Accept"
-                            android:textColor="@color/green"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
-
-                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginRight="5dp"  />
+                        <Button
                             android:id="@+id/rejectText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:text="Reject"
-                            android:textColor="@android:color/holo_red_dark"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:id="@+id/cancelText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginRight="5dp"
+                            android:backgroundTint="@android:color/holo_red_dark"/>
+                        <Button
+                            android:id="@+id/cancelText"
                             android:text="Cancel"
-                            android:textColor="#C9A1A1A1"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginRight="5dp"
+                            android:backgroundTint="#C9A1A1A1"/>
                     </LinearLayout>
 
                     <LinearLayout

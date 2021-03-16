@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -84,6 +86,12 @@ public class ChatHistoryActivity extends AppCompatActivity {
                                 userChatListAdapter.notifyDataSetChanged();
 
                             }
+                        }else {
+                            sessonManager.setToken("");
+                            PrefUtils.setAppId(ChatHistoryActivity.this,"");
+                            Toast.makeText(ChatHistoryActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(ChatHistoryActivity.this, LoginActivity.class));
+                            finishAffinity();
                         }
                     }
                 }

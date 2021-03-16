@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.AvailableChat.Userchat;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -143,6 +146,12 @@ public class MainActivity extends AppCompatActivity {
                             userChatListAdapter = new UserChatListAdapter(MainActivity.this, chatsListModelList);
                             userChatListRecyclerView.setAdapter(userChatListAdapter);
                             userChatListAdapter.notifyDataSetChanged();
+                        }else {
+                            sessonManager.setToken("");
+                            PrefUtils.setAppId(MainActivity.this,"");
+                            Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            finishAffinity();
                         }
                     }
                     //swipeRefreshLayout.setRefreshing(false);

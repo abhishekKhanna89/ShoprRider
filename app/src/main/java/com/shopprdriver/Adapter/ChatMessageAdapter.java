@@ -10,7 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
+ import android.widget.Button;
+ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -362,7 +363,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dialog = new Dialog(context);
+                Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.setContentView(R.layout.image_layout);
@@ -378,7 +379,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog dialog = new Dialog(context);
+                Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.setContentView(R.layout.image_layout);
@@ -440,7 +441,8 @@ import uk.co.senab.photoview.PhotoViewAttacher;
          ChatMessageView textLayout;
         /*Todo:- Product*/
         ImageView productImage;
-        TextView pqText,dateProduct,productMessage,acceptText,rejectText,cancelText;
+        TextView pqText,dateProduct,productMessage;
+        Button acceptText,rejectText,cancelText;
         LinearLayout greenLayout,closeRedLayout;
          ChatMessageView productLayout;
         /*Todo:- Image*/

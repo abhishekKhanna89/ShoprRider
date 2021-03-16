@@ -20,6 +20,7 @@ import com.shopprdriver.Model.StateList.State;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.PersonalDetailsRequest;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -131,6 +132,12 @@ public class PersionalDetailsActivity extends AppCompatActivity {
                                 spinnerState.setAdapter(stateAdaoter);
 
                             }
+                        }else {
+                            sessonManager.setToken("");
+                            PrefUtils.setAppId(PersionalDetailsActivity.this,"");
+                            Toast.makeText(PersionalDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(PersionalDetailsActivity.this, LoginActivity.class));
+                            finishAffinity();
                         }
                     }
                 }
