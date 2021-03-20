@@ -66,6 +66,7 @@ import com.shopprdriver.Server.Helper;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.app.Config;
+import com.shopprdriver.app.Progressbar;
 import com.shopprdriver.util.NotificationUtils;
 import com.squareup.picasso.Picasso;
 
@@ -136,12 +137,15 @@ public class ChatActivity extends AppCompatActivity {
     /*Todo:- UserDP*/
     CircleImageView userDp;
     TextView userName;
+
+    Progressbar progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
+        progressbar = new Progressbar();
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
        /* chat_id =getIntent().getIntExtra("id",0);
         */
@@ -411,6 +415,7 @@ public class ChatActivity extends AppCompatActivity {
 
         EditText editName=dialogView.findViewById(R.id.editName);
         Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -473,9 +478,13 @@ public class ChatActivity extends AppCompatActivity {
         EditText editPrice=dialogView.findViewById(R.id.editPrice);
         EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
         Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+
+
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressbar.showProgress(ChatActivity.this);
                 if (CommonUtils.isOnline(ChatActivity.this)) {
                     //sessonManager.showProgress(ChatActivity.this);
                     HashMap<String, RequestBody> partMap = new HashMap<>();
@@ -504,6 +513,7 @@ public class ChatActivity extends AppCompatActivity {
                             .enqueue(new Callback<SendModel>() {
                                 @Override
                                 public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                    progressbar.hideProgress();
                                     //sessonManager.hideProgress();
                                     if (response.body()!=null) {
                                         if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
@@ -519,6 +529,7 @@ public class ChatActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<SendModel> call, Throwable t) {
+                                    progressbar.hideProgress();
                                     //sessonManager.hideProgress();
                                 }
                             });
