@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
     <application
         android:name=".SendBird.BaseApplication"
@@ -129,18 +129,12 @@
         <activity
             android:name=".Activity.NotificationListActivity"
             android:label="Notification"
-            android:screenOrientation="portrait" /> <!-- Firebase Notifications -->
+            android:screenOrientation="portrait" />
         <service android:name=".notifications.FirebaseMessageReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service> <!-- ./Firebase Notifications -->
-        <!--
-<service
-            android:name=".background_service.MyService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        -->
+        </service>
         <service
             android:name=".background_service.UpdateLocationService"
             android:enabled="true"

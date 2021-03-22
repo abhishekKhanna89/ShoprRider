@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -31,12 +30,9 @@ import retrofit2.Response;
 public class UpdateLocationService  extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public Context context = this;
-    public Handler handler = null;
-    public static Runnable runnable = null;
     /*Todo:- Location Manager*/
     private Location location;
     private GoogleApiClient googleApiClient;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
     private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
 
@@ -51,11 +47,6 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
     }
-
-   /* @Override
-    public void onStart(Intent intent, int startid) {
-        Toast.makeText(this, "Service started by user.", Toast.LENGTH_LONG).show();
-    }*/
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -106,14 +97,15 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            handler = new Handler();
+            sendLocation(location);
+            /*handler = new Handler();
             runnable = new Runnable() {
                 public void run() {
-                    sendLocation(location);
+
                     handler.postDelayed(runnable, 3000);
                 }
             };
-            handler.postDelayed(runnable, 5000);
+            handler.postDelayed(runnable, 5000);*/
 
         }
     }

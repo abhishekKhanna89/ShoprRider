@@ -111,10 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermissions();
 
-
-
-
-
     }
 
     private void viewUserChatList() {
@@ -133,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                             AvailableChatModel chatsListModel = response.body();
                             Gson gson=new Gson();
                             String Strd=gson.toJson(chatsListModel);
-                            Log.d("dhjhgdjh",Strd);
+                            //Log.d("dhjhgdjh",Strd);
                             if (chatsListModel.getData().getUserchats().size()==0){
                                 emptyPageGif.setVisibility(View.VISIBLE);
                                 //swipeRefreshLayout.setVisibility(View.GONE);
