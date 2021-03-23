@@ -55,6 +55,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
     String cityN,value;
     int cityI,cityIdU;
+    int aaa;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +70,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         /*Todo:- State List*/
         spinnerState = findViewById(R.id.spinnerState);
         textCity = findViewById(R.id.textCity);
-
-
         spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -79,7 +78,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 cityNameList.clear();
                 if (stateList.get(position).getCities().size() != 0) {
                     cityList = stateList.get(position).getCities();
-                    Log.d("citySize",""+cityList.size());
+                    Log.d("citySize",""+stateList.get(position).getCities().size());
                     for (int i = 0; i < cityList.size(); i++) {
                         cityI=cityList.get(i).getId();
                         cityN=cityList.get(i).getName();
@@ -93,7 +92,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     if (value!=null){
                         textCity.setSelection(((ArrayAdapter<String>)textCity.getAdapter()).getPosition(value));
                     }
+                    aaa=stateList.get(position).getCities().size();
                 } else {
+                    aaa=stateList.get(position).getCities().size();
                     textCity.setAdapter(null);
 
                 }
@@ -108,6 +109,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 cityId=cityList.get(position).getId();
+                Log.d("resCityId",""+cityI);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -194,7 +196,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         } else if (editEMNo.getText().toString().length() != 10) {
             editEMNo.setError("Mobile No. should be 10 digit");
             editEMNo.requestFocus();
-        } else if (cityId==0){
+        } else if (aaa==0){
             Toast.makeText(this, "City not available", Toast.LENGTH_SHORT).show();
         }
         else {
@@ -220,6 +222,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             sessonManager.setAccountUpdateDetails("step3");
+                             stateNameList.clear();
                              Toast.makeText(PersonalInfoActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                              viewPersonalView();
                             /*PersonalDetailsModel uploadDocumentModel=response.body();
