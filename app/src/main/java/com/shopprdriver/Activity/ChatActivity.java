@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.MediaRecorder;
@@ -19,7 +20,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,6 +45,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.devlomi.record_view.OnBasketAnimationEnd;
+import com.devlomi.record_view.OnRecordListener;
+import com.devlomi.record_view.RecordButton;
+import com.devlomi.record_view.RecordView;
 import com.google.gson.Gson;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
@@ -80,6 +83,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -125,7 +129,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private MediaRecorder mediaRecorder;
     private String recordFile;
-    private Chronometer timer;
     String pathforaudio;
     /*Todo:- FloatingActionButton*/
     FabSpeedDial fabSpeedDial;
@@ -139,6 +142,10 @@ public class ChatActivity extends AppCompatActivity {
     TextView userName;
 
     Progressbar progressbar;
+
+    /*Todo:- Recording Library*/
+    RecordView recordView;
+    RecordButton recordButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,8 +154,73 @@ public class ChatActivity extends AppCompatActivity {
         sessonManager = new SessonManager(this);
         progressbar = new Progressbar();
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
-       /* chat_id =getIntent().getIntExtra("id",0);
-        */
+        /*Todo:- Recording Library*/
+        recordView = (RecordView) findViewById(R.id.record_view);
+        recordButton = (RecordButton) findViewById(R.id.record_button);
+        recordButton.setRecordView(recordView);
+        recordButton.setListenForRecord(true);
+
+        //Cancel Bounds is when the Slide To Cancel text gets before the timer . default is 8
+        recordView.setCancelBounds(8);
+
+
+        recordView.setSmallMicColor(Color.parseColor("#c2185b"));
+
+        //prevent recording under one Second
+        recordView.setLessThanSecondAllowed(false);
+
+
+        recordView.setSlideToCancelText("Slide To Cancel");
+
+
+        recordView.setCustomSounds(0, R.raw.record_finished, 0);
+
+
+        recordView.setOnRecordListener(new OnRecordListener() {
+            @Override
+            public void onStart() {
+                recordView.setVisibility(View.VISIBLE);
+                Log.d("RecordView", "onStart");
+                startRecording();
+
+            }
+
+            @Override
+            public void onCancel() {
+                //Toast.makeText(ChatActivity.this, "onCancel", Toast.LENGTH_SHORT).show();
+                Log.d("RecordView", "onCancel");
+
+            }
+
+
+
+            @Override
+            public void onFinish(long recordTime) {
+                recordView.setVisibility(View.GONE);
+                String time = getHumanTimeText(recordTime);
+                stopRecording();
+                //Toast.makeText(ChatActivity.this, "onFinishRecord - Recorded Time is: " + time, Toast.LENGTH_SHORT).show();
+                Log.d("RecordView", "onFinish");
+
+                Log.d("RecordTime", time);
+            }
+            @Override
+            public void onLessThanSecond() {
+                // Toast.makeText(ChatActivity.this, "OnLessThanSecond", Toast.LENGTH_SHORT).show();
+                Log.d("RecordView", "onLessThanSecond");
+            }
+        });
+
+
+        recordView.setOnBasketAnimationEndListener(new OnBasketAnimationEnd() {
+            @Override
+            public void onAnimationEnd() {
+                recordView.setVisibility(View.GONE);
+                Log.d("RecordView", "Basket Animation Finished");
+            }
+        });
+
+
         Bundle extras = getIntent().getExtras();
         if (extras!=null) {
             String chat_status = getIntent().getStringExtra("chat_status");
@@ -182,8 +254,7 @@ public class ChatActivity extends AppCompatActivity {
         sendMsgBtn = findViewById(R.id.sendMsgBtn);
         chooseImage=findViewById(R.id.chooseImage);
 
-        /*Todo:- Voice Recorder*/
-        timer = findViewById(R.id.record_timer);
+
 
         /*Todo:- FloatingActionButton*/
         fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
@@ -242,63 +313,12 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 chatMessageList(Integer.parseInt(String.valueOf(chat_id)));
-                /*if (intent.getStringExtra("chat_id")!=null){
-                    chat_id=intent.getIntExtra("chat_id",0);
-                    if (sessonManager.getChatId()!=null){
-                        String chatid=String.valueOf(sessonManager.getChatId());
-                        chatMessageList(Integer.parseInt(chatid));
-                    }
-
-                }*/
             }
         };
         IntentFilter i = new IntentFilter();
         i.addAction("message_subject_intent");
         LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
-        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
 
-                // checking for type intent filter
-                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-
-                    chatMessageList(chat_id);
-
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                    chatMessageList(chat_id);
-                }
-            }
-        };*/
-
-        sendMsgBtn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.Q)
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onClick(View v) {
-                if (!isRecording) {
-                    if(checkPermissions()) {
-                        //Start Recording
-                        startRecording();
-                        // Change button image and set Recording state to false
-                        sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
-                        isRecording = true;
-                    }
-                }
-                else {
-                    //Stop Recording
-
-                    stopRecording();
-
-                    // Change button image and set Recording state to false
-                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped,null));
-                    isRecording = false;
-                }
-            }
-        });
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -310,31 +330,12 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 0) {
-                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped));
-                    sendMsgBtn.setOnClickListener(new View.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.Q)
-                        @SuppressLint("UseCompatLoadingForDrawables")
-                        @Override
-                        public void onClick(View v) {
-                            if (!isRecording) {
-                                if(checkPermissions()) {
-                                    //Start Recording
-                                    startRecording();
-                                    // Change button image and set Recording state to false
-                                    sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_recording, null));
-                                    isRecording=true;
-                                }
-                            }
-                            else {
-                                sendMsgBtn.setBackgroundResource(R.drawable.record_btn_stopped);
-                                stopRecording();
-                                isRecording=false;
-                            }
-                        }
-                    });
-                    //sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.record_btn_stopped, null));
-                    // is only executed if the EditText was directly changed by the user
+                    sendMsgBtn.setVisibility(View.GONE);
+                    recordButton.setVisibility(View.VISIBLE);
                 } else {
+                    sendMsgBtn.setVisibility(View.VISIBLE);
+                    recordButton.setVisibility(View.GONE);
+                    recordView.setVisibility(View.GONE);
                     sendMsgBtn.setBackground(getResources().getDrawable(R.drawable.send));
                     sendMsgBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -405,6 +406,12 @@ public class ChatActivity extends AppCompatActivity {
             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
             chatMessageAdapter.notifyDataSetChanged();
         }
+    }
+    private String getHumanTimeText(long milliseconds) {
+        return String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
 
     private void showWalletDialog() {
@@ -1179,29 +1186,11 @@ public class ChatActivity extends AppCompatActivity {
 
     }
     private void stopRecording() {
-        //Stop Timer, very obvious
-        timer.stop();
-        //Change text on page to file saved
-        //filenameText.setText("Recording Stopped, File Saved : " + recordFile);
-
-       //uploadFile();
-       // audioService(recordFile);
-        //Stop media recorder and set it to null for further use to record new audio
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
 
-
         uploadFile();
-      /*  Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 2000);
-*/
-
     }
 
     private void uploadFile() {
@@ -1229,8 +1218,6 @@ public class ChatActivity extends AppCompatActivity {
                             //sessonManager.hideProgress();
                             if (response.body() != null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
-                                    timer.setVisibility(View.GONE);
-                                    timer.stop();
                                     chatMessageList(chat_id);
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 } else {
@@ -1251,11 +1238,6 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void startRecording() {
-        //Start timer from 0
-        timer.setVisibility(View.VISIBLE);
-        timer.setBase(SystemClock.elapsedRealtime());
-        timer.start();
-
         //Get app external directory path
         String recordPath = getExternalFilesDir("/").getAbsolutePath();
 

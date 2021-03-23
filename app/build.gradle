@@ -10,8 +10,8 @@ android {
         applicationId "com.shopprdriver"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 5
-        versionName "1.0.5"
+        versionCode 6
+        versionName "1.0.6"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -75,6 +75,9 @@ dependencies {
     implementation 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
 
     implementation 'com.github.karthyks:runtime-permissions:1.8'
+
+    /*Todo:- Recording button*/
+    implementation 'com.devlomi.record-view:record-view:2.0.1'
 
 }
 apply plugin: 'com.google.gms.google-services'
