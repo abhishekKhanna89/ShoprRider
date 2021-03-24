@@ -1,11 +1,13 @@
 package com.shopprdriver.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,6 +37,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,9 +70,16 @@ import com.shopprdriver.Session.SessonManager;
 import com.shopprdriver.app.Progressbar;
 import com.shopprdriver.background_service.UpdateLocationService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,6 +113,13 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
     Progressbar progressbar;
 
+
+    /*Todo:- Version Check*/
+    String VERSION_URL = "http://shoppr.avaskmcompany.xyz/api/app-version";
+    String sCurrentVersion;
+    int hoursmilllisecond = 86400000;
+    int value = 0, savedMillistime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +139,39 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
        startService(new Intent(this, UpdateLocationService.class));
 
         viewCheckoutStatus();
+        /*Todo:- Version Check*/
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            //String version = pInfo.versionName;
+            sCurrentVersion = pInfo.versionName;
+            Log.d("versionName", sCurrentVersion);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (Integer.parseInt(sessonManager.getCurrenttime()) > 0) {
+            value = Integer.parseInt(sessonManager.getCurrenttime());
+        } else {
+            value = 0;
+        }
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+        if (sessonManager.getCurrenttime().length() > 0) {
+            // Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
+            value = Integer.parseInt(sessonManager.getCurrenttime());
+            Log.d("hellovalueshared===", String.valueOf(value));
+            String currentDateandTime = sdf.format(new Date());
+            int savedMillis = (int) System.currentTimeMillis();
+            int valuemus = (savedMillis - value);
+            Log.d("valueminus", String.valueOf(valuemus));
+            //Log.d("savemilsaecttime===", String.valueOf(savedMillis) + "," + value + "," + hoursmilllisecond + "," + valuemus);
+            if (valuemus >= hoursmilllisecond) {
+
+                appCheckVersionApi();
+            }
+        }
+
+
 
        /*Todo:- Current Location*/
         if (savedInstanceState != null) {
@@ -705,5 +761,93 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     protected void onRestart() {
         super.onRestart();
         viewCheckoutStatus();
+    }
+    private void appCheckVersionApi() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, VERSION_URL, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response====", response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.d("responce===", jsonObject + "");
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+                        JSONObject jsonObject1 = jsonObject.getJSONObject("data");
+                        String androidversion = jsonObject1.getString("rider_version");
+                        //Log.d("androidversion", androidversion);
+                        // sCurrentVersion = defaultConfig.VERSION_NAME;
+                        //  Toast.makeText(getActivity(), "" + sCurrentVersion, Toast.LENGTH_SHORT).show();
+                        //Log.d("scureentVersion==", sCurrentVersion);
+                        //Log.d("scureentserverVersion==", androidversion);
+                        if (androidversion.equalsIgnoreCase(sCurrentVersion)) {
+
+                        } else {
+                            showDialouge();
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<String, String>();
+                headerMap.put("Authorization", "Bearer " + sessonManager.getToken());
+                return headerMap;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+
+    }
+
+    private void showDialouge() {
+        new AlertDialog.Builder(this)
+                .setTitle("Upgrade App")
+                .setMessage(getResources().getString(R.string.force_update_app_message))
+                .setPositiveButton("Update App", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openPlayStore();
+                        dialog.dismiss();
+                        savedMillistime = (int) System.currentTimeMillis();
+                        sessonManager.setCurrenttime(String.valueOf(savedMillistime));
+                        Log.d("helloTimemills", String.valueOf(savedMillistime));
+                    }
+
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        savedMillistime = (int) System.currentTimeMillis();
+                        sessonManager.setCurrenttime(String.valueOf(savedMillistime));
+                        Log.d("helloTimemills", String.valueOf(savedMillistime));
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+
+    }
+    private void openPlayStore() {
+        if (this == null) {
+            return;
+        }
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 }

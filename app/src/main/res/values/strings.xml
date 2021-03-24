@@ -61,4 +61,9 @@
     <string name="calls_invalid_qrcode">This QR code is not valid. Go to Calls studio and try scanning your QR code again.</string>
     <string name="calls_invalid_deep_link">Invalid deep link</string>
     <string name="calls_deep_linking_to_authenticate_failed">Could not authenticate deep link.</string>
+
+
+    <!--Todo:- Version Check -->
+    <string name="force_update_app_message">"Please update your Shopper Driver app to continue"</string>
+    <string name="recommend_update_app_message">"A new version app is available in play store please update your app"</string>
 </resources>
