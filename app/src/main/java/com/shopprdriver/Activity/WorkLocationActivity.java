@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class WorkLocationActivity extends AppCompatActivity {
     List<Integer>lll=new ArrayList<>();
     String radioV;
     int selectedId;
+    RadioButton partTime,fullTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,22 +57,38 @@ public class WorkLocationActivity extends AppCompatActivity {
         sessonManager=new SessonManager(this);
         Log.d("Token",sessonManager.getToken());
         groupRadio=findViewById(R.id.groupRadio);
+        partTime=findViewById(R.id.partTime);
+        fullTime=findViewById(R.id.fullTime);
         spinnerWorkList=findViewById(R.id.spinnerWorkList);
+        radioV="3";
         groupRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                selectedId=groupRadio.getCheckedRadioButtonId();
-                radioV=String.valueOf(selectedId);
-                switch (selectedId){
-                    case R.id.ptRadio:
-                        radioV="0";
-                        break;
-                    case R.id.ftRadio:
-                        radioV="1";
-                        break;
+                selectedId = groupRadio.getCheckedRadioButtonId();
+                // radioV=String.valueOf(selectedId);
+
+                if (checkedId == R.id.partTime) {
+                    radioV="0";
+                   // Log.d(TAG, "A");
+                } else if (checkedId == R.id.fullTime) {
+                  //  Log.d(TAG, "B");
+                    radioV="1";
                 }
-                //Toast.makeText(WorkLocationActivity.this, ""+selectedId, Toast.LENGTH_SHORT).show();
+
+
             }
+
+             /*   Log.d("checkedId=", String.valueOf(checkedId));
+
+                if(checkedId==1)
+                {
+                    radioV="0";
+                }else if(checkedId==2)
+                {
+                    radioV="1";
+                }
+
+            }*/
         });
         viewWorkLocationList();
     }
@@ -81,14 +99,17 @@ public class WorkLocationActivity extends AppCompatActivity {
         call.enqueue(new Callback<WorkLocationModel>() {
             @Override
             public void onResponse(Call<WorkLocationModel> call, Response<WorkLocationModel> response) {
+                //Log.d("nameLocation",response.body().getStatus());
                 if (response.body()!=null) {
                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                         WorkLocationModel workLocationModel=response.body();
                         if (workLocationModel.getData()!=null){
                             locationList=workLocationModel.getData().getLocations();
+
                             for (int i=0;i<workLocationModel.getData().getLocations().size();i++){
                                 locationWorkId=workLocationModel.getData().getLocations().get(i).getId();
                                 locationWorkName=workLocationModel.getData().getLocations().get(i).getName();
+
                                 locationIdList.add(locationWorkId);
                                 locationNameList.add(locationWorkName);
                             }
@@ -118,14 +139,20 @@ public class WorkLocationActivity extends AppCompatActivity {
     }
 
     public void submit(View view) {
-        if (radioV.length()==0){
+        /*if (radioV.length()==0||lll.size()==0){
             Toast.makeText(this, "Please select any option( Part Time / Full Time )", Toast.LENGTH_SHORT).show();
         }else {
-            service();
-        }
+            //Toast.makeText(this, ""+radioV+lll, Toast.LENGTH_SHORT).show();
+            service(radioV,lll);
+        }*/
+        service();
+
     }
 
     private void service() {
+
+        Log.d("TokenResponse",sessonManager.getToken()+":"+lll+":"+radioV);
+
         if (CommonUtils.isOnline(WorkLocationActivity.this)) {
             sessonManager.showProgress(WorkLocationActivity.this);
             Call<WorkDetailsModel>call=ApiExecutor.getApiService(this)
@@ -133,8 +160,10 @@ public class WorkLocationActivity extends AppCompatActivity {
             call.enqueue(new Callback<WorkDetailsModel>() {
                 @Override
                 public void onResponse(Call<WorkDetailsModel> call, Response<WorkDetailsModel> response) {
+                    //Log.d("nameLocation",response.body().getStatus());
                     sessonManager.hideProgress();
                     if (response.body()!=null) {
+                        Log.d("res",response.body().getStatus());
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             Toast.makeText(WorkLocationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             WorkDetailsModel workDetailsModel=response.body();

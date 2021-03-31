@@ -22,6 +22,7 @@ import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
 import com.shopprdriver.Model.PersonalInfoView.PersonalInfoViewModel;
+import com.shopprdriver.Model.Profile.ProfileModel;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
@@ -258,6 +259,11 @@ public interface ApiService {
     Call<SendModel>apiSendPaymentRequest(@Header("Authorization") String token,
                                          @Path("chat_id")int chat_id,
                                          @Query("type")String type);
+
+
+    @NonNull
+    @GET("profile")
+    Call<ProfileModel>apiProfileView(@Header("Authorization") String token);
 
 
 }

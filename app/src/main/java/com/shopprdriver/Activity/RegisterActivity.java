@@ -31,7 +31,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
@@ -258,6 +257,7 @@ public class RegisterActivity extends AppCompatActivity {
                     .enqueue(new Callback<LoginModel>() {
                         @Override
                         public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                            //Log.d("resRegister",response.body().getStatus());
                             sessonManager.hideProgress();
                             if (response.body()!=null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {

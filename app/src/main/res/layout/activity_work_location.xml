@@ -61,11 +61,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <RadioButton
+                            android:id="@+id/partTime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/card_view_bg"
                             android:text="Part Time"/>
                         <RadioButton
+                            android:id="@+id/fullTime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"

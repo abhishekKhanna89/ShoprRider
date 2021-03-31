@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.shopprdriver.MainActivity;
+import com.bumptech.glide.Glide;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
 import com.shopprdriver.R;
@@ -41,6 +42,7 @@ public class ChatHistoryActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     SwipeRefreshLayout swipeRefreshLayout;
     UserChatHistoryAdapter userChatListAdapter;
+    ImageView emptyPageGif;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,8 @@ public class ChatHistoryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager=new SessonManager(this);
         userChatListRecyclerView=findViewById(R.id.userChatListRecyclerView);
+        emptyPageGif=findViewById(R.id.emptyPageGif);
+        Glide.with(this).load(R.drawable.no_result).into(emptyPageGif);
         swipeRefreshLayout = findViewById(R.id.SwipeRefresh);
         linearLayoutManager = new LinearLayoutManager(this);
         userChatListRecyclerView.setLayoutManager(linearLayoutManager);
@@ -81,6 +85,15 @@ public class ChatHistoryActivity extends AppCompatActivity {
                         if (response.body().getStatus()!= null && response.body().getStatus().equals("success")){
                             UserChatListModel chatsListModel=response.body();
                             if(chatsListModel.getData().getUserchats()!=null) {
+                                if (chatsListModel.getData().getUserchats().size()==0){
+                                    emptyPageGif.setVisibility(View.VISIBLE);
+                                    userChatListRecyclerView.setVisibility(View.GONE);
+                                    swipeRefreshLayout.setVisibility(View.GONE);
+                                }else {
+                                    emptyPageGif.setVisibility(View.GONE);
+                                    userChatListRecyclerView.setVisibility(View.VISIBLE);
+                                    swipeRefreshLayout.setVisibility(View.VISIBLE);
+                                }
                                 chatsListModelList = chatsListModel.getData().getUserchats();
                                 userChatListAdapter=new UserChatHistoryAdapter(ChatHistoryActivity.this,chatsListModelList);
                                 userChatListRecyclerView.setAdapter(userChatListAdapter);

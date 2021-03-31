@@ -37,6 +37,12 @@ public class PersonalInfoViewModel {
         @SerializedName("states")
         @Expose
         private List<State> states = null;
+        @SerializedName("city")
+        @Expose
+        private Integer city;
+        @SerializedName("state")
+        @Expose
+        private Integer state;
 
         public User getUser() {
             return user;
@@ -52,6 +58,22 @@ public class PersonalInfoViewModel {
 
         public void setStates(List<State> states) {
             this.states = states;
+        }
+
+        public Integer getCity() {
+            return city;
+        }
+
+        public void setCity(Integer city) {
+            this.city = city;
+        }
+
+        public Integer getState() {
+            return state;
+        }
+
+        public void setState(Integer state) {
+            this.state = state;
         }
 
     }
@@ -174,6 +196,7 @@ public class PersonalInfoViewModel {
         }
 
     }
+
     public class City {
 
         @SerializedName("id")
@@ -185,6 +208,9 @@ public class PersonalInfoViewModel {
         @SerializedName("state_id")
         @Expose
         private Integer stateId;
+        @SerializedName("state_name")
+        @Expose
+        private String stateName;
         @SerializedName("isactive")
         @Expose
         private Integer isactive;
@@ -213,6 +239,14 @@ public class PersonalInfoViewModel {
             this.stateId = stateId;
         }
 
+        public String getStateName() {
+            return stateName;
+        }
+
+        public void setStateName(String stateName) {
+            this.stateName = stateName;
+        }
+
         public Integer getIsactive() {
             return isactive;
         }
@@ -222,5 +256,6 @@ public class PersonalInfoViewModel {
         }
 
     }
+
 
 }

@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         sessonManager = new SessonManager(SplashActivity.this);
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
             String newToken = instanceIdResult.getToken();
+           // Log.d("responseNotification",newToken);
             sessonManager.setNotificationToken(newToken);
             //Log.e("newToken", newToken);
             //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();

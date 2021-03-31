@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
 import com.shopprdriver.Model.PersonalInfoView.PersonalInfoViewModel;
 import com.shopprdriver.R;
@@ -70,11 +71,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
         /*Todo:- State List*/
         spinnerState = findViewById(R.id.spinnerState);
         textCity = findViewById(R.id.textCity);
+        viewPersonalView();
+
+
+       // spinnerState.setSelection(Integer.parseInt(stateIdU));
+
         spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 stateId=stateList.get(position).getId();
-                Log.d("StateSpinnerId",""+stateId);
+                //Log.d("StateSpinnerId",""+stateId);
                 cityNameList.clear();
                 if (stateList.get(position).getCities().size() != 0) {
                     cityList = stateList.get(position).getCities();
@@ -117,7 +123,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
             }
         });
 
-        viewPersonalView();
 
     }
 
@@ -131,6 +136,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             PersonalInfoViewModel personalInfoViewModel=response.body();
+                            String respons=new Gson().toJson(personalInfoViewModel);
+                            Log.d("resAAA",respons);
                             if (personalInfoViewModel.getData()!=null){
                                 /*Todo:- User */
                                 editPAddress.setText(personalInfoViewModel.getData().getUser().getPermanentAddress());
@@ -138,25 +145,25 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 editSMNo.setText(personalInfoViewModel.getData().getUser().getSecondaryMobile());
                                 editEMNo.setText(personalInfoViewModel.getData().getUser().getEmergencyMobile());
                                 /*Todo:- State Spinner*/
-                                stateIdU =personalInfoViewModel.getData().getUser().getPermanentState();
+                                stateIdU = personalInfoViewModel.getData().getUser().getPermanentState();
+                                Log.d("resStateI",stateIdU);
 
                                 /*Todo:- City Spinner*/
                                 cityIdU = Integer.parseInt(personalInfoViewModel.getData().getUser().getPermanentCity());
-
-
                                 stateList=personalInfoViewModel.getData().getStates();
                                 for (int i=0;i<stateList.size();i++){
-                                    int stateI=stateList.get(i).getId();
-                                    String stateN=stateList.get(i).getName();
+                                    int stateI=personalInfoViewModel.getData().getStates().get(i).getId();
+                                    String stateN=personalInfoViewModel.getData().getStates().get(i).getName();
                                     stateIdList.add(stateI);
                                     stateNameList.add(stateN);
 
                                 }
                                 stateAdaoter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, stateNameList);
                                 spinnerState.setAdapter(stateAdaoter);
-                                if (stateIdU!=null){
+                               /* if (stateIdU!=null){
                                     spinnerState.setSelection(Integer.parseInt(stateIdU));
-                                }
+                                    //spinnerState.setSelection(((ArrayAdapter<String>)spinnerState.getAdapter()).getPosition(stateIdU));
+                                }*/
                             }
 
                         }
