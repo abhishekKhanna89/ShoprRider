@@ -112,6 +112,11 @@ import uk.co.senab.photoview.PhotoViewAttacher;
            holder.productLayout.setVisibility(View.GONE);
        }
        if (chat.getType().equalsIgnoreCase("rating")){
+           if (chat.getStatus().equalsIgnoreCase("accepted")){
+               holder.ratingLayout.setVisibility(View.VISIBLE);
+           }else {
+               holder.ratingLayout.setVisibility(View.GONE);
+           }
            holder.ratingsMessage.setText(chat.getMessage());
            holder.dateRating.setText(chat.getCreatedAt());
 
@@ -174,7 +179,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
            holder.rejectText.setVisibility(View.GONE);
            holder.cancelText.setVisibility(View.GONE);
            holder.acceptText.setVisibility(View.GONE);
-           holder.ratingBar.setIsIndicator(true);
        }
        if (chat.getStatus().equalsIgnoreCase("rejected")){
            holder.closeRedLayout.setVisibility(View.VISIBLE);
@@ -501,6 +505,9 @@ import uk.co.senab.photoview.PhotoViewAttacher;
             ratingsMessage=itemView.findViewById(R.id.ratingsMessage);
             dateRating=itemView.findViewById(R.id.dateRating);
             ratingBar=itemView.findViewById(R.id.ratingBar);
+            ratingBar.setFocusableInTouchMode(true);
+            ratingBar.setFocusable(true);
+            ratingBar.setIsIndicator(true);
             /*Todo:- Audio*/
             voicePlayerView=itemView.findViewById(R.id.voicePlayerView);
 

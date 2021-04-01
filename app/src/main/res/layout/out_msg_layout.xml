@@ -261,6 +261,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_margin="5dp"
+            android:visibility="gone"
             app:cmv_arrowPosition="right"
             app:cmv_backgroundColor="#fff"
             app:cmv_backgroundColorPressed="#FFBABABA"
