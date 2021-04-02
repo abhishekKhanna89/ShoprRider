@@ -97,7 +97,7 @@ public class PersonalInfoViewModel {
         private String emergencyMobile;
         @SerializedName("permanent_state")
         @Expose
-        private String permanentState;
+        private int permanentState;
 
         public String getPermanentAddress() {
             return permanentAddress;
@@ -139,11 +139,11 @@ public class PersonalInfoViewModel {
             this.emergencyMobile = emergencyMobile;
         }
 
-        public String getPermanentState() {
+        public int getPermanentState() {
             return permanentState;
         }
 
-        public void setPermanentState(String permanentState) {
+        public void setPermanentState(int permanentState) {
             this.permanentState = permanentState;
         }
 

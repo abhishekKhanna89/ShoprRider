@@ -49,7 +49,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
     List<Integer>lll=new ArrayList<>();
 
-    String stateIdU;
+    int stateIdU;
     int stateId,cityId;
     ArrayAdapter<String> stateAdaoter;
     ArrayAdapter<String> cityAdapter;
@@ -57,6 +57,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     String cityN,value;
     int cityI,cityIdU;
     int aaa;
+    String selectedName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +147,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 editEMNo.setText(personalInfoViewModel.getData().getUser().getEmergencyMobile());
                                 /*Todo:- State Spinner*/
                                 stateIdU = personalInfoViewModel.getData().getUser().getPermanentState();
-                                Log.d("resStateI",stateIdU);
+
+                                Log.d("resStateI",""+stateIdU);
 
                                 /*Todo:- City Spinner*/
                                 cityIdU = Integer.parseInt(personalInfoViewModel.getData().getUser().getPermanentCity());
@@ -156,10 +158,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                     String stateN=personalInfoViewModel.getData().getStates().get(i).getName();
                                     stateIdList.add(stateI);
                                     stateNameList.add(stateN);
+                                    if(stateIdU==stateI){
+                                        selectedName= personalInfoViewModel.getData().getStates().get(i).getName();
+                                    }
 
                                 }
                                 stateAdaoter = new ArrayAdapter<String>(PersonalInfoActivity.this, android.R.layout.simple_list_item_1, stateNameList);
                                 spinnerState.setAdapter(stateAdaoter);
+                                int spinnerPosition = stateAdaoter.getPosition(selectedName);
+                                spinnerState.setSelection(spinnerPosition);
                                /* if (stateIdU!=null){
                                     spinnerState.setSelection(Integer.parseInt(stateIdU));
                                     //spinnerState.setSelection(((ArrayAdapter<String>)spinnerState.getAdapter()).getPosition(stateIdU));

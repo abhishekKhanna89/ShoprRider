@@ -36,6 +36,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
         sessonManager=new SessonManager(this);
+
         // First case when notifications are received via
         // data event
         // Here, 'title' and 'message' are the assumed names
@@ -63,13 +64,20 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
 
     // Method to get the custom Design for the display of
     // notification.
-    private RemoteViews getCustomDesign(String title,
-                                        String message) {
+    private RemoteViews getCustomDesign(String title, String message, RemoteMessage remoteMessage) {
         RemoteViews remoteViews = new RemoteViews(
                 getApplicationContext().getPackageName(),
                 R.layout.notification_layout);
-        remoteViews.setTextViewText(R.id.title, title);
-        remoteViews.setTextViewText(R.id.message, message);
+        JSONObject jsonObject=new JSONObject(remoteMessage.getData());
+        try {
+            title=jsonObject.getString("title");
+            message=jsonObject.getString("message");
+            remoteViews.setTextViewText(R.id.title, title);
+            remoteViews.setTextViewText(R.id.messages, message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         remoteViews.setImageViewResource(R.id.icon,
                 R.drawable.splash);
         return remoteViews;
@@ -122,7 +130,9 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         NotificationCompat.Builder builder
                 = new NotificationCompat
                 .Builder(getApplicationContext(),
-                channel_id)
+                channel_id).
+        setContentTitle("My Firebase Push notification")
+                .setContentText("My Firebase Push notification")
                 .setSmallIcon(R.drawable.splash)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000,
@@ -137,7 +147,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         // set only for Android versions 4.1 and above. Thus
         // condition for the same is checked here.
         builder = builder.setContent(
-                getCustomDesign(title, message));
+                getCustomDesign(title, message,remoteMessage));
         // Create an object of NotificationManager class to
         // notify the
         // user of events that happen in the background.

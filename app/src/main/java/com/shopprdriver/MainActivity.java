@@ -143,11 +143,16 @@ public class MainActivity extends AppCompatActivity {
                             userChatListRecyclerView.setAdapter(userChatListAdapter);
                             userChatListAdapter.notifyDataSetChanged();
                         }else {
-                            sessonManager.setToken("");
-                            PrefUtils.setAppId(MainActivity.this,"");
-                            Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                            finishAffinity();
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    sessonManager.setToken("");
+                                    PrefUtils.setAppId(MainActivity.this,"");
+                                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                    finishAffinity();
+                                }
+                            }
+
                         }
                     }
                     //swipeRefreshLayout.setRefreshing(false);

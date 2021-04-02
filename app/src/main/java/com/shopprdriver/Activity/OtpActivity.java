@@ -2,7 +2,6 @@ package com.shopprdriver.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
@@ -30,7 +28,7 @@ public class OtpActivity extends AppCompatActivity {
     EditText editOtp;
     SessonManager sessonManager;
     String type,mobile;
-    String newToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,13 +41,6 @@ public class OtpActivity extends AppCompatActivity {
         btnVerify=findViewById(R.id.btnsubmit);
         editOtp=findViewById(R.id.editusername);
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
-            newToken = instanceIdResult.getToken();
-            // Log.d("responseNotification",newToken);
-            sessonManager.setNotificationToken(newToken);
-            //Log.e("newToken", newToken);
-            //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
-        });
 
 
         btnVerify.setOnClickListener(new View.OnClickListener() {
@@ -77,11 +68,7 @@ public class OtpActivity extends AppCompatActivity {
             otpVerifyRequest.setOtp(editOtp.getText().toString());
             otpVerifyRequest.setMobile(mobile);
             otpVerifyRequest.setType(type);
-            if (sessonManager.getNotificationToken()!=null){
-                otpVerifyRequest.setNotification_token(sessonManager.getNotificationToken());
-            }else if (newToken!=null){
-                otpVerifyRequest.setNotification_token(newToken);
-            }
+            otpVerifyRequest.setNotification_token(sessonManager.getNotificationToken());
 
             Call<OtpVerifyModel> call= ApiExecutor.getApiService(OtpActivity.this)
                     .otpService(otpVerifyRequest);
@@ -145,6 +132,7 @@ public class OtpActivity extends AppCompatActivity {
                                                     }
 
                                                 }else {
+                                                    sessonManager.getNotificationToken();
                                                     PrefUtils.getAppId(OtpActivity.this);
                                                     startActivity(new Intent(OtpActivity.this, MenuActivity.class)
                                                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

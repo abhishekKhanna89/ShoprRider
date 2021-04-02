@@ -2,8 +2,6 @@ package com.shopprdriver.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.shopprdriver.Model.OrderDeatilsList.Data;
-import com.shopprdriver.Model.OrderDeatilsList.Review;
 
 import java.util.List;
 
@@ -29,35 +27,31 @@ public class ReviewsModel {
         return data;
     }
 
-    public void setData(Data data) {
-        this.data = data;
-    }
-
     public class Data {
 
         @SerializedName("avgrating")
         @Expose
-        private Integer avgrating;
+        private Float avgrating;
         @SerializedName("totalreviews")
         @Expose
-        private Integer totalreviews;
+        private String totalreviews;
         @SerializedName("reviews")
         @Expose
         private List<Review> reviews = null;
 
-        public Integer getAvgrating() {
+        public Float getAvgrating() {
             return avgrating;
         }
 
-        public void setAvgrating(Integer avgrating) {
+        public void setAvgrating(Float avgrating) {
             this.avgrating = avgrating;
         }
 
-        public Integer getTotalreviews() {
+        public String getTotalreviews() {
             return totalreviews;
         }
 
-        public void setTotalreviews(Integer totalreviews) {
+        public void setTotalreviews(String totalreviews) {
             this.totalreviews = totalreviews;
         }
 
@@ -70,8 +64,6 @@ public class ReviewsModel {
         }
 
     }
-
-
     public class Review {
 
         @SerializedName("reviews")
@@ -118,7 +110,7 @@ public class ReviewsModel {
         public void setImage(String image) {
             this.image = image;
         }
-    }
 
+    }
 
 }

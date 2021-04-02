@@ -226,24 +226,25 @@ public class ChatActivity extends AppCompatActivity {
             String chat_status = getIntent().getStringExtra("chat_status");
             if (chat_status != null && chat_status.equalsIgnoreCase("0")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
+                Log.d("chatId1",""+chat_id);
                 //chatMessageList(chat_id);
             } else if (chat_status != null && chat_status.equalsIgnoreCase("1")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
-
+                Log.d("chatId2",""+chat_id);
                 //chatMessageList(chat_id);
             }else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
                 chat_id = Integer.parseInt(extras.getString("chat_id"));
                 //chatMessageList(chat_id);
-
+                Log.d("chatId3",""+chat_id);
             }else {
                 String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
                 chat_id= Integer.parseInt(value);
-
+                Log.d("chatId4",""+chat_id);
             }
 
-            //Log.d("chatId",""+chat_id);
+            //
         }
-        //Log.d("chatId",""+chat_id);
+        Log.d("chatId5",""+chat_id);
         //chatMessageList(chat_id);
 
         /*Todo:- UserDP*/
@@ -343,7 +344,6 @@ public class ChatActivity extends AppCompatActivity {
                             String msgContent = editText.getText().toString();
                             if(!TextUtils.isEmpty(msgContent))
                             {
-
                                 if (CommonUtils.isOnline(ChatActivity.this)) {
                                     //sessonManager.showProgress(ChatActivity.this);
                                     TextTypeRequest textTypeRequest=new TextTypeRequest();
@@ -718,11 +718,12 @@ public class ChatActivity extends AppCompatActivity {
 
                             }
                         }else {
-                            sessonManager.setToken("");
+                            Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                           /* sessonManager.setToken("");
                             PrefUtils.setAppId(ChatActivity.this,"");
                             Toast.makeText(ChatActivity.this,""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(ChatActivity.this, LoginActivity.class));
-                            finishAffinity();
+                            finishAffinity();*/
                         }
                     }
                 }

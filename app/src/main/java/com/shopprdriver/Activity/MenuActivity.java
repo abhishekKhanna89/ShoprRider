@@ -119,12 +119,10 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     String sCurrentVersion;
     int hoursmilllisecond = 86400000;
     int value = 0, savedMillistime;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
         sessonManager=new SessonManager(this);
         progressbar=new Progressbar();
         Log.d("Token",sessonManager.getToken());
@@ -267,7 +265,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         //we set the listner to the location manager
 
 
-        locman.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, loclis);
+        locman.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclis);
         /*
         1st para=Provider i.e. from where are we getting our data; our phones network or gps?
         2nd para=time in milliseconds after which locations must be updated
@@ -275,7 +273,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         4th para=locations listner
          */
 
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(0, 0) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -293,7 +291,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
-                locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, loclis);
+                locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
             }
         }.start();
 
@@ -840,7 +838,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
     }
     private void openPlayStore() {
-        if (this == null) {
+        if (getApplication() == null) {
             return;
         }
         final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object

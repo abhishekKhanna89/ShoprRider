@@ -32,6 +32,7 @@ public class SplashActivity extends AppCompatActivity {
     private Boolean mAutoAuthenticateResult;
     private String mEncodedAuthInfo;
     int step_form;
+    String newToken;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +40,15 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         sessonManager = new SessonManager(SplashActivity.this);
+
+
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
-            String newToken = instanceIdResult.getToken();
-           // Log.d("responseNotification",newToken);
+            newToken = instanceIdResult.getToken();
+            // Log.d("responseNotification",newToken);
             sessonManager.setNotificationToken(newToken);
             //Log.e("newToken", newToken);
             //getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
         });
-
 
         AuthenticationUtils.autoAuthenticate(this, userId -> {
 
@@ -59,6 +61,7 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
+
                 }
                 else {
                     viewStatus();
@@ -123,6 +126,7 @@ public class SplashActivity extends AppCompatActivity {
 
                                 }else {
                                     PrefUtils.getAppId(SplashActivity.this);
+                                    sessonManager.getNotificationToken();
                                     startActivity(new Intent(SplashActivity.this, MenuActivity.class)
                                             .putExtra("check_out_type",type));
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);

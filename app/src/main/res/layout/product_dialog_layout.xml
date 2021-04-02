@@ -81,7 +81,6 @@
             android:layout_width="match_parent"
             android:padding="10dp"
             android:hint="Quantity"
-            android:inputType="textCapSentences"
             android:textColorHint="@color/black"
             android:layout_marginTop="10sp"
             android:background="@drawable/eddittext"

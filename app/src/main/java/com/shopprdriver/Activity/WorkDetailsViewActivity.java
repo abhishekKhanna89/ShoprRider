@@ -1,6 +1,7 @@
 package com.shopprdriver.Activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +45,8 @@ public class WorkDetailsViewActivity extends AppCompatActivity {
     ArrayAdapter<String> stateAdaoter;
     public static  String value,radioV;
     int selectedId;
+    int id;
+    String selectedName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,24 +99,35 @@ public class WorkDetailsViewActivity extends AppCompatActivity {
                             /*Todo:- Spinner selected value*/
                             locationList=workDetailsViewModel.getData().getLocations();
                             for (int i=0;i<locationList.size();i++){
+                                id=locationList.get(i).getId();
                                 value=locationList.get(i).getName();
+                                Log.d("spinnerValue",value);
                             }
                             /*Todo:- Spinner*/
                             workLocationList=workDetailsViewModel.getData().getWorkLocations();
                             for (int i=0;i<workLocationList.size();i++){
+
                                 spinner_id=workLocationList.get(i).getId();
                                 spinner_name=workLocationList.get(i).getName();
                                 spinner_id_list.add(spinner_id);
                                 spinner_name_list.add(spinner_name);
+                                if(id==spinner_id){
+                                    selectedName= workLocationList.get(i).getName();
+                                }
+
 
                             }
                         }
                         stateAdaoter = new ArrayAdapter<String>(WorkDetailsViewActivity.this, android.R.layout.simple_list_item_1, spinner_name_list);
                         spinnerWorkList.setAdapter(stateAdaoter);
                         spinnerWorkList.setOnItemSelectedListener(new ItemSelectedListener());
-                        if (value!=null){
+
+                        int spinnerPosition = stateAdaoter.getPosition(selectedName);
+                        spinnerWorkList.setSelection(spinnerPosition);
+                        /*if (value!=null){
                             spinnerWorkList.setSelection(((ArrayAdapter<String>)spinnerWorkList.getAdapter()).getPosition(value));
-                        }
+                        }*/
+
                     }
                 }
 
@@ -177,8 +191,11 @@ public class WorkDetailsViewActivity extends AppCompatActivity {
     private class ItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
             lll.clear();
             selectedItem = workLocationList.get(position).getId();
+
+            Log.d("resSpinner",""+selectedItem);
             lll.add(selectedItem);
         }
 
