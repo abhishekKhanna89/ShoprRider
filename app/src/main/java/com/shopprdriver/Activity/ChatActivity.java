@@ -154,6 +154,20 @@ public class ChatActivity extends AppCompatActivity {
         sessonManager = new SessonManager(this);
         progressbar = new Progressbar();
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
+        chatRecyclerView = findViewById(R.id.chatRecyclerView);
+        chatRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        chatRecyclerView.setHasFixedSize(true);
+        chatRecyclerView.setItemViewCacheSize(100);
+        chatRecyclerView.setDrawingCacheEnabled(true);
+        chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        chatRecyclerView.setNestedScrollingEnabled(false);
+        /*Todo:- UserDP*/
+        userDp=findViewById(R.id.userDp);
+        userName=findViewById(R.id.userName);
+
+        editText = findViewById(R.id.editText);
+        sendMsgBtn = findViewById(R.id.sendMsgBtn);
+        chooseImage=findViewById(R.id.chooseImage);
         /*Todo:- Recording Library*/
         recordView = (RecordView) findViewById(R.id.record_view);
         recordButton = (RecordButton) findViewById(R.id.record_button);
@@ -239,21 +253,16 @@ public class ChatActivity extends AppCompatActivity {
             }else {
                 String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
                 chat_id= Integer.parseInt(value);
+                //chatMessageList(chat_id);
                 Log.d("chatId4",""+chat_id);
             }
 
             //
         }
         Log.d("chatId5",""+chat_id);
-        //chatMessageList(chat_id);
+        chatMessageList(chat_id);
 
-        /*Todo:- UserDP*/
-        userDp=findViewById(R.id.userDp);
-        userName=findViewById(R.id.userName);
 
-        editText = findViewById(R.id.editText);
-        sendMsgBtn = findViewById(R.id.sendMsgBtn);
-        chooseImage=findViewById(R.id.chooseImage);
 
 
 
@@ -389,15 +398,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        chatRecyclerView.setHasFixedSize(true);
-        chatRecyclerView.setItemViewCacheSize(100);
-        chatRecyclerView.setDrawingCacheEnabled(true);
-        chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        chatRecyclerView.setNestedScrollingEnabled(false);
-
-        if (chatList.size()==0){
+        /*if (chatList.size()==0){
             chatMessageList(chat_id);
         }else if (chatList.size()>0){
             ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
@@ -405,7 +406,7 @@ public class ChatActivity extends AppCompatActivity {
             chatRecyclerView.scrollToPosition(chatList.size()-1);
             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
             chatMessageAdapter.notifyDataSetChanged();
-        }
+        }*/
     }
     private String getHumanTimeText(long milliseconds) {
         return String.format("%02d:%02d",
@@ -703,18 +704,17 @@ public class ChatActivity extends AppCompatActivity {
                             ChatMessageModel chatMessageModel=response.body();
                             Gson gson=new Gson();
                             String msg=gson.toJson(chatMessageModel);
-                            Log.d("ress",""+msg);
+                            Log.d("ressTYTUTYUU",""+msg);
                             if (chatMessageModel.getData()!=null){
                                 chatList=chatMessageModel.getData().getChats();
                                 Picasso.get().load(chatMessageModel.getData().getCustomer().getImage()).into(userDp);
                                 userName.setText(chatMessageModel.getData().getCustomer().getName());
                                 ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
+                                chatRecyclerView.getAdapter().notifyDataSetChanged();
                                 chatRecyclerView.scrollToPosition(chatList.size()-1);
                                 chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
-                                //chatRecyclerView.getLayoutManager().scrollToPosition(chatList.size()-1);
-                                //adapter.notifyDataSetChanged();
-                                chatMessageAdapter.notifyDataSetChanged();
+                                //chatMessageAdapter.notifyDataSetChanged();
 
                             }
                         }else {
