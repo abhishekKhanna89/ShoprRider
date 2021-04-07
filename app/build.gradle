@@ -5,11 +5,10 @@ plugins {
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
-
     defaultConfig {
         applicationId "com.shopprdriver"
         minSdkVersion 21
-        targetSdkVersion 30
+        //targetSdkVersion 30
         versionCode 8
         versionName "1.8"
         multiDexEnabled true
