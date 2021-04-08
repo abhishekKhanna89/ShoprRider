@@ -2,6 +2,8 @@ package com.shopprdriver.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,10 +85,82 @@ public class OtpActivity extends AppCompatActivity {
                             String sendbird_token=otpVerifyModel.getSendbird_token();
                             //Log.d("res",sendbird_token);
                             int form_step=otpVerifyModel.getForm_step();
-                            String savedAppId = PrefUtils.getAppId(OtpActivity.this);
+                            //String savedAppId = PrefUtils.getAppId(OtpActivity.this);
+                            String savedAppId= BaseApplication.APP_ID;
+                            Log.d("savedid+++",savedAppId);
+                            PrefUtils.setAppId(OtpActivity.this,savedAppId);
                             if((!editOtp.getText().toString().isEmpty())){
                                 sessonManager.setToken(response.body().getToken());
-                                if (((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
+                                if (!TextUtils.isEmpty(savedAppId) && !TextUtils.isEmpty(userId) &&((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
+                                    AuthenticationUtils.authenticate(OtpActivity.this, userId, sendbird_token, isSuccess -> {
+                                        if (isSuccess) {
+                                            setResult(RESULT_OK, null);
+                                            sessonManager.getNotificationToken();
+                                            Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                            if (type.equalsIgnoreCase("login")){
+                                                if (form_step==1){
+                                                    startActivity(new Intent(OtpActivity.this, Page1Activity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else if (form_step==2){
+                                                    startActivity(new Intent(OtpActivity.this, Page2Activity.class));
+                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                    finish();
+                                                }else if (form_step==3){
+                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step1")){
+                                                        PrefUtils.getAppId(OtpActivity.this);
+                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                        finish();
+                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step2")){
+                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }else {
+                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }
+                                                }else if (form_step==4){
+                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step3")){
+                                                        PrefUtils.getAppId(OtpActivity.this);
+                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                        finish();
+                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step4")){
+                                                        startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }else {
+                                                        startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
+                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                        finish();
+                                                    }
+
+                                                }else {
+                                                    sessonManager.getNotificationToken();
+                                                    PrefUtils.getAppId(OtpActivity.this);
+                                                    startActivity(new Intent(OtpActivity.this, MenuActivity.class)
+                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                    finish();
+                                                }
+
+
+                                            }else {
+
+                                                //sessonManager.setForm_Step(form_step);
+                                                startActivity(new Intent(OtpActivity.this, Page1Activity.class)
+                                                        .putExtra("form_step",form_step)
+                                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                finish();
+                                                //Toast.makeText(OtpActivity.this, "register", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        }
+                                    });
+
+                                }
+                                /*if (((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
                                     AuthenticationUtils.authenticate(OtpActivity.this, userId, sendbird_token, isSuccess -> {
                                         if (isSuccess) {
                                             setResult(RESULT_OK, null);
@@ -152,7 +226,7 @@ public class OtpActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                }
+                                }*/
                             }
                         }else {
                             Toast.makeText(OtpActivity.this, "OTP is not correct", Toast.LENGTH_SHORT).show();

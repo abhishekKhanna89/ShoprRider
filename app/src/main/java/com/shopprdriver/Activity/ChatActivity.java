@@ -693,7 +693,7 @@ public class ChatActivity extends AppCompatActivity {
     private void chatMessageList(int chat_id) {
         Log.d("ChhatId++",""+chat_id);
         if (CommonUtils.isOnline(ChatActivity.this)) {
-
+            Log.d("TokenResponse",sessonManager.getToken());
             Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),chat_id);
             call.enqueue(new Callback<ChatMessageModel>() {
                 @Override
@@ -718,8 +718,7 @@ public class ChatActivity extends AppCompatActivity {
 
                             }
                         }else {
-                            Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                           /* sessonManager.setToken("");
+                            /* sessonManager.setToken("");
                             PrefUtils.setAppId(ChatActivity.this,"");
                             Toast.makeText(ChatActivity.this,""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(ChatActivity.this, LoginActivity.class));

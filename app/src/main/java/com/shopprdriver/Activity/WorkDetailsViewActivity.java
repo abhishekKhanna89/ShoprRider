@@ -105,8 +105,8 @@ public class WorkDetailsViewActivity extends AppCompatActivity {
                             }
                             /*Todo:- Spinner*/
                             workLocationList=workDetailsViewModel.getData().getWorkLocations();
-                            for (int i=0;i<workLocationList.size();i++){
 
+                            for (int i=0;i<workLocationList.size();i++){
                                 spinner_id=workLocationList.get(i).getId();
                                 spinner_name=workLocationList.get(i).getName();
                                 spinner_id_list.add(spinner_id);
@@ -170,7 +170,9 @@ public class WorkDetailsViewActivity extends AppCompatActivity {
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             Toast.makeText(WorkDetailsViewActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            spinner_name_list.clear();
                             viewWorkDetails();
+
                         }else {
                             Toast.makeText(WorkDetailsViewActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }

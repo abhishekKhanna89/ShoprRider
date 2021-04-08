@@ -219,7 +219,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
                                    }
                                    Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                }else {
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                   //Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                }
                            }
                        }

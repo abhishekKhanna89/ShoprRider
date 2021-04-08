@@ -1,24 +1,25 @@
 {
   "project_info": {
     "project_number": "279884695916",
+    "firebase_url": "https://mytestproject-1326f-default-rtdb.firebaseio.com",
     "project_id": "mytestproject-1326f",
     "storage_bucket": "mytestproject-1326f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:279884695916:android:6260fd91c96e0bbaa64b49",
+        "mobilesdk_app_id": "1:279884695916:android:86911bc445c8e611a64b49",
         "android_client_info": {
           "package_name": "com.shoppr.shoper"
         }
       },
       "oauth_client": [
         {
-          "client_id": "279884695916-r8pfinaor9tv0fbei6r8jj823smjtov3.apps.googleusercontent.com",
+          "client_id": "279884695916-m832708744piuijditqqjikjgulv4h2a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.shoppr.shoper",
-            "certificate_hash": "6fabb7e9556e388197c505ed763ededfa06193d6"
+            "certificate_hash": "71636b78341d087f02813123e2aedb6a7ec694cf"
           }
         },
         {
@@ -44,18 +45,18 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:279884695916:android:4f5be95d54679ef7a64b49",
+        "mobilesdk_app_id": "1:279884695916:android:34443f13ba272672a64b49",
         "android_client_info": {
           "package_name": "com.shopprdriver"
         }
       },
       "oauth_client": [
         {
-          "client_id": "279884695916-sgr9riqcavsjemv38ej3d6cpvqhr1phg.apps.googleusercontent.com",
+          "client_id": "279884695916-lhk2g7pbn83dlmt9va1ibu9pqel1jdou.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.shopprdriver",
-            "certificate_hash": "6fabb7e9556e388197c505ed763ededfa06193d6"
+            "certificate_hash": "71636b78341d087f02813123e2aedb6a7ec694cf"
           }
         },
         {
