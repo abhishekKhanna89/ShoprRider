@@ -1350,7 +1350,7 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
-                                CallService.dial(ChatActivity.this, savedUserId, true);
+                                CallService.dial(ChatActivity.this, savedUserId,"","", true);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 //String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
@@ -1385,7 +1385,7 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
-                                CallService.dial(ChatActivity.this, savedUserId, false);
+                                CallService.dial(ChatActivity.this, savedUserId,"","", false);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);

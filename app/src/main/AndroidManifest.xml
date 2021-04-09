@@ -29,6 +29,8 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".Activity.InitilizingActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activity.PersonalInfoActivity"
             android:screenOrientation="portrait"
             android:label="Personal Info"/>

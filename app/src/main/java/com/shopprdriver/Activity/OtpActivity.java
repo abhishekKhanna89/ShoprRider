@@ -1,6 +1,5 @@
 package com.shopprdriver.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +14,7 @@ import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.SendBird.BaseApplication;
+import com.shopprdriver.SendBird.call.CallService;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
@@ -97,6 +97,10 @@ public class OtpActivity extends AppCompatActivity {
                                             setResult(RESULT_OK, null);
                                             sessonManager.getNotificationToken();
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                            CallService.dial(OtpActivity.this, "lakshmikant", String.valueOf(form_step),type, false);
+                                            /*sessonManager.getNotificationToken();
+                                            Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
                                             if (type.equalsIgnoreCase("login")){
                                                 if (form_step==1){
                                                     startActivity(new Intent(OtpActivity.this, Page1Activity.class));
@@ -154,7 +158,7 @@ public class OtpActivity extends AppCompatActivity {
                                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                 finish();
                                                 //Toast.makeText(OtpActivity.this, "register", Toast.LENGTH_SHORT).show();
-                                            }
+                                            }*/
 
                                         }
                                     });

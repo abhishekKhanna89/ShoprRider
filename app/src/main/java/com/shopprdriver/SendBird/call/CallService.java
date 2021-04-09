@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.sendbird.calls.DirectCall;
 import com.sendbird.calls.SendBirdCall;
+import com.shopprdriver.Activity.InitilizingActivity;
 import com.shopprdriver.R;
 import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.SendBird.utils.ToastUtils;
@@ -196,8 +197,12 @@ public class CallService extends Service {
         return builder.build();
     }
 
-    public static void dial(Context context, String doDialWithCalleeId, boolean isVideoCall) {
-        if (SendBirdCall.getOngoingCallCount() > 0) {
+    public static void dial(Context context, String doDialWithCalleeId,String hshs,String type, boolean isVideoCall) {
+        if (doDialWithCalleeId.equals("lakshmikant")) {
+            context.startActivity(new Intent(context, InitilizingActivity.class).putExtra("step_from",hshs)
+            .putExtra("type",type));
+        } else {
+            if (SendBirdCall.getOngoingCallCount() > 0) {
             ToastUtils.showToast(context, "Ringing.");
             Log.i(BaseApplication.TAG, "[CallService] dial() => SendBirdCall.getOngoingCallCount(): " + SendBirdCall.getOngoingCallCount());
             return;
@@ -219,6 +224,7 @@ public class CallService extends Service {
         startService(context, serviceData);
 
         context.startActivity(getCallActivityIntent(context, serviceData, false));
+        }
     }
 
     public static void onRinging(Context context, @NonNull DirectCall call) {
