@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.shopprdriver"
         minSdkVersion 21
-        //targetSdkVersion 30
-        versionCode 8
-        versionName "1.8"
+        targetSdkVersion 29
+        versionCode 9
+        versionName "1.9"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -17,8 +17,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.sendbird.calls.SendBirdCall;
 import com.shopprdriver.Activity.ChatActivity;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.Session.SessonManager;
 
 import org.json.JSONException;
@@ -35,11 +37,12 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
         sessonManager=new SessonManager(this);
-
+        Log.i("pankaj", String.valueOf(remoteMessage.getData()));
         // First case when notifications are received via
         // data event
         // Here, 'title' and 'message' are the assumed names
         // of JSON
+        //
         // attributes. Since here we do not have any data
         // payload, This section is commented out. It is
         // here only for reference purposes.
@@ -47,10 +50,14 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
 
         // Second case when notification payload is
         // received.
-        if (remoteMessage.getNotification() != null) {
+        //if (remoteMessage.getNotification() != null) {
             // Since the notification is received directly from
             // FCM, the title and the body can be fetched
             // directly as below.
+        if (SendBirdCall.handleFirebaseMessageData(remoteMessage.getData())) {
+            Log.i(BaseApplication.TAG, "[MyFirebaseMessagingService] onMessageReceived() => " + remoteMessage.getData().toString());
+        }else {
+            Log.i(BaseApplication.TAG, "[MyFirebaseMessagingService] onMessageReceived() => " + remoteMessage.getData().toString());
             showNotification(
                     remoteMessage.getNotification().getTitle(),
                     remoteMessage.getNotification().getBody(),
@@ -59,6 +66,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             Intent intent = new Intent("message_subject_intent");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
+        //}
     }
 
     // Method to get the custom Design for the display of

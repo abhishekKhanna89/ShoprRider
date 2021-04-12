@@ -24,7 +24,7 @@ public class InitilizingActivity extends AppCompatActivity {
         sessonManager=new SessonManager(this);
         centerImage=findViewById(R.id.centerImage);
         rippleBackground.startRippleAnimation();
-        Integer form_step=getIntent().getIntExtra("step_from",0);
+        String form_step=getIntent().getStringExtra("step_from");
         String type=getIntent().getStringExtra("type");
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -34,15 +34,15 @@ public class InitilizingActivity extends AppCompatActivity {
                     public void run() {
                         rippleBackground.stopRippleAnimation();
                         if (type.equalsIgnoreCase("login")){
-                            if (form_step==1){
+                            if (form_step!=null&&form_step.equalsIgnoreCase("1")){
                                 startActivity(new Intent(InitilizingActivity.this, Page1Activity.class));
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                 finish();
-                            }else if (form_step==2){
+                            }else if (form_step!=null&&form_step.equalsIgnoreCase("2")){
                                 startActivity(new Intent(InitilizingActivity.this, Page2Activity.class));
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                 finish();
-                            }else if (form_step==3){
+                            }else if (form_step!=null&&form_step.equalsIgnoreCase("3")){
                                 if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step1")){
                                     PrefUtils.getAppId(InitilizingActivity.this);
                                     startActivity(new Intent(InitilizingActivity.this, MenuActivity.class)
@@ -57,7 +57,7 @@ public class InitilizingActivity extends AppCompatActivity {
                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                     finish();
                                 }
-                            }else if (form_step==4){
+                            }else if (form_step!=null&&form_step.equalsIgnoreCase("4")){
                                 if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step3")){
                                     PrefUtils.getAppId(InitilizingActivity.this);
                                     startActivity(new Intent(InitilizingActivity.this, MenuActivity.class)

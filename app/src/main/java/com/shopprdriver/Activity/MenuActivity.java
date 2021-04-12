@@ -62,6 +62,7 @@ import com.shopprdriver.Model.Logout.LogoutModel;
 import com.shopprdriver.Model.Menu_Model;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
@@ -703,11 +704,15 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                             public void onResponse(Call<LogoutModel> call, Response<LogoutModel> response) {
                                 if (response.body()!=null) {
                                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                        sessonManager.setToken("");
-                                        PrefUtils.setAppId(MenuActivity.this,"");
-                                        Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
-                                        finishAffinity();
+                                        AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
+                                            if (getApplication() != null) {
+                                                sessonManager.setToken("");
+                                                PrefUtils.setAppId(MenuActivity.this,"");
+                                                Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                                finishAffinity();
+                                            }
+                                        });
                                         //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
