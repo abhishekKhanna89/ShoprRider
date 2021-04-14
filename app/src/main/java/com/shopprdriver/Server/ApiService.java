@@ -29,6 +29,7 @@ import com.shopprdriver.Model.RejectedModel;
 import com.shopprdriver.Model.ReviewsModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
+import com.shopprdriver.Model.TerminateChat.TerminateChatModel;
 import com.shopprdriver.Model.TravelingDetails.TravelingDetailsModel;
 import com.shopprdriver.Model.UpdateLocationRequest;
 import com.shopprdriver.Model.UploadDocument.DocumentModel;
@@ -264,6 +265,11 @@ public interface ApiService {
     @NonNull
     @GET("profile")
     Call<ProfileModel>apiProfileView(@Header("Authorization") String token);
+
+    @NonNull
+    @GET("terminate-chat/{id}")
+    Call<TerminateChatModel>apiChatTerminate(@Header("Authorization") String token,
+                                             @Path("id")int id);
 
 
 }

@@ -57,6 +57,7 @@ import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.ChatModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.Send.SendModel;
+import com.shopprdriver.Model.TerminateChat.TerminateChatModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.TextTypeRequest;
 import com.shopprdriver.RequestService.WalletRequest;
@@ -146,6 +147,7 @@ public class ChatActivity extends AppCompatActivity {
     /*Todo:- Recording Library*/
     RecordView recordView;
     RecordButton recordButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -306,6 +308,23 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         });
                         break;
+                    case  R.id.action_terminate_chat:
+                        new AlertDialog.Builder(ChatActivity.this)
+                                .setTitle("Are you sure want to terminate chat?")
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Continue with delete operation
+                                        terminate();
+                                    }
+                                })
+
+                                // A null listener allows the button to dismiss the dialog and take no further action.
+                                .setNegativeButton(android.R.string.no, null)
+                                .setIcon(R.drawable.splash_transparent)
+                                .show();
+                        break;
                 }
                 return false;
             }
@@ -408,6 +427,29 @@ public class ChatActivity extends AppCompatActivity {
             chatMessageAdapter.notifyDataSetChanged();
         }*/
     }
+
+    private void terminate() {
+        Call<TerminateChatModel>call=ApiExecutor.getApiService(this)
+                .apiChatTerminate("Bearer "+sessonManager.getToken(),chat_id);
+        call.enqueue(new Callback<TerminateChatModel>() {
+            @Override
+            public void onResponse(Call<TerminateChatModel> call, Response<TerminateChatModel> response) {
+                if (response.body()!=null){
+                    if (response.body().getStatus()!=null&&response.body().getStatus().equalsIgnoreCase("success")){
+                        Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TerminateChatModel> call, Throwable t) {
+
+            }
+        });
+    }
+
     private String getHumanTimeText(long milliseconds) {
         return String.format("%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(milliseconds),

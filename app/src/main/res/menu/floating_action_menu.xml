@@ -13,4 +13,8 @@
         android:id="@+id/action_ask_payment"
         android:icon="@drawable/request"
         android:title="Ask for payment"/>
+
+    <item android:id="@+id/action_terminate_chat"
+        android:title="Terminate Chat"
+        android:icon="@drawable/chat_terminate"/>
 </menu>
