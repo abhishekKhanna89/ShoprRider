@@ -36,6 +36,7 @@ import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Server.ApiFactory;
@@ -172,11 +173,19 @@ public class RegisterActivity extends AppCompatActivity {
 
                             }
                         }else {
-                            sessonManager.setToken("");
-                            PrefUtils.setAppId(RegisterActivity.this,"");
-                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                            finishAffinity();
+                            if (response.body().getStatus().equalsIgnoreCase("failed")) {
+                                if (response.body().getMessage().equalsIgnoreCase("logout")) {
+                                    AuthenticationUtils.deauthenticate(RegisterActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(RegisterActivity.this, "");
+                                            Toast.makeText(RegisterActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 }

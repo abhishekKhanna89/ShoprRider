@@ -115,7 +115,13 @@
         <activity
             android:name=".MainActivity"
             android:label="Open Order"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="pending_order" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activity.OtpActivity"
             android:screenOrientation="portrait"

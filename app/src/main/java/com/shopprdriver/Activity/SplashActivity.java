@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.R;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
@@ -62,7 +64,11 @@ public class SplashActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
                 }
-                else {
+                else if (sessonManager.getToken()!=null){
+                    startActivity(new Intent(SplashActivity.this, MenuActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    finish();
+                }else {
                     viewStatus();
                 }
 
@@ -79,6 +85,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             ProfileStatusModel profileStatusModel=response.body();
+                            Log.d("profileStatus",new Gson().toJson(profileStatusModel));
                             if (profileStatusModel!=null){
                                  step_form=profileStatusModel.getFormStep();
                                  String type=profileStatusModel.getType();

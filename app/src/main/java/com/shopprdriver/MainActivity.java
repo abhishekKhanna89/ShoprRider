@@ -29,6 +29,7 @@ import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Adapter.UserChatListAdapter;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.AvailableChat.Userchat;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.SendBird.utils.ToastUtils;
 import com.shopprdriver.Server.ApiExecutor;
@@ -137,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                                 emptyPageGif.setVisibility(View.GONE);
                                 //swipeRefreshLayout.setVisibility(View.VISIBLE);
                             }
-
                             chatsListModelList = chatsListModel.getData().getUserchats();
                             userChatListAdapter = new UserChatListAdapter(MainActivity.this, chatsListModelList);
                             userChatListRecyclerView.setAdapter(userChatListAdapter);
@@ -145,11 +145,15 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             if (response.body().getStatus().equalsIgnoreCase("failed")){
                                 if (response.body().getMessage().equalsIgnoreCase("logout")){
-                                    sessonManager.setToken("");
-                                    PrefUtils.setAppId(MainActivity.this,"");
-                                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                                    finishAffinity();
+                                    AuthenticationUtils.deauthenticate(MainActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(MainActivity.this,"");
+                                            Toast.makeText(MainActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
                                 }
                             }
 

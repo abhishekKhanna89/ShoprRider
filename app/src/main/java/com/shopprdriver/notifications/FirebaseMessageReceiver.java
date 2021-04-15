@@ -19,6 +19,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sendbird.calls.SendBirdCall;
 import com.shopprdriver.Activity.ChatActivity;
+import com.shopprdriver.MainActivity;
 import com.shopprdriver.R;
 import com.shopprdriver.SendBird.BaseApplication;
 import com.shopprdriver.Session.SessonManager;
@@ -33,6 +34,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
     Uri notification;
     String chat_id;
     Intent intent;
+    String type;
     @Override
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
@@ -100,9 +102,9 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         JSONObject jsonObject = new JSONObject(remoteMessage.getData());
         Log.d("Chatjson",""+jsonObject);
         try {
+             type=jsonObject.getString("type");
+
             chat_id = jsonObject.getString("chat_id");
-
-
             // sessonManager.setChatId(chat_id);
             Log.d("ChatId+",chat_id);
 
@@ -110,10 +112,23 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        intent = new Intent(FirebaseMessageReceiver.this, ChatActivity.class);
-        intent.putExtra("chat_id",chat_id);
-        intent.putExtra("chat_status","2");
-        intent.setAction(Intent.ACTION_MAIN);
+        if (type!=null&&type.equalsIgnoreCase("pending_order")){
+            intent = new Intent(FirebaseMessageReceiver.this, MainActivity.class);
+            /*intent.putExtra("chat_id",chat_id);
+            intent.putExtra("chat_status","2");*/
+            intent.setAction(Intent.ACTION_MAIN);
+        }else if (type!=null&&type.equalsIgnoreCase("chat")){
+            intent = new Intent(FirebaseMessageReceiver.this, ChatActivity.class);
+            intent.putExtra("chat_id",chat_id);
+            intent.putExtra("chat_status","2");
+            intent.setAction(Intent.ACTION_MAIN);
+        }else if (type!=null&&type.equalsIgnoreCase("chat-assigned")){
+            intent = new Intent(FirebaseMessageReceiver.this, ChatActivity.class);
+            intent.putExtra("chat_id",chat_id);
+            intent.putExtra("chat_status","2");
+            intent.setAction(Intent.ACTION_MAIN);
+        }
+
 
 
         // Assign channel ID

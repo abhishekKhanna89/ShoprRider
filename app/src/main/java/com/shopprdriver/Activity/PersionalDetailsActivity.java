@@ -14,13 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.PersonalDetails.PersonalDetailsModel;
 import com.shopprdriver.Model.StateList.City;
 import com.shopprdriver.Model.StateList.State;
 import com.shopprdriver.Model.StateList.StateListModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.PersonalDetailsRequest;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -134,11 +134,19 @@ public class PersionalDetailsActivity extends AppCompatActivity {
 
                             }
                         }else {
-                            sessonManager.setToken("");
-                            PrefUtils.setAppId(PersionalDetailsActivity.this,"");
-                            Toast.makeText(PersionalDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(PersionalDetailsActivity.this, LoginActivity.class));
-                            finishAffinity();
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(PersionalDetailsActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(PersionalDetailsActivity.this,"");
+                                            Toast.makeText(PersionalDetailsActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(PersionalDetailsActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 }

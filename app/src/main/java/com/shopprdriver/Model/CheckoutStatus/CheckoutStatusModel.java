@@ -8,6 +8,9 @@ public class CheckoutStatusModel {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("message")
+    @Expose
+    private String message;
     @SerializedName("type")
     @Expose
     private String type;
@@ -24,6 +27,14 @@ public class CheckoutStatusModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getType() {

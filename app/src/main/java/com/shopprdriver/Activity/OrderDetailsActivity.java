@@ -24,11 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.gson.Gson;
-import com.shopprdriver.MainActivity;
 import com.shopprdriver.Model.Login.LoginModel;
 import com.shopprdriver.Model.OrderDeatilsList.OrderDeatilsListModel;
 import com.shopprdriver.Model.OrderDetails.Detail;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -114,11 +114,19 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                     Toast.makeText(OrderDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     myOrderDetailsList();
                                 }else {
-                                    sessonManager.setToken("");
-                                    PrefUtils.setAppId(OrderDetailsActivity.this,"");
-                                    Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(OrderDetailsActivity.this, LoginActivity.class));
-                                    finishAffinity();
+                                    if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                        if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                            AuthenticationUtils.deauthenticate(OrderDetailsActivity.this, isSuccess -> {
+                                                if (getApplication() != null) {
+                                                    sessonManager.setToken("");
+                                                    PrefUtils.setAppId(OrderDetailsActivity.this,"");
+                                                    Toast.makeText(OrderDetailsActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(OrderDetailsActivity.this, LoginActivity.class));
+                                                    finishAffinity();
+                                                }
+                                            });
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -189,6 +197,21 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 orderList = orderDeatilsListModel.getData().getOrder().getDetails();
                                 OrderDetailsAdapter orderDetailsAdapter = new OrderDetailsAdapter(OrderDetailsActivity.this, orderList);
                                 rv_order_details.setAdapter(orderDetailsAdapter);
+                            }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(OrderDetailsActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(OrderDetailsActivity.this,"");
+                                            Toast.makeText(OrderDetailsActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(OrderDetailsActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+
+                                }
                             }
                         }
                     }

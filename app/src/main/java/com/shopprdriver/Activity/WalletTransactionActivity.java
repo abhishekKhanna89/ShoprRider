@@ -1,11 +1,7 @@
 package com.shopprdriver.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,12 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.shopprdriver.Adapter.CreditAdapter;
 import com.shopprdriver.Model.WalletHistory.Transaction;
 import com.shopprdriver.Model.WalletHistory.WalletHistoryModel;
 import com.shopprdriver.Model.WalletHistory.WalletTransaction;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -66,6 +70,20 @@ public class WalletTransactionActivity extends AppCompatActivity {
                                 RecyclerAdapter recyclerAdapter=new RecyclerAdapter(WalletTransactionActivity.this,historyList);
                                 recyclerView.setAdapter(recyclerAdapter);
                                 recyclerAdapter.notifyDataSetChanged();
+                            }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(WalletTransactionActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(WalletTransactionActivity.this,"");
+                                            Toast.makeText(WalletTransactionActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(WalletTransactionActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
                             }
                         }
                     }

@@ -47,6 +47,9 @@ public class Chat {
     @SerializedName("lang")
     @Expose
     private String lang;
+    @SerializedName("order_id")
+    @Expose
+    private int order_id;
 
     public Integer getId() {
         return id;
@@ -160,4 +163,12 @@ public class Chat {
         this.lang = lang;
     }
 
+    public int getOrder_id() {
+
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
+    }
 }

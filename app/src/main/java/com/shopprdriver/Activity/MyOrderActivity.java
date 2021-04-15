@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -23,6 +24,8 @@ import com.google.gson.Gson;
 import com.shopprdriver.Model.OrderDetails.Datum;
 import com.shopprdriver.Model.OrderDetails.OrderDetailsModel;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -122,6 +125,20 @@ public class MyOrderActivity extends AppCompatActivity implements
                                 myOrderListAdapter.notifyDataSetChanged();
                                 if (datumList.size() > 0) {
                                     currentPage = currentPage + 1;
+                                }
+                            }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(MyOrderActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(MyOrderActivity.this,"");
+                                            Toast.makeText(MyOrderActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(MyOrderActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
                                 }
                             }
                         }

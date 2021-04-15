@@ -31,7 +31,6 @@
                     android:id="@+id/Image"
                     android:layout_width="200dp"
                     android:layout_height="150dp"
-                    android:padding="5dp"
                     android:scaleType="fitXY" />
 
 
@@ -39,7 +38,6 @@
                     android:id="@+id/Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:text="Location"
                     android:textColor="#fff" />
 
@@ -48,7 +46,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:padding="5dp"
                     android:text="11:00 AM"
                     android:textColor="#fff"
                     android:textSize="10sp" />
@@ -78,7 +75,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:elevation="2dp"
-                    android:padding="10dp"
                     android:textColor="#fff"
                     android:textSize="18dp" />
 
@@ -87,7 +83,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:padding="5dp"
                     android:text="11:00 AM"
                     android:textColor="#fff"
                     android:textSize="10sp" />
@@ -186,7 +181,6 @@
                         android:id="@+id/productMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
                         android:text="Location"
                         android:textColor="#fff" />
                     <LinearLayout
@@ -297,7 +291,6 @@
                             android:id="@+id/dateProduct"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:text="11:00 AM"
                             android:textColor="#fff"
                             android:textSize="10sp" />
@@ -329,7 +322,6 @@
                     android:id="@+id/ratingsMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:text="Location"
                     android:textColor="#fff" />
 
@@ -347,7 +339,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:padding="5dp"
                     android:text="11:00 AM"
                     android:textColor="#fff"
                     android:textSize="10sp" />
@@ -399,14 +390,12 @@
                     android:id="@+id/locationImage"
                     android:layout_width="200dp"
                     android:layout_height="150dp"
-                    android:padding="5dp"
                     android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/locationText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:text="Location"
                     android:textColor="#fff" />
 
@@ -422,7 +411,6 @@
                         android:id="@+id/locationDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
                         android:text="11:00 AM"
                         android:textColor="#fff"
                         android:textSize="10sp" />
@@ -492,7 +480,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:elevation="2dp"
-                    android:padding="10dp"
                     android:textColor="#fff"
                     android:textSize="18dp" />
 
@@ -501,10 +488,65 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:padding="5dp"
                     android:text="11:00 AM"
                     android:textColor="#fff"
                     android:textSize="10sp" />
+            </LinearLayout>
+        </me.himanshusoni.chatmessageview.ChatMessageView>
+
+        <!--Todo:- order confirm-->
+
+        <me.himanshusoni.chatmessageview.ChatMessageView
+            android:id="@+id/orderConfirmLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            app:cmv_arrowPosition="left"
+            app:cmv_backgroundColor="#1d6867"
+            app:cmv_backgroundColorPressed="#FFBABABA"
+            app:cmv_cornerRadius="3dp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/orderConfirmMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:elevation="2dp"
+                    android:fontFamily="sans-serif"
+                    android:text="Please make a payment"
+                    android:textColor="#fff"
+                    android:textSize="18dp" />
+                <Button
+                    android:id="@+id/detailsBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Details"
+                    android:fontFamily="sans-serif"
+                    android:backgroundTint="@color/green"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="5dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/orderConfirmDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="11:00 AM"
+                        android:textColor="#fff"
+                        android:textSize="10sp" />
+                </LinearLayout>
             </LinearLayout>
         </me.himanshusoni.chatmessageview.ChatMessageView>
     </LinearLayout>

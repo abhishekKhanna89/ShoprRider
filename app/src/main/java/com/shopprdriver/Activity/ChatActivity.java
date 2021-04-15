@@ -62,6 +62,7 @@ import com.shopprdriver.R;
 import com.shopprdriver.RequestService.TextTypeRequest;
 import com.shopprdriver.RequestService.WalletRequest;
 import com.shopprdriver.SendBird.call.CallService;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Server.ApiFactory;
@@ -571,8 +572,6 @@ public class ChatActivity extends AppCompatActivity {
 
                                             alertDialog.dismiss();
                                             // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
@@ -760,11 +759,19 @@ public class ChatActivity extends AppCompatActivity {
 
                             }
                         }else {
-                            /* sessonManager.setToken("");
-                            PrefUtils.setAppId(ChatActivity.this,"");
-                            Toast.makeText(ChatActivity.this,""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
-                            finishAffinity();*/
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 }
@@ -1012,8 +1019,6 @@ public class ChatActivity extends AppCompatActivity {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     chatMessageList(chat_id);
                                     // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                }else {
-                                    //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -1262,8 +1267,6 @@ public class ChatActivity extends AppCompatActivity {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     chatMessageList(chat_id);
                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                } else {
-                                   // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -1401,6 +1404,20 @@ public class ChatActivity extends AppCompatActivity {
                                 CallService.dial(ChatActivity.this, savedCalleeId, true);*/
 
                             }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
                 }
@@ -1432,6 +1449,20 @@ public class ChatActivity extends AppCompatActivity {
                                 /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 CallService.dial(ChatActivity.this, savedCalleeId, false);*/
+                            }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
+                                }
                             }
                         }
                     }

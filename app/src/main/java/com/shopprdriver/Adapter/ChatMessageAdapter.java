@@ -1,47 +1,48 @@
  package com.shopprdriver.Adapter;
 
  import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+ import android.app.Dialog;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.net.Uri;
+ import android.os.Build;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.view.Window;
  import android.widget.Button;
  import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
-import android.widget.Toast;
+ import android.widget.LinearLayout;
+ import android.widget.RatingBar;
+ import android.widget.TextView;
+ import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.AppCompatRatingBar;
-import androidx.recyclerview.widget.RecyclerView;
+ import androidx.annotation.NonNull;
+ import androidx.annotation.RequiresApi;
+ import androidx.appcompat.widget.AppCompatRatingBar;
+ import androidx.recyclerview.widget.RecyclerView;
 
-import com.shopprdriver.Model.AcceptModel;
-import com.shopprdriver.Model.CancelModel;
-import com.shopprdriver.Model.ChatMessage.Chat;
-import com.shopprdriver.Model.RatingsModel;
-import com.shopprdriver.Model.RejectedModel;
-import com.shopprdriver.R;
-import com.shopprdriver.RequestService.RatingsRequest;
-import com.shopprdriver.Server.ApiExecutor;
-import com.shopprdriver.Session.CommonUtils;
-import com.shopprdriver.Session.SessonManager;
-import com.squareup.picasso.Picasso;
+ import com.shopprdriver.Activity.OrderDetailsActivity;
+ import com.shopprdriver.Model.AcceptModel;
+ import com.shopprdriver.Model.CancelModel;
+ import com.shopprdriver.Model.ChatMessage.Chat;
+ import com.shopprdriver.Model.RatingsModel;
+ import com.shopprdriver.Model.RejectedModel;
+ import com.shopprdriver.R;
+ import com.shopprdriver.RequestService.RatingsRequest;
+ import com.shopprdriver.Server.ApiExecutor;
+ import com.shopprdriver.Session.CommonUtils;
+ import com.shopprdriver.Session.SessonManager;
+ import com.squareup.picasso.Picasso;
 
-import java.util.List;
+ import java.util.List;
 
-import me.himanshusoni.chatmessageview.ChatMessageView;
-import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import uk.co.senab.photoview.PhotoViewAttacher;
+ import me.himanshusoni.chatmessageview.ChatMessageView;
+ import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
+ import retrofit2.Call;
+ import retrofit2.Callback;
+ import retrofit2.Response;
+ import uk.co.senab.photoview.PhotoViewAttacher;
 
 
  public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.Holder> {
@@ -169,6 +170,22 @@ import uk.co.senab.photoview.PhotoViewAttacher;
             holder.storeLocationTextDate.setText(chat.getCreatedAt());
         }else {
             holder.storeLocationLayout.setVisibility(View.GONE);
+        }
+
+
+
+        if (chat.getType().equalsIgnoreCase("order_confirmed")){
+            holder.orderConfirmLayout.setVisibility(View.VISIBLE);
+            holder.orderConfirmMessage.setText(chat.getMessage());
+            holder.orderConfirmDate.setText(chat.getCreatedAt());
+            holder.detailsBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, OrderDetailsActivity.class)
+                            .putExtra("orderId",chat.getOrder_id())
+                            .putExtra("position",position));
+                }
+            });
         }
 
 
@@ -470,9 +487,15 @@ import uk.co.senab.photoview.PhotoViewAttacher;
          ChatMessageView rechargeTypeLayout;
          TextView rechargeTypeMessage,rechargeTypeDate;
 
-         /*Tod:- Type Paid*/
+         /*Todo:- Type Paid*/
          ChatMessageView paymentReceiveLayout;
          TextView paymentReceiveMsg,paymentReceiveDateText;
+
+
+         /*Todo:- Confirm Details*/
+         ChatMessageView orderConfirmLayout;
+         TextView orderConfirmMessage,orderConfirmDate;
+         Button detailsBtn;
         public Holder(@NonNull View itemView) {
             super(itemView);
             /*Todo:- Location*/
@@ -529,6 +552,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
             paymentReceiveLayout=itemView.findViewById(R.id.paymentReceiveLayout);
             paymentReceiveMsg=itemView.findViewById(R.id.paymentReceiveMsg);
             paymentReceiveDateText=itemView.findViewById(R.id.paymentReceiveDateText);
+
+            /*Todo:- Confirm Details*/
+            orderConfirmLayout=itemView.findViewById(R.id.orderConfirmLayout);
+            orderConfirmMessage=itemView.findViewById(R.id.orderConfirmMessage);
+            orderConfirmDate=itemView.findViewById(R.id.orderConfirmDate);
+            detailsBtn=itemView.findViewById(R.id.detailsBtn);
 
         }
      }

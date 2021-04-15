@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.Model.UserChatList.Userchat;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -103,11 +104,15 @@ public class ChatHistoryActivity extends AppCompatActivity {
                         }else {
                             if (response.body().getStatus().equalsIgnoreCase("failed")){
                                 if (response.body().getMessage().equalsIgnoreCase("logout")){
-                                    sessonManager.setToken("");
-                                    PrefUtils.setAppId(ChatHistoryActivity.this,"");
-                                    Toast.makeText(ChatHistoryActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(ChatHistoryActivity.this, LoginActivity.class));
-                                    finishAffinity();
+                                    AuthenticationUtils.deauthenticate(ChatHistoryActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(ChatHistoryActivity.this,"");
+                                            Toast.makeText(ChatHistoryActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(ChatHistoryActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
                                 }
                             }
                         }

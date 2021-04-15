@@ -296,7 +296,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
             }
         }.start();
 
-
+        //viewMenu();
 
 
 
@@ -321,6 +321,20 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                             viewMenu();
                         }else {
                             Toast.makeText(MenuActivity.this,response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        if (response.body().getStatus().equalsIgnoreCase("failed")){
+                            if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
+                                    if (getApplication() != null) {
+                                        sessonManager.setToken("");
+                                        PrefUtils.setAppId(MenuActivity.this,"");
+                                        Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                        finishAffinity();
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -714,6 +728,16 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                                             }
                                         });
                                         //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
+                                            if (getApplication() != null) {
+                                                sessonManager.setToken("");
+                                                PrefUtils.setAppId(MenuActivity.this,"");
+                                                Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+                                                finishAffinity();
+                                            }
+                                        });
                                     }
                                 }
                             }

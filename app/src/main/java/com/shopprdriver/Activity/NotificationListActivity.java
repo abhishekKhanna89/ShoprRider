@@ -1,6 +1,7 @@
 package com.shopprdriver.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -21,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.shopprdriver.Model.NotificationList.Datum;
 import com.shopprdriver.Model.NotificationList.NotificationListModel;
 import com.shopprdriver.R;
+import com.shopprdriver.SendBird.utils.AuthenticationUtils;
+import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -113,6 +117,20 @@ public class NotificationListActivity extends AppCompatActivity implements
                                 notificationListAdapter.notifyDataSetChanged();
                                 if(notificationList.size()>0){
                                     currentPage= currentPage+1;
+                                }
+                            }
+                        }else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")){
+                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                                    AuthenticationUtils.deauthenticate(NotificationListActivity.this, isSuccess -> {
+                                        if (getApplication() != null) {
+                                            sessonManager.setToken("");
+                                            PrefUtils.setAppId(NotificationListActivity.this,"");
+                                            Toast.makeText(NotificationListActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(NotificationListActivity.this, LoginActivity.class));
+                                            finishAffinity();
+                                        }
+                                    });
                                 }
                             }
                         }
