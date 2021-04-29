@@ -116,7 +116,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
 
     /*Todo:- Version Check*/
-    String VERSION_URL = "http://shoppr.avaskmcompany.xyz/api/app-version";
+    String VERSION_URL = ApiExecutor.baseUrl+"app-version";
     String sCurrentVersion;
     int hoursmilllisecond = 86400000;
     int value = 0, savedMillistime;

@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 
 import com.shopprdriver.Model.UploadDocument.UploadDocumentModel;
 import com.shopprdriver.R;
+import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Server.ApiFactory;
 import com.shopprdriver.Server.ApiService;
 import com.shopprdriver.Session.CommonUtils;
@@ -53,7 +54,7 @@ public class Page1Activity extends AppCompatActivity {
     /*Todo:- FrontAadhar*/
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
 
-    Bitmap bitmapAadharFront;
+
     String select;
     String select1,select2,select3,select4,select5,select6,select7;
     SessonManager sessonManager;
@@ -62,7 +63,7 @@ public class Page1Activity extends AppCompatActivity {
             byteArrayDlNoFront,byteArrayDlNoBack,byteArrayFrontBike,byteArrayBakeBike,byteArrayPan;
 
     File destination;
-    private static String baseUrl = "http://shoppr.avaskmcompany.xyz/api/shoppr/";
+    private static String baseUrl = ApiExecutor.baseUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
