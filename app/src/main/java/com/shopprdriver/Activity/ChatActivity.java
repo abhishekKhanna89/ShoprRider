@@ -1008,7 +1008,6 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer "+sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
