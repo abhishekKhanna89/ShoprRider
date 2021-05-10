@@ -1,3 +1,5 @@
+
+
 package com.shopprdriver.Activity;
 
 import android.Manifest;
@@ -1018,7 +1020,9 @@ public class ChatActivity extends AppCompatActivity {
                             if (response.body()!=null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     chatMessageList(chat_id);
-                                    // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

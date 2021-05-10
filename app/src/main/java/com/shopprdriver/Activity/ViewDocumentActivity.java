@@ -750,6 +750,7 @@ public class ViewDocumentActivity extends AppCompatActivity {
         });
     }
 
+    /*Todo:- first*/
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult1(Intent data) {
         Bitmap bm=null;
@@ -782,7 +783,7 @@ public class ViewDocumentActivity extends AppCompatActivity {
         adhaarUpload1();
     }
 
-    /*Todo:- first*/
+
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -158,7 +158,12 @@
            url+="&markers=color:red%7Clabel:%7C"+lat+", "+lon;
            url+="&key=AIzaSyCHl8Ff_ghqPjWqlT2BXJH5BOYH1q-sw0E";
            Picasso.get().load(url).into(holder.locationImage);
-           holder.locationText.setText(chat.getMessage());
+           String currentString = chat.getMessage();
+           String[] parts = currentString.split("#");
+           String a=parts[0];
+           String b=parts[1];
+           holder.location2Text.setText(b);
+           holder.locationText.setText(a);
            holder.locationDate.setText(chat.getCreatedAt());
        }else {
            holder.mapLayout.setVisibility(View.GONE);
@@ -455,7 +460,7 @@
      public class Holder extends RecyclerView.ViewHolder {
         /*Todo:- Location*/
         ImageView locationImage;
-        TextView locationText,locationDate;
+        TextView locationText,location2Text,locationDate;
          ChatMessageView mapLayout;
         /*Todo:- Text*/
         TextView message_body,dateText;
@@ -499,6 +504,7 @@
         public Holder(@NonNull View itemView) {
             super(itemView);
             /*Todo:- Location*/
+            location2Text=itemView.findViewById(R.id.location2Text);
             locationImage=itemView.findViewById(R.id.locationImage);
             locationText=itemView.findViewById(R.id.locationText);
             locationDate=itemView.findViewById(R.id.locationDate);
