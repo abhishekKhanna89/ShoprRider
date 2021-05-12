@@ -37,9 +37,7 @@ public class Order {
     @SerializedName("reviews")
     @Expose
     private List<Review> reviews = null;
-    @SerializedName("payment_text")
-    @Expose
-    private String payment_text;
+
 
     public Integer getId() {
         return id;
@@ -121,11 +119,4 @@ public class Order {
         this.reviews = reviews;
     }
 
-    public String getPayment_text() {
-        return payment_text;
-    }
-
-    public void setPayment_text(String payment_text) {
-        this.payment_text = payment_text;
-    }
 }

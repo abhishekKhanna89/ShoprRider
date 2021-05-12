@@ -186,7 +186,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 } else {
                                     deliverBtn.setVisibility(View.VISIBLE);
                                 }
-                                payment_text.setText(orderDeatilsListModel.getData().getOrder().getPayment_text());
+                                payment_text.setText(orderDeatilsListModel.getData().getPayment_text());
                                 orderIdText.setText(orderDeatilsListModel.getData().getOrder().getRefid());
                                 totalAmountText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getTotal());
                                 serviceChargeText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getServiceCharge());
