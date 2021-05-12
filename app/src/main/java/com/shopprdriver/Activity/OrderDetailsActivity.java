@@ -48,7 +48,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     TextView orderIdText, totalAmountText,
             serviceChargeText,
             groundTotalText,
-            totalPaidText;
+            totalPaidText,walletAmountText,payment_text;
     TextView emptyDeatils;
     List<Detail> detailList;
     Button deliverBtn;
@@ -69,6 +69,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         orderId = getIntent().getIntExtra("orderId", 0);
+        Log.d("Token",sessonManager.getToken());
        /* int position=getIntent().getIntExtra("position",0);
         String total=getIntent().getStringExtra("total");
         String service_charge=getIntent().getStringExtra("service_charge");
@@ -88,6 +89,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         groundTotalText = findViewById(R.id.groundTotalText);
         totalPaidText = findViewById(R.id.totalPaidText);
         TvRatingTitle = findViewById(R.id.TvRatingTitle);
+        walletAmountText=findViewById(R.id.walletAmountText);
+        payment_text=findViewById(R.id.payment_text);
         ratingbar = findViewById(R.id.ratingBar);
         ratingbar.setIsIndicator(true);
         RatingTvMessage = findViewById(R.id.RatingTvMessage);
@@ -183,8 +186,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 } else {
                                     deliverBtn.setVisibility(View.VISIBLE);
                                 }
-
-                                orderIdText.setText(String.valueOf(orderId));
+                                payment_text.setText(orderDeatilsListModel.getData().getOrder().getPayment_text());
+                                orderIdText.setText(orderDeatilsListModel.getData().getOrder().getRefid());
                                 totalAmountText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getTotal());
                                 serviceChargeText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getServiceCharge());
                                 double num1 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getTotal());
@@ -193,7 +196,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 double sum = num1 + num2;
                                 groundTotalText.setText("₹ " + sum);
                                 totalPaidText.setText("₹ " + sum);
-
+                                walletAmountText.setText("₹ "+orderDeatilsListModel.getData().getOrder().getBalanceUsed());
                                 orderList = orderDeatilsListModel.getData().getOrder().getDetails();
                                 OrderDetailsAdapter orderDetailsAdapter = new OrderDetailsAdapter(OrderDetailsActivity.this, orderList);
                                 rv_order_details.setAdapter(orderDetailsAdapter);
