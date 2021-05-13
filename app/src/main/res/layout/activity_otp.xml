@@ -101,6 +101,7 @@
                     android:text="Resend OTP "
                     android:layout_gravity="center"
                     android:textSize="17sp"
+                    android:onClick="resend"
                     android:textColor="#4285f4"
                     android:gravity="center"/>
             </LinearLayout>

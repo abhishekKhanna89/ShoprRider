@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.shopprdriver.Model.OtpVerification.OtpVerifyModel;
+import com.shopprdriver.Model.ResendOtp.ResendOtpModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.SendBird.BaseApplication;
@@ -265,7 +266,23 @@ public class OtpActivity extends AppCompatActivity {
         }
     }
 
-    public void ResendOTP(View view) {
+    public void resend(View view) {
+        Call<ResendOtpModel>call= ApiExecutor.getApiService(this).apiResendOtp(type,mobile);
+        call.enqueue(new Callback<ResendOtpModel>() {
+            @Override
+            public void onResponse(Call<ResendOtpModel> call, Response<ResendOtpModel> response) {
+                ResendOtpModel resendOtpModel=response.body();
+                if (response.body().getStatus().equalsIgnoreCase("success")){
+                    Toast.makeText(OtpActivity.this,resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(OtpActivity.this, resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ResendOtpModel> call, Throwable t) {
+
+            }
+        });
     }
 }

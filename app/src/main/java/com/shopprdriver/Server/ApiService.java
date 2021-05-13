@@ -26,6 +26,7 @@ import com.shopprdriver.Model.Profile.ProfileModel;
 import com.shopprdriver.Model.ProfileStatus.ProfileStatusModel;
 import com.shopprdriver.Model.RatingsModel;
 import com.shopprdriver.Model.RejectedModel;
+import com.shopprdriver.Model.ResendOtp.ResendOtpModel;
 import com.shopprdriver.Model.ReviewsModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.StateList.StateListModel;
@@ -271,5 +272,7 @@ public interface ApiService {
     Call<TerminateChatModel>apiChatTerminate(@Header("Authorization") String token,
                                              @Path("id")int id);
 
-
+    @POST("resend-otp")
+    Call<ResendOtpModel>apiResendOtp(@Query("type")String type,
+                                     @Query("mobile")String mobile);
 }
