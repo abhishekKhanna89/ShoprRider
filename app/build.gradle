@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
 }
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -15,7 +14,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -72,9 +70,7 @@ dependencies {
 
     /*Todo:- From To Date Picker with duration*/
     implementation 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
-
     implementation 'com.github.karthyks:runtime-permissions:1.8'
-
     /*Todo:- Recording button*/
     implementation 'com.devlomi.record-view:record-view:2.0.1'
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'

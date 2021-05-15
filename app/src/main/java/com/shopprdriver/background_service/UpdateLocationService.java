@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +38,8 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private static final long UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 5000; // = 5 seconds
-
+    Handler handler;
+    Runnable runnable;
     /*Todo:- Session*/
     SessonManager sessonManager;
     @Override
@@ -97,21 +101,21 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            sendLocation(location);
-            /*handler = new Handler();
+
+            handler = new Handler();
             runnable = new Runnable() {
                 public void run() {
-
-                    handler.postDelayed(runnable, 3000);
+                    sendLocation(location);
+                    handler.postDelayed(runnable, 6000);
                 }
             };
-            handler.postDelayed(runnable, 5000);*/
+            handler.postDelayed(runnable, 6000);
 
         }
     }
 
     public void sendLocation(Location location) {
-
+        Log.d("locationUpdate",""+location);
         //Toast.makeText(context, ""+location, Toast.LENGTH_SHORT).show();
 
         UpdateLocationRequest updateLocationRequest=new UpdateLocationRequest();
@@ -124,10 +128,11 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
             @Override
             public void onResponse(Call<LocationUpdateModel> call, Response<LocationUpdateModel> response) {
                 if (response.body()!=null) {
+                    LocationUpdateModel locationUpdateModel=response.body();
                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                       // Toast.makeText(UpdateLocationService.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(UpdateLocationService.this, ""+locationUpdateModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }else {
-                        //Toast.makeText(UpdateLocationService.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UpdateLocationService.this, ""+locationUpdateModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
