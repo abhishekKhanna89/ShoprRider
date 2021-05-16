@@ -229,8 +229,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                     sessonManager.hideProgress();
                     if (response.body()!=null){
+                        LoginModel loginModel=response.body();
                         if (response.body().getStatus()!= null && response.body().getStatus().equals("success")){
-                            Toast.makeText(LoginActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this,loginModel.getMessage(), Toast.LENGTH_SHORT).show();
                             if((!editMobile.getText().toString().isEmpty())){
                                 sessonManager.getNotificationToken();
                                 startActivity(new Intent(LoginActivity.this,OtpActivity.class)
@@ -239,6 +240,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             }else {
+                                Toast.makeText(LoginActivity.this, loginModel.getMessage(), Toast.LENGTH_SHORT).show();
                                 sessonManager.getToken();
                                 sessonManager.getNotificationToken();
                                 startActivity(new Intent(LoginActivity.this, MenuActivity.class)

@@ -108,7 +108,7 @@
            }
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
-           holder.pqText.setText(chat.getQuantity()+" / "+"₹"+chat.getPrice());
+           holder.pqText.setText(chat.getQuantity()+" for "+"₹"+chat.getPrice());
        }else {
            holder.productLayout.setVisibility(View.GONE);
        }
