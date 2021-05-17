@@ -267,22 +267,28 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     public void resend(View view) {
-        Call<ResendOtpModel>call= ApiExecutor.getApiService(this).apiResendOtp(type,mobile);
-        call.enqueue(new Callback<ResendOtpModel>() {
-            @Override
-            public void onResponse(Call<ResendOtpModel> call, Response<ResendOtpModel> response) {
-                ResendOtpModel resendOtpModel=response.body();
-                if (response.body().getStatus().equalsIgnoreCase("success")){
-                    Toast.makeText(OtpActivity.this,resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(OtpActivity.this, resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
+        if (CommonUtils.isOnline(OtpActivity.this)) {
+            sessonManager.showProgress(OtpActivity.this);
+            Call<ResendOtpModel> call = ApiExecutor.getApiService(this).apiResendOtp(type, mobile);
+            call.enqueue(new Callback<ResendOtpModel>() {
+                @Override
+                public void onResponse(Call<ResendOtpModel> call, Response<ResendOtpModel> response) {
+                    sessonManager.hideProgress();
+                    ResendOtpModel resendOtpModel = response.body();
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(OtpActivity.this, resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(OtpActivity.this, resendOtpModel.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResendOtpModel> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<ResendOtpModel> call, Throwable t) {
+                    sessonManager.hideProgress();
+                }
+            });
+        }else {
+            CommonUtils.showToastInCenter(OtpActivity.this, getString(R.string.please_check_network));
+        }
     }
 }

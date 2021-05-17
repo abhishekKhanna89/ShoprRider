@@ -161,11 +161,11 @@ public class ChatActivity extends AppCompatActivity {
         askForPermissioncamera(Manifest.permission.CAMERA, CAMERA);
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
         chatRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        chatRecyclerView.setHasFixedSize(true);
-        chatRecyclerView.setItemViewCacheSize(1000);
-        chatRecyclerView.setDrawingCacheEnabled(true);
-        chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        chatRecyclerView.setNestedScrollingEnabled(false);
+        //chatRecyclerView.setHasFixedSize(true);
+        //chatRecyclerView.setItemViewCacheSize(1000);
+        //chatRecyclerView.setDrawingCacheEnabled(true);
+        //chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        //chatRecyclerView.setNestedScrollingEnabled(false);
         /*Todo:- UserDP*/
         userDp=findViewById(R.id.userDp);
         userName=findViewById(R.id.userName);
@@ -264,8 +264,17 @@ public class ChatActivity extends AppCompatActivity {
 
             //
         }
-        Log.d("chatId5",""+chat_id);
-        chatMessageList(chat_id);
+        //Log.d("chatId5",""+chat_id);
+        if (chatList==null){
+            chatMessageList(chat_id);
+        }else  if (chatList.size()>0){
+            ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
+            chatRecyclerView.setAdapter(chatMessageAdapter);
+            chatRecyclerView.scrollToPosition(chatList.size()-1);
+            chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
+            chatMessageAdapter.notifyDataSetChanged();
+        }
+
 
 
 
@@ -387,12 +396,13 @@ public class ChatActivity extends AppCompatActivity {
                                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                            // sessonManager.hideProgress();
                                             if (response.body()!=null) {
+                                                SendModel sendModel=response.body();
                                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                     editText.getText().clear();
                                                     chatMessageList(chat_id);
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                                 }else {
-                                                    //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ChatActivity.this, ""+sendModel.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }
@@ -754,7 +764,7 @@ public class ChatActivity extends AppCompatActivity {
                                 userName.setText(chatMessageModel.getData().getCustomer().getName());
                                 ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
-                                chatRecyclerView.getAdapter().notifyDataSetChanged();
+                                chatMessageAdapter.notifyDataSetChanged();
                                 chatRecyclerView.scrollToPosition(chatList.size()-1);
                                 chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
                                 //chatMessageAdapter.notifyDataSetChanged();

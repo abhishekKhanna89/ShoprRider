@@ -91,17 +91,19 @@
            holder.imageText.setText(chat.getMessage());
            holder.dateImage.setText(chat.getCreatedAt());
 
-       }else {
-           holder.imageLayout.setVisibility(View.GONE);
-
        }
-       if (chat.getType().equalsIgnoreCase("text")){
+//       else {
+//           holder.imageLayout.setVisibility(View.GONE);
+//
+//       }
+       else if (chat.getType().equalsIgnoreCase("text")){
            holder.message_body.setText(chat.getMessage());
            holder.dateText.setText(chat.getCreatedAt());
-       }else {
-           holder.textLayout.setVisibility(View.GONE);
        }
-       if (chat.getType().equalsIgnoreCase("product")){
+//       else {
+//           holder.textLayout.setVisibility(View.GONE);
+//       }
+       else if (chat.getType().equalsIgnoreCase("product")){
            if (chat.getFilePath().length()==0){
            }else {
                Picasso.get().load(chat.getFilePath()).into(holder.productImage);
@@ -109,10 +111,11 @@
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
            holder.pqText.setText(chat.getQuantity()+" for "+"₹"+chat.getPrice());
-       }else {
-           holder.productLayout.setVisibility(View.GONE);
        }
-       if (chat.getType().equalsIgnoreCase("rating")){
+//       else {
+//           holder.productLayout.setVisibility(View.GONE);
+//       }
+       else if (chat.getType().equalsIgnoreCase("rating")){
            if (chat.getStatus().equalsIgnoreCase("accepted")){
                holder.ratingLayout.setVisibility(View.VISIBLE);
            }else {
@@ -122,33 +125,35 @@
            holder.dateRating.setText(chat.getCreatedAt());
 
            holder.ratingBar.setRating(Float.parseFloat(chat.getQuantity()));
-       }else {
-           holder.ratingLayout.setVisibility(View.GONE);
        }
-       if (chat.getType().equalsIgnoreCase("audio")){
+//       else {
+//           holder.ratingLayout.setVisibility(View.GONE);
+//       }
+       else if (chat.getType().equalsIgnoreCase("audio")){
            holder.voicePlayerView.setAudio(chat.getFilePath());
-       }else {
-           holder.voicePlayerView.setVisibility(View.GONE);
        }
-       if (chat.getType().equalsIgnoreCase("add-money")){
+//       else {
+//           holder.voicePlayerView.setVisibility(View.GONE);
+//       }
+       else if (chat.getType().equalsIgnoreCase("add-money")){
            holder.addMoneyMessage.setText(chat.getMessage());
            holder.addMoneyDate.setText(chat.getCreatedAt());
            holder.addMoneyLayout.setVisibility(View.VISIBLE);
        }
-       if (chat.getType().equalsIgnoreCase("recharge")){
+       else if (chat.getType().equalsIgnoreCase("recharge")){
            holder.rechargeTypeMessage.setText(chat.getMessage());
            holder.rechargeTypeDate.setText(chat.getCreatedAt());
            holder.rechargeTypeLayout.setVisibility(View.VISIBLE);
        }
 
        /*Todo:- Type Paid*/
-        if (chat.getType().equalsIgnoreCase("paid")){
+        else if (chat.getType().equalsIgnoreCase("paid")){
             holder.paymentReceiveLayout.setVisibility(View.VISIBLE);
             holder.paymentReceiveMsg.setText(chat.getMessage());
             holder.paymentReceiveDateText.setText(chat.getCreatedAt());
         }
 
-       if (chat.getType().equalsIgnoreCase("address")){
+       else if (chat.getType().equalsIgnoreCase("address")){
            String lat =chat.getLat();
            String lon =chat.getLang();
            String url ="https://maps.googleapis.com/maps/api/staticmap?";
@@ -160,26 +165,34 @@
            Picasso.get().load(url).into(holder.locationImage);
            String currentString = chat.getMessage();
            String[] parts = currentString.split("#");
-           String a=parts[0];
-           String b=parts[1];
-           holder.location2Text.setText(b);
-           holder.locationText.setText(a);
+           try {
+               String a=parts[0];
+               String b=parts[1];
+               holder.location2Text.setText(b);
+               holder.locationText.setText(a);
+           }catch (Exception e){
+               e.printStackTrace();
+           }
+
            holder.locationDate.setText(chat.getCreatedAt());
-       }else {
-           holder.mapLayout.setVisibility(View.GONE);
        }
 
+//       else {
+//           holder.mapLayout.setVisibility(View.GONE);
+//       }
+
         /*Todo:- Store Type*/
-        if (chat.getType().equalsIgnoreCase("store")){
+        else if (chat.getType().equalsIgnoreCase("store")){
             holder.storeLocationText.setText(chat.getMessage());
             holder.storeLocationTextDate.setText(chat.getCreatedAt());
-        }else {
-            holder.storeLocationLayout.setVisibility(View.GONE);
         }
+//        else {
+//            holder.storeLocationLayout.setVisibility(View.GONE);
+//        }
 
 
 
-        if (chat.getType().equalsIgnoreCase("order_confirmed")){
+        else if (chat.getType().equalsIgnoreCase("order_confirmed")){
             holder.orderConfirmLayout.setVisibility(View.VISIBLE);
             holder.orderConfirmMessage.setText(chat.getMessage());
             holder.orderConfirmDate.setText(chat.getCreatedAt());
@@ -202,14 +215,14 @@
            holder.cancelText.setVisibility(View.GONE);
            holder.acceptText.setVisibility(View.GONE);
        }
-       if (chat.getStatus().equalsIgnoreCase("rejected")){
+       else if (chat.getStatus().equalsIgnoreCase("rejected")){
            holder.closeRedLayout.setVisibility(View.VISIBLE);
            holder.greenLayout.setVisibility(View.GONE);
            holder.acceptText.setVisibility(View.GONE);
            holder.rejectText.setVisibility(View.GONE);
            holder.cancelText.setVisibility(View.GONE);
        }
-       if (chat.getStatus().equalsIgnoreCase("cancelled")){
+       else if (chat.getStatus().equalsIgnoreCase("cancelled")){
            holder.closeRedLayout.setVisibility(View.VISIBLE);
            holder.greenLayout.setVisibility(View.GONE);
            holder.acceptText.setVisibility(View.GONE);

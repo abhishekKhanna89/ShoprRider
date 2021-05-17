@@ -77,8 +77,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/chatRecyclerView"
-        android:divider="#fff"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
+        app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"/>
 
     <io.github.yavski.fabspeeddial.FabSpeedDial
         android:id="@+id/fab_speed_dial"
