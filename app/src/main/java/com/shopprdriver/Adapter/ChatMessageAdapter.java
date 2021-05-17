@@ -90,6 +90,7 @@
            //Glide.with(context).load(chat.getFilePath()).into(holder.image);
            holder.imageText.setText(chat.getMessage());
            holder.dateImage.setText(chat.getCreatedAt());
+           holder.imageLayout.setVisibility(View.VISIBLE);
 
        }
 //       else {
@@ -99,9 +100,10 @@
        else if (chat.getType().equalsIgnoreCase("text")){
            holder.message_body.setText(chat.getMessage());
            holder.dateText.setText(chat.getCreatedAt());
+           holder.textLayout.setVisibility(View.VISIBLE);
        }
 //       else {
-//           holder.textLayout.setVisibility(View.GONE);
+//
 //       }
        else if (chat.getType().equalsIgnoreCase("product")){
            if (chat.getFilePath().length()==0){
@@ -111,6 +113,7 @@
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
            holder.pqText.setText(chat.getQuantity()+" for "+"₹"+chat.getPrice());
+           holder.productLayout.setVisibility(View.VISIBLE);
        }
 //       else {
 //           holder.productLayout.setVisibility(View.GONE);
@@ -131,6 +134,7 @@
 //       }
        else if (chat.getType().equalsIgnoreCase("audio")){
            holder.voicePlayerView.setAudio(chat.getFilePath());
+           holder.voicePlayerView.setVisibility(View.VISIBLE);
        }
 //       else {
 //           holder.voicePlayerView.setVisibility(View.GONE);
@@ -175,6 +179,7 @@
            }
 
            holder.locationDate.setText(chat.getCreatedAt());
+           holder.mapLayout.setVisibility(View.VISIBLE);
        }
 
 //       else {
@@ -185,6 +190,7 @@
         else if (chat.getType().equalsIgnoreCase("store")){
             holder.storeLocationText.setText(chat.getMessage());
             holder.storeLocationTextDate.setText(chat.getCreatedAt());
+           holder.storeLocationLayout.setVisibility(View.VISIBLE);
         }
 //        else {
 //            holder.storeLocationLayout.setVisibility(View.GONE);
