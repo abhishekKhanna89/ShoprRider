@@ -196,8 +196,6 @@
 //            holder.storeLocationLayout.setVisibility(View.GONE);
 //        }
 
-
-
         else if (chat.getType().equalsIgnoreCase("order_confirmed")){
             holder.orderConfirmLayout.setVisibility(View.VISIBLE);
             holder.orderConfirmMessage.setText(chat.getMessage());
@@ -211,7 +209,6 @@
                 }
             });
         }
-
 
        /*Todo:- Visibility Concept*/
        if (chat.getStatus().equalsIgnoreCase("accepted")){
