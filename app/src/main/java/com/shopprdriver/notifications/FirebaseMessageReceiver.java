@@ -186,7 +186,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(
                     notificationChannel);
         }
-
+        builder.setOngoing(true);
         notificationManager.notify(0, builder.build());
 
 
