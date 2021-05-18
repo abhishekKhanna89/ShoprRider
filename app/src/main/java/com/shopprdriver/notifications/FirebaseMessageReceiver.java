@@ -1,6 +1,7 @@
 package com.shopprdriver.notifications;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -149,18 +150,17 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             e.printStackTrace();
         }
 
-        NotificationCompat.Builder builder
+        @SuppressLint("WrongConstant") NotificationCompat.Builder builder
                 = new NotificationCompat
                 .Builder(getApplicationContext(),
-                channel_id).
-        setContentTitle("My Firebase Push notification")
-                .setContentText("My Firebase Push notification")
+                channel_id)
                 .setSmallIcon(R.drawable.splash)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000,
                         1000, 1000})
                 .setOnlyAlertOnce(true)
                 .setSound(notification)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
 
 
