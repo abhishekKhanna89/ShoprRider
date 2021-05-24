@@ -6,6 +6,7 @@
  import android.content.Intent;
  import android.net.Uri;
  import android.os.Build;
+ import android.util.Log;
  import android.view.LayoutInflater;
  import android.view.View;
  import android.view.ViewGroup;
@@ -22,6 +23,9 @@
  import androidx.appcompat.widget.AppCompatRatingBar;
  import androidx.recyclerview.widget.RecyclerView;
 
+ import com.bumptech.glide.Glide;
+ import com.bumptech.glide.load.engine.DiskCacheStrategy;
+ import com.bumptech.glide.request.RequestOptions;
  import com.shopprdriver.Activity.OrderDetailsActivity;
  import com.shopprdriver.Model.AcceptModel;
  import com.shopprdriver.Model.CancelModel;
@@ -48,7 +52,46 @@
  public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.Holder> {
      List<Chat>chatList;
     Context context;
-    private int SELF = 1;
+     private int SELF_DIRECTION=0;
+     private int SELF_TEXT_IN = 1;
+     private int SELF_IMAGE_IN = 3;
+     private int SELF_TEXT_OUT = 2;
+     private int SELF_IMAGE_OUT = 4;
+    private int  SELF_PRODUCT_IN=5;
+     private int  SELF_PRODUCT_OUT=6;
+     private int  SELF_RATING_IN=7;
+     private int  SELF_RATING_OUT=8;
+
+     private int  SELF_AUDIO_IN=9;
+     private int  SELF_AUDIO_OUT=10;
+
+     private int  SELF_ADDMONEY_IN=11;
+     private int  SELF_ADDMONEY_OUT=12;
+
+     private int  SELF_RECHARGE_IN=13;
+     private int  SELF_RECHARGE_OUT=14;
+
+     private int  SELF_PAID_IN=15;
+     private int  SELF_PAID_OUT=16;
+
+     private int  SELF_ADDRESS_IN=17;
+     private int  SELF_ADDRESS_OUT=18;
+
+     private int  SELF_STORE_IN=19;
+     private int  SELF_STORE_OUT=20;
+
+     private int  SELF_ORDERCONFIRMED_IN=21;
+     private int  SELF_ORDERCONFIRMED_OUT= 22;
+
+
+      /*       rating
+     audio
+     add-money
+             recharge
+     paid
+             address
+     store
+             order_confirmed*/
     View itemView;
     SessonManager sessonManager;
 
@@ -61,15 +104,151 @@
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //if view type is self
-        if (viewType == SELF) {
-            //Inflating the layout self
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.in_msg_layout, parent, false);
-        } else{
-            //else inflating the layout others
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.out_msg_layout, parent, false);
-        }
+
+
+
+            Log.d("newcheck====", String.valueOf(viewType));
+
+            if (viewType == SELF_TEXT_IN) {
+                //Inflating the layout self
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_text_layout, parent, false);
+            }else if(viewType == SELF_TEXT_OUT){
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_text_layout, parent, false);
+            }
+            // lk changes here
+            else if(viewType == SELF_PRODUCT_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_product_layout, parent, false);
+            }
+            else if(viewType == SELF_PRODUCT_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_product_layout, parent, false);
+            }
+            else if(viewType == SELF_RATING_IN){
+
+                Log.d("outrating==", String.valueOf(SELF_RATING_IN));
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_rating_layout, parent, false);
+            }
+            else if(viewType == SELF_RATING_OUT){
+              Log.d("outrating==", String.valueOf(SELF_RATING_OUT));
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_rating_layout, parent, false);
+            }
+            else if(viewType == SELF_AUDIO_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_audio_layout, parent, false);
+            }
+            else if(viewType == SELF_AUDIO_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_audio_layout, parent, false);
+            }
+            else if(viewType == SELF_ADDMONEY_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_payment_layout, parent, false);
+            }
+            else if(viewType == SELF_ADDMONEY_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_payment_layout, parent, false);
+            }
+            else if(viewType == SELF_RECHARGE_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_recharge_layout, parent, false);
+            }
+            else if(viewType == SELF_RECHARGE_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_recharge_layout, parent, false);
+            }
+
+            else if(viewType == SELF_PAID_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_payment_layout, parent, false);
+            }
+            else if(viewType == SELF_PAID_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_payment_layout, parent, false);
+            }
+
+            else if(viewType == SELF_ADDRESS_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_location_layout, parent, false);
+            }
+            else if(viewType == SELF_ADDRESS_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_location_layout, parent, false);
+            }
+            else if(viewType == SELF_STORE_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_store_layout, parent, false);
+            }
+            else if(viewType == SELF_STORE_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_store_layout, parent, false);
+            }
+            else if(viewType == SELF_ORDERCONFIRMED_IN){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_orderconfirmed_layout, parent, false);
+            }
+            else if(viewType == SELF_ORDERCONFIRMED_OUT){
+
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_orderconfirmed_layout, parent, false);
+            }
+
+            else  if (viewType == SELF_IMAGE_IN) {
+
+                itemView = LayoutInflater.from(parent.getContext())
+                       .inflate(R.layout.in_msg_image_layout, parent, false);
+           }
+            else  if (viewType == SELF_IMAGE_OUT)
+            {
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.out_msg_image_layout, parent, false);
+            }
+            else
+            {
+
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.in_msg_blank_layout, parent, false);
+            }
+//
+//
 
 
 
@@ -84,27 +263,45 @@
        Chat chat=chatList.get(position);
        sessonManager=new SessonManager(context);
 
+       Log.d("chattypeforchecking==",chat.getType());
 
-       if (chat.getType().equalsIgnoreCase("image")){
-           Picasso.get().load(chat.getFilePath()).into(holder.image);
-           //Glide.with(context).load(chat.getFilePath()).into(holder.image);
+
+     if (chat.getType().equalsIgnoreCase("image")){
+
+           Picasso.get().load(chat.getFilePath()).fit().centerCrop()
+                   .placeholder(R.drawable.ic_launcher)
+                   .into(holder.image);
+
            holder.imageText.setText(chat.getMessage());
            holder.dateImage.setText(chat.getCreatedAt());
-           holder.imageLayout.setVisibility(View.VISIBLE);
+           //holder.imageLayout.setVisibility(View.VISIBLE);
+
+         holder.image.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
+                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                 dialog.setCanceledOnTouchOutside(true);
+                 dialog.setContentView(R.layout.image_layout);
+                 ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
+                 Picasso.get().load(chat.getFilePath()).into(imageFirst);
+                 PhotoViewAttacher pAttacher;
+                 pAttacher = new PhotoViewAttacher(imageFirst);
+                 pAttacher.update();
+                 dialog.show();
+             }
+         });
 
        }
-//       else {
-//           holder.imageLayout.setVisibility(View.GONE);
-//
-//       }
-       else if (chat.getType().equalsIgnoreCase("text")){
-           holder.message_body.setText(chat.getMessage());
-           holder.dateText.setText(chat.getCreatedAt());
-           holder.textLayout.setVisibility(View.VISIBLE);
-       }
-//       else {
-//
-//       }
+
+       else if (chat.getType().equalsIgnoreCase("text")) {
+             holder.message_body.setText(chat.getMessage());
+             holder.dateText.setText(chat.getCreatedAt());
+             //holder.textLayout.setVisibility(View.VISIBLE);
+         }
+
+
+
        else if (chat.getType().equalsIgnoreCase("product")){
            if (chat.getFilePath().length()==0){
            }else {
@@ -113,11 +310,48 @@
            holder.productMessage.setText(chat.getMessage());
            holder.dateProduct.setText(chat.getCreatedAt());
            holder.pqText.setText(chat.getQuantity()+" for "+"₹"+chat.getPrice());
-           holder.productLayout.setVisibility(View.VISIBLE);
+           //holder.productLayout.setVisibility(View.VISIBLE);
+
+         if (chat.getStatus().equalsIgnoreCase("accepted")){
+             holder.greenLayout.setVisibility(View.VISIBLE);
+             holder.closeRedLayout.setVisibility(View.GONE);
+             holder.rejectText.setVisibility(View.GONE);
+             holder.cancelText.setVisibility(View.GONE);
+             holder.acceptText.setVisibility(View.GONE);
+         }
+         else if (chat.getStatus().equalsIgnoreCase("rejected")){
+             holder.closeRedLayout.setVisibility(View.VISIBLE);
+             holder.greenLayout.setVisibility(View.GONE);
+             holder.acceptText.setVisibility(View.GONE);
+             holder.rejectText.setVisibility(View.GONE);
+             holder.cancelText.setVisibility(View.GONE);
+         }
+         else if (chat.getStatus().equalsIgnoreCase("cancelled")){
+             holder.closeRedLayout.setVisibility(View.VISIBLE);
+             holder.greenLayout.setVisibility(View.GONE);
+             holder.acceptText.setVisibility(View.GONE);
+             holder.rejectText.setVisibility(View.GONE);
+             holder.cancelText.setVisibility(View.GONE);
+         }
+
+         holder.productImage.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
+                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                 dialog.setCanceledOnTouchOutside(true);
+                 dialog.setContentView(R.layout.image_layout);
+                 ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
+                 Picasso.get().load(chat.getFilePath()).into(imageFirst);
+                 PhotoViewAttacher pAttacher;
+                 pAttacher = new PhotoViewAttacher(imageFirst);
+                 pAttacher.update();
+                 dialog.show();
+             }
+         });
+
        }
-//       else {
-//           holder.productLayout.setVisibility(View.GONE);
-//       }
+
        else if (chat.getType().equalsIgnoreCase("rating")){
            if (chat.getStatus().equalsIgnoreCase("accepted")){
                holder.ratingLayout.setVisibility(View.VISIBLE);
@@ -129,30 +363,35 @@
 
            holder.ratingBar.setRating(Float.parseFloat(chat.getQuantity()));
        }
-//       else {
-//           holder.ratingLayout.setVisibility(View.GONE);
-//       }
+
        else if (chat.getType().equalsIgnoreCase("audio")){
-           holder.voicePlayerView.setAudio(chat.getFilePath());
-           holder.voicePlayerView.setVisibility(View.VISIBLE);
+
+           //holder.voicePlayerView.setVisibility(View.VISIBLE);
+
+         holder.voicePlayerView.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 holder.voicePlayerView.setAudio(chat.getFilePath());
+                 //holder.voicePlayerView.performClick();
+             }
+         });
+
        }
-//       else {
-//           holder.voicePlayerView.setVisibility(View.GONE);
-//       }
+
        else if (chat.getType().equalsIgnoreCase("add-money")){
            holder.addMoneyMessage.setText(chat.getMessage());
            holder.addMoneyDate.setText(chat.getCreatedAt());
-           holder.addMoneyLayout.setVisibility(View.VISIBLE);
+           //holder.addMoneyLayout.setVisibility(View.VISIBLE);
        }
        else if (chat.getType().equalsIgnoreCase("recharge")){
            holder.rechargeTypeMessage.setText(chat.getMessage());
            holder.rechargeTypeDate.setText(chat.getCreatedAt());
-           holder.rechargeTypeLayout.setVisibility(View.VISIBLE);
+           //holder.rechargeTypeLayout.setVisibility(View.VISIBLE);
        }
 
-       /*Todo:- Type Paid*/
+       //Todo:- Type Paid
         else if (chat.getType().equalsIgnoreCase("paid")){
-            holder.paymentReceiveLayout.setVisibility(View.VISIBLE);
+            //holder.paymentReceiveLayout.setVisibility(View.VISIBLE);
             holder.paymentReceiveMsg.setText(chat.getMessage());
             holder.paymentReceiveDateText.setText(chat.getCreatedAt());
         }
@@ -179,25 +418,41 @@
            }
 
            holder.locationDate.setText(chat.getCreatedAt());
-           holder.mapLayout.setVisibility(View.VISIBLE);
+           //holder.mapLayout.setVisibility(View.VISIBLE);
+
+         holder.locationImage.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
+                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                 mapIntent.setPackage("com.google.android.apps.maps");
+                 context.startActivity(mapIntent);
+             }
+         });
+
        }
 
-//       else {
-//           holder.mapLayout.setVisibility(View.GONE);
-//       }
 
-        /*Todo:- Store Type*/
+       // Todo:- Store Type
         else if (chat.getType().equalsIgnoreCase("store")){
             holder.storeLocationText.setText(chat.getMessage());
             holder.storeLocationTextDate.setText(chat.getCreatedAt());
-           holder.storeLocationLayout.setVisibility(View.VISIBLE);
+           //holder.storeLocationLayout.setVisibility(View.VISIBLE);
+
+         holder.storeLocationLayout.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
+                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                 mapIntent.setPackage("com.google.android.apps.maps");
+                 context.startActivity(mapIntent);
+             }
+         });
         }
-//        else {
-//            holder.storeLocationLayout.setVisibility(View.GONE);
-//        }
+
 
         else if (chat.getType().equalsIgnoreCase("order_confirmed")){
-            holder.orderConfirmLayout.setVisibility(View.VISIBLE);
+            //holder.orderConfirmLayout.setVisibility(View.VISIBLE);
             holder.orderConfirmMessage.setText(chat.getMessage());
             holder.orderConfirmDate.setText(chat.getCreatedAt());
             holder.detailsBtn.setOnClickListener(new View.OnClickListener() {
@@ -210,31 +465,11 @@
             });
         }
 
-       /*Todo:- Visibility Concept*/
-       if (chat.getStatus().equalsIgnoreCase("accepted")){
-           holder.greenLayout.setVisibility(View.VISIBLE);
-           holder.closeRedLayout.setVisibility(View.GONE);
-           holder.rejectText.setVisibility(View.GONE);
-           holder.cancelText.setVisibility(View.GONE);
-           holder.acceptText.setVisibility(View.GONE);
-       }
-       else if (chat.getStatus().equalsIgnoreCase("rejected")){
-           holder.closeRedLayout.setVisibility(View.VISIBLE);
-           holder.greenLayout.setVisibility(View.GONE);
-           holder.acceptText.setVisibility(View.GONE);
-           holder.rejectText.setVisibility(View.GONE);
-           holder.cancelText.setVisibility(View.GONE);
-       }
-       else if (chat.getStatus().equalsIgnoreCase("cancelled")){
-           holder.closeRedLayout.setVisibility(View.VISIBLE);
-           holder.greenLayout.setVisibility(View.GONE);
-           holder.acceptText.setVisibility(View.GONE);
-           holder.rejectText.setVisibility(View.GONE);
-           holder.cancelText.setVisibility(View.GONE);
-       }
+      // Todo:- Visibility Concept
 
 
-       holder.acceptText.setOnClickListener(new View.OnClickListener() {
+
+     /*  holder.acceptText.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
                if (CommonUtils.isOnline(context)) {
@@ -257,7 +492,6 @@
                                    }
                                    Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                }else {
-                                   //Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                }
                            }
                        }
@@ -391,58 +625,14 @@
                 }
             }
         });
-        /*Todo:-   Zoom Image*/
-        holder.locationImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                context.startActivity(mapIntent);
-            }
-        });
+        //Todo:-   Zoom Image
 
-        holder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setContentView(R.layout.image_layout);
-                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
-                Picasso.get().load(chat.getFilePath()).into(imageFirst);
-                PhotoViewAttacher pAttacher;
-                pAttacher = new PhotoViewAttacher(imageFirst);
-                pAttacher.update();
-                dialog.show();
-            }
-        });
 
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dialog dialog = new Dialog(context,R.style.FullScreenDialog);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setContentView(R.layout.image_layout);
-                ImageView imageFirst= (ImageView) dialog.findViewById(R.id.imageView);
-                Picasso.get().load(chat.getFilePath()).into(imageFirst);
-                PhotoViewAttacher pAttacher;
-                pAttacher = new PhotoViewAttacher(imageFirst);
-                pAttacher.update();
-                dialog.show();
-            }
-        });
-        /*Todo:- Store Type*/
-        holder.storeLocationLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+chat.getLat()+","+chat.getLang());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                context.startActivity(mapIntent);
-            }
-        });
+
+
+
+       // Todo:- Store Type
+        */
         holder.setIsRecyclable(false);
     }
 
@@ -459,15 +649,122 @@
     @Override
     public int getItemViewType(int position) {
         //getting message object of current position
-        Chat message = chatList.get(position);
 
+
+
+        Chat message = chatList.get(position);
         //If its owner  id is  equals to the logged in user id
+        SELF_DIRECTION=message.getDirection();
+        Log.d("messagetype===",message.getType());
+
+
         if (message.getDirection()==1) {
             //Returning self
-            return SELF;
+
+            if(message.getType().equalsIgnoreCase("text"))
+            {
+                return SELF_TEXT_IN;
+            }
+           else if(message.getType().equalsIgnoreCase("image"))
+          {
+              return SELF_IMAGE_IN;
+          }
+           else if (message.getType().equalsIgnoreCase("product"))
+            {
+                return SELF_PRODUCT_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("rating"))
+            {
+                Log.d("messagetype===",message.getType());
+
+                return SELF_RATING_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("audio"))
+            {
+                return SELF_AUDIO_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("add-money"))
+            {
+                return SELF_ADDMONEY_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("recharge"))
+            {
+                return SELF_RECHARGE_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("paid"))
+            {
+                return SELF_PAID_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("address"))
+            {
+                return SELF_ADDRESS_IN;
+            }
+            else if (message. getType().equalsIgnoreCase("store"))
+            {
+                return SELF_STORE_IN;
+            }
+            else if (message.getType().equalsIgnoreCase("order_confirmed"))
+            {
+                return SELF_ORDERCONFIRMED_IN;
+            }
+
+
+            //return SELF_TEXT;
+        }
+        else
+        {
+            if(message.getType().equalsIgnoreCase("text"))
+            {
+                return SELF_TEXT_OUT;
+            }
+           else if(message.getType().equalsIgnoreCase("image"))
+            {
+                return SELF_IMAGE_OUT;
+            }
+
+            else if (message.getType().equalsIgnoreCase("product"))
+            {
+                return SELF_PRODUCT_OUT;
+            }
+
+            else if (message.getType().equalsIgnoreCase("rating"))
+            {
+                Log.d("messagetype===",message.getType());
+                return SELF_RATING_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("audio"))
+            {
+                return SELF_AUDIO_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("add-money"))
+            {
+                return SELF_ADDMONEY_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("recharge"))
+            {
+                return SELF_RECHARGE_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("paid"))
+            {
+                return SELF_PAID_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("address"))
+            {
+
+                return SELF_ADDRESS_OUT;
+            }
+            else if (message. getType().equalsIgnoreCase("store"))
+            {
+                return SELF_STORE_OUT;
+            }
+            else if (message.getType().equalsIgnoreCase("order_confirmed"))
+            {
+                return SELF_ORDERCONFIRMED_OUT;
+            }
+
         }
         //else returning position
-        return position;
+        return 0;
     }
 
 
@@ -550,9 +847,9 @@
             ratingsMessage=itemView.findViewById(R.id.ratingsMessage);
             dateRating=itemView.findViewById(R.id.dateRating);
             ratingBar=itemView.findViewById(R.id.ratingBar);
-            ratingBar.setFocusableInTouchMode(true);
+         /*  ratingBar.setFocusableInTouchMode(true);
             ratingBar.setFocusable(true);
-            ratingBar.setIsIndicator(true);
+            ratingBar.setIsIndicator(true);*/
             /*Todo:- Audio*/
             voicePlayerView=itemView.findViewById(R.id.voicePlayerView);
 
@@ -569,7 +866,6 @@
             rechargeTypeLayout=(ChatMessageView)itemView.findViewById(R.id.rechargeTypeLayout);
             rechargeTypeMessage=itemView.findViewById(R.id.rechargeTypeMessage);
             rechargeTypeDate=itemView.findViewById(R.id.rechargeTypeDate);
-
             /*Todo:- Paid*/
             paymentReceiveLayout=itemView.findViewById(R.id.paymentReceiveLayout);
             paymentReceiveMsg=itemView.findViewById(R.id.paymentReceiveMsg);

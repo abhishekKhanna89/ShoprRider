@@ -40,6 +40,8 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
     public void
     onMessageReceived(RemoteMessage remoteMessage) {
         sessonManager=new SessonManager(this);
+        Log.d("Lakshmikant", String.valueOf(remoteMessage));
+
         Log.i("pankaj", String.valueOf(remoteMessage.getData()));
         // First case when notifications are received via
         // data event
@@ -61,6 +63,8 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             Log.i(BaseApplication.TAG, "[MyFirebaseMessagingService] onMessageReceived() => " + remoteMessage.getData().toString());
         }else {
             Log.i(BaseApplication.TAG, "[MyFirebaseMessagingService] onMessageReceived() => " + remoteMessage.getData().toString());
+
+           // Log.d( "notificationdata " + remoteMessage.getData().toString());
             showNotification(
                     remoteMessage.getNotification().getTitle(),
                     remoteMessage.getNotification().getBody(),
@@ -129,7 +133,18 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             intent.putExtra("chat_status","2");
             intent.setAction(Intent.ACTION_MAIN);
         }
-
+        else if (type!=null&&type.equalsIgnoreCase("recharge")){
+            intent = new Intent(FirebaseMessageReceiver.this, ChatActivity.class);
+            intent.putExtra("chat_id",chat_id);
+            intent.putExtra("chat_status","2");
+            intent.setAction(Intent.ACTION_MAIN);
+        }
+        else if (type!=null&&type.equalsIgnoreCase("order")){
+            intent = new Intent(FirebaseMessageReceiver.this, ChatActivity.class);
+            intent.putExtra("chat_id",chat_id);
+            intent.putExtra("chat_status","2");
+            intent.setAction(Intent.ACTION_MAIN);
+        }
 
 
         // Assign channel ID

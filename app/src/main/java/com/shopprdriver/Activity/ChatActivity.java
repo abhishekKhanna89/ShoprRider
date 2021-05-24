@@ -269,6 +269,9 @@ public class ChatActivity extends AppCompatActivity {
             chatMessageList(chat_id);
         }else  if (chatList.size()>0){
             ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
+            chatRecyclerView.setNestedScrollingEnabled(false);
+            chatMessageAdapter.setHasStableIds(true);
+            chatRecyclerView.setHasFixedSize(true);
             chatRecyclerView.setAdapter(chatMessageAdapter);
             chatRecyclerView.scrollToPosition(chatList.size()-1);
             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
