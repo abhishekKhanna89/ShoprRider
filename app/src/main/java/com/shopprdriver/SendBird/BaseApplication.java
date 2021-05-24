@@ -12,7 +12,7 @@ import com.sendbird.calls.SendBirdCall;
 import com.sendbird.calls.handler.DirectCallListener;
 import com.sendbird.calls.handler.SendBirdCallListener;
 import com.shopprdriver.R;
-import com.shopprdriver.SendBird.call.CallService;
+import com.shopprdriver.SendBird.utils.ActivityUtils;
 import com.shopprdriver.SendBird.utils.BroadcastUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 
@@ -70,12 +70,13 @@ public class BaseApplication extends MultiDexApplication { // multidex
                             BroadcastUtils.sendCallLogBroadcast(context, call.getCallLog());
 
                             if (ongoingCallCount == 0) {
-                                CallService.stopService(context);
+                               // CallService.stopService(context);
                             }
                         }
                     });
+                    ActivityUtils.startCallActivityAsCallee(context, call);
 
-                    CallService.onRinging(context, call);
+                  //  CallService.onRinging(context, call);
                 }
             });
 

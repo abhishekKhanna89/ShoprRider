@@ -36,6 +36,12 @@
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
+
+
         <activity android:name=".Activity.InitilizingActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Activity.PersonalInfoActivity"
@@ -184,12 +190,7 @@
             android:theme="@style/CallTheme"
             tools:ignore="LockedOrientationActivity" />
 
-        <service
-            android:name=".SendBird.call.CallService"
-            android:stopWithTask="false"
-            android:enabled="true"
-            android:exported="true" />
-<!--        <service-->
+        <!--        <service-->
 <!--            android:name=".SendBird.fcm.MyFirebaseMessagingService"-->
 <!--            android:enabled="true"-->
 <!--            android:exported="true">-->

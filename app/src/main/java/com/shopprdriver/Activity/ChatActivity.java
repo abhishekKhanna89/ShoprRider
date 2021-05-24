@@ -63,7 +63,7 @@ import com.shopprdriver.Model.TerminateChat.TerminateChatModel;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.TextTypeRequest;
 import com.shopprdriver.RequestService.WalletRequest;
-import com.shopprdriver.SendBird.call.CallService;
+import com.shopprdriver.SendBird.utils.ActivityUtils;
 import com.shopprdriver.SendBird.utils.AuthenticationUtils;
 import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
@@ -1411,8 +1411,9 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
-                                CallService.dial(ChatActivity.this, savedUserId, true);
+                               // CallService.dial(ChatActivity.this, savedUserId, true);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
+                                ActivityUtils.startCallActivityAsCaller(ChatActivity.this, savedUserId, false);
                                 //String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
 
@@ -1460,8 +1461,10 @@ public class ChatActivity extends AppCompatActivity {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
                             if (initiateVideoCallModel.getData()!=null){
                                 String savedUserId=initiateVideoCallModel.getData().getUser_id();
-                                CallService.dial(ChatActivity.this, savedUserId, false);
+                                //CallService.dial(ChatActivity.this, savedUserId, false);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
+                                ActivityUtils.startCallActivityAsCaller(ChatActivity.this, savedUserId, false);
+
                                 /*PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 CallService.dial(ChatActivity.this, savedCalleeId, false);*/

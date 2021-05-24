@@ -5,13 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
- 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="94dp"
         android:layout_gravity="end"
         android:layout_margin="5dp"
         android:orientation="vertical">
+
         <me.jagar.chatvoiceplayerlibrary.VoicePlayerView
             android:id="@+id/voicePlayerView"
             android:layout_width="wrap_content"
@@ -19,8 +19,8 @@
             android:layout_gravity="right"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            app:enableVisualizer="true"
             android:visibility="visible"
+            app:enableVisualizer="true"
             app:playPauseBackgroundColor="#ff7700"
             app:playPauseCornerRadius="100"
             app:playProgressbarColor="#ff7700"
@@ -35,8 +35,16 @@
             app:viewCornerRadius="100"
             app:visualizationNotPlayedColor="#727171"
             app:visualizationPlayedColor="#ff7700" />
+        <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="11:00 AM"
+            android:textColor="#ff7700"
+            android:textSize="10sp" />
 
 
-</LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

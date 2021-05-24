@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+
 }
 android {
     compileSdkVersion 30
@@ -12,7 +14,23 @@ android {
         versionName "2.4"
         multiDexEnabled true
 
+        Properties properties = new Properties()
+        if (rootProject.file("local.properties").exists()) {
+            properties.load(rootProject.file("local.properties").newDataInputStream())
+        }
+
+        // Inject the Maps API key into the manifest
+        manifestPlaceholders = [ mapsApiKey : properties.getProperty("MAPS_API_KEY", "")]
+
+
+
+
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
+
+
     }
     buildTypes {
         release {

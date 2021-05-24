@@ -367,11 +367,18 @@
        else if (chat.getType().equalsIgnoreCase("audio")){
 
            //holder.voicePlayerView.setVisibility(View.VISIBLE);
-
+         //holder.voicePlayerView.setAudio(chat.getFilePath());
+        /// holder.voicePlayerView.iscl
+         Log.d("lakshmi===", String.valueOf(holder.voicePlayerView.getImgPlayClickListener()));
+         holder.voicePlayerView.setAudio(chat.getFilePath());
+         holder.dateText.setText(chat.getCreatedAt());
          holder.voicePlayerView.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
-                 holder.voicePlayerView.setAudio(chat.getFilePath());
+                // holder.voicePlayerView.setAudio(chat.getFilePath());
+
+
+               //  holder.voicePlayerView.setImgPauseClickListener();
                  //holder.voicePlayerView.performClick();
              }
          });
