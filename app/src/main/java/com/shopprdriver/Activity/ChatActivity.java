@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -150,6 +151,7 @@ public class ChatActivity extends AppCompatActivity {
     /*Todo:- Recording Library*/
     RecordView recordView;
     RecordButton recordButton;
+    public final static int PERM_REQUEST_CODE_DRAW_OVERLAYS = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +186,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         recordView.setSmallMicColor(Color.parseColor("#c2185b"));
+        permissionToDrawOverlays();
 
         //prevent recording under one Second
         recordView.setLessThanSecondAllowed(false);
@@ -545,8 +548,6 @@ public class ChatActivity extends AppCompatActivity {
         EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
         Button submitBtn=dialogView.findViewById(R.id.submitBtn);
 
-
-
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -810,6 +811,24 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PERM_REQUEST_CODE_DRAW_OVERLAYS) {
+            if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over
+                if (!Settings.canDrawOverlays(this)) {
+                    // ADD UI FOR USER TO KNOW THAT UI for SYSTEM_ALERT_WINDOW permission was not granted earlier...
+                }
+                else
+                {
+                   Log.d("lakshmi","granted");
+
+                }
+            }
+        }
+
+
+
+
+
         if ((resultCode == RESULT_OK && requestCode == 1)) {
 
             try {
@@ -861,7 +880,7 @@ public class ChatActivity extends AppCompatActivity {
                         } else {
                             // Log.d("inelse", "inelse");
                             bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
                         }
 
@@ -895,7 +914,7 @@ public class ChatActivity extends AppCompatActivity {
                     } else {
                         //Log.d("inelse", "inelse");
                         bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
                     }
 
@@ -923,14 +942,14 @@ public class ChatActivity extends AppCompatActivity {
 
             // Log.d("ress",""+imagePathList);
             bitmap = MediaStore.Images.Media.getBitmap(ChatActivity.this.getContentResolver(), photoUri);
-            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             if (Build.VERSION.SDK_INT > 23) {
                 bitmap = handleSamplingAndRotationBitmap(getApplicationContext(), photoUri);
 
             } else {
                 bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), photoUri);
-                bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             }
             //ProfileUpdateAPI();
@@ -983,14 +1002,14 @@ public class ChatActivity extends AppCompatActivity {
 
             // Log.d("ress",""+imagePathList);
             bitmap = MediaStore.Images.Media.getBitmap(ChatActivity.this.getContentResolver(), photoUri);
-            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             if (Build.VERSION.SDK_INT > 23) {
                 bitmap = handleSamplingAndRotationBitmap(getApplicationContext(), photoUri);
 
             } else {
                 bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), photoUri);
-                bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             }
             ProfileUpdateAPI();
@@ -1080,7 +1099,7 @@ public class ChatActivity extends AppCompatActivity {
                         } else {
                             // Log.d("inelse", "inelse");
                             bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
                         }
 
@@ -1114,7 +1133,7 @@ public class ChatActivity extends AppCompatActivity {
                     } else {
                         //Log.d("inelse", "inelse");
                         bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
                     }
 
@@ -1504,7 +1523,21 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void initializationVoice(View view) {
+
+
+
+
         initializationVoice(chat_id);
+    }
+
+
+    public void permissionToDrawOverlays() {
+        if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, PERM_REQUEST_CODE_DRAW_OVERLAYS);
+            }
+        }
     }
 
     public void initializationVideo(View view) {

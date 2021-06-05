@@ -154,7 +154,9 @@
                     <Spinner
                         android:id="@+id/spinnerState"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp" />
+                        android:layout_height="50dp"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light"
+                        android:spinnerMode="dropdown"/>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -167,7 +169,10 @@
                     <Spinner
                         android:id="@+id/textCity"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"/>
+                        android:layout_height="50dp"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light"
+                        android:spinnerMode="dropdown"
+                        />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 

@@ -15,13 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-
-
-
-
-
-
-
     <application
         android:name=".SendBird.BaseApplication"
         android:allowBackup="true"
@@ -35,6 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopprDriver"
         android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="m">
 
         <meta-data

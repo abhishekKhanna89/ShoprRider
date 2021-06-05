@@ -203,7 +203,7 @@
 
 
                 itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.in_msg_location_layout, parent, false);
+                        .inflate(R.layout.out_msg_location_layout, parent, false);
             }
             else if(viewType == SELF_STORE_IN){
 
@@ -212,7 +212,6 @@
                         .inflate(R.layout.in_msg_store_layout, parent, false);
             }
             else if(viewType == SELF_STORE_OUT){
-
 
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.out_msg_store_layout, parent, false);
@@ -476,170 +475,7 @@
 
 
 
-     /*  holder.acceptText.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (CommonUtils.isOnline(context)) {
-                   sessonManager.showProgress(context);
-                   Call<AcceptModel>call= ApiExecutor.getApiService(context)
-                           .apiAccept("Bearer "+sessonManager.getToken(),chat.getId());
-                   call.enqueue(new Callback<AcceptModel>() {
-                       @Override
-                       public void onResponse(Call<AcceptModel> call, Response<AcceptModel> response) {
-                           sessonManager.hideProgress();
-                           if (response.body()!=null) {
-                               if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                   AcceptModel acceptModel=response.body();
-                                   if (acceptModel.getStatus().equalsIgnoreCase("success")){
-                                       holder.greenLayout.setVisibility(View.VISIBLE);
-                                       holder.closeRedLayout.setVisibility(View.GONE);
-                                       holder.rejectText.setVisibility(View.GONE);
-                                       holder.cancelText.setVisibility(View.VISIBLE);
-                                       holder.acceptText.setVisibility(View.GONE);
-                                   }
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                               }else {
-                               }
-                           }
-                       }
 
-                       @Override
-                       public void onFailure(Call<AcceptModel> call, Throwable t) {
-                           sessonManager.hideProgress();
-                       }
-                   });
-               }else
-               {
-                   CommonUtils.showToastInCenter((Activity) context,context.getString(R.string.please_check_network));
-               }
-
-           }
-       });
-       holder.rejectText.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (CommonUtils.isOnline(context)) {
-                   sessonManager.showProgress(context);
-                   Call<RejectedModel>call=ApiExecutor.getApiService(context)
-                           .apiRejected("Bearer "+sessonManager.getToken(),chat.getId());
-                   call.enqueue(new Callback<RejectedModel>() {
-                       @Override
-                       public void onResponse(Call<RejectedModel> call, Response<RejectedModel> response) {
-                           sessonManager.hideProgress();
-                           if (response.body()!=null) {
-                               if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                   RejectedModel rejectedModel=response.body();
-                                   if (rejectedModel.getStatus().equalsIgnoreCase("success")){
-                                       holder.closeRedLayout.setVisibility(View.VISIBLE);
-                                       holder.greenLayout.setVisibility(View.GONE);
-                                       holder.acceptText.setVisibility(View.GONE);
-                                       holder.rejectText.setVisibility(View.GONE);
-                                       holder.cancelText.setVisibility(View.GONE);
-                                   }
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                               }else {
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                               }
-                           }
-                       }
-
-                       @Override
-                       public void onFailure(Call<RejectedModel> call, Throwable t) {
-                           sessonManager.hideProgress();
-                       }
-                   });
-               }else {
-                   CommonUtils.showToastInCenter((Activity) context,context.getString(R.string.please_check_network));
-               }
-
-           }
-       });
-       holder.cancelText.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (CommonUtils.isOnline(context)) {
-                   sessonManager.showProgress(context);
-                   Call<CancelModel>call=ApiExecutor.getApiService(context)
-                           .apiCancel("Bearer "+sessonManager.getToken(),chat.getId());
-                   call.enqueue(new Callback<CancelModel>() {
-                       @Override
-                       public void onResponse(Call<CancelModel> call, Response<CancelModel> response) {
-                           sessonManager.hideProgress();
-                           if (response.body()!=null) {
-                               if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                   CancelModel cancelModel=response.body();
-                                   if (cancelModel.getStatus().equalsIgnoreCase("success")){
-                                       holder.closeRedLayout.setVisibility(View.VISIBLE);
-                                       holder.greenLayout.setVisibility(View.GONE);
-                                       holder.acceptText.setVisibility(View.GONE);
-                                       holder.rejectText.setVisibility(View.GONE);
-                                       holder.cancelText.setVisibility(View.GONE);
-                                   }
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                               }else {
-                                   Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                               }
-                           }
-                       }
-
-                       @Override
-                       public void onFailure(Call<CancelModel> call, Throwable t) {
-                           sessonManager.hideProgress();
-                       }
-                   });
-               }else {
-                   CommonUtils.showToastInCenter((Activity) context,context.getString(R.string.please_check_network));
-               }
-           }
-       });
-
-        holder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                float a=rating;
-                int b;
-                b=(int)a;
-                String ratingValue=String.valueOf(b);
-                if (CommonUtils.isOnline(context)) {
-                    sessonManager.showProgress(context);
-                    RatingsRequest ratingsRequest=new RatingsRequest();
-                    ratingsRequest.setRatings(ratingValue);
-                    Call<RatingsModel>call=ApiExecutor.getApiService(context)
-                            .apiRatings("Bearer "+sessonManager.getToken(),chat.getId(),ratingsRequest);
-                    call.enqueue(new Callback<RatingsModel>() {
-                        @Override
-                        public void onResponse(Call<RatingsModel> call, Response<RatingsModel> response) {
-                            sessonManager.hideProgress();
-                            //Log.d("response",response.body().getStatus());
-                            if (response.body()!=null) {
-                                if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                    //ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(context,chatList);
-                                    //chatMessageAdapter.refreshEvents(chatList);
-                                    Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<RatingsModel> call, Throwable t) {
-                            sessonManager.hideProgress();
-                        }
-                    });
-                }else {
-                    CommonUtils.showToastInCenter((Activity) context,context.getString(R.string.please_check_network));
-                }
-            }
-        });
-        //Todo:-   Zoom Image
-
-
-
-
-
-       // Todo:- Store Type
-        */
         holder.setIsRecyclable(false);
     }
 

@@ -130,6 +130,7 @@ public class PersionalDetailsActivity extends AppCompatActivity {
                                     stateName.add(state);
                                 }
                                 ArrayAdapter stateAdaoter = new ArrayAdapter(PersionalDetailsActivity.this, android.R.layout.simple_list_item_1, stateName);
+
                                 spinnerState.setAdapter(stateAdaoter);
 
                             }
