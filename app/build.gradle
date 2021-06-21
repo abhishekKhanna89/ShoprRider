@@ -4,15 +4,17 @@ plugins {
 
 }
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "30.0.2"
     defaultConfig {
         applicationId "com.shopprdriver"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 15
-        versionName "2.4"
+        versionCode 17
+        versionName "3"
         multiDexEnabled true
+        /*aaptOptions.cruncherEnabled = false
+        aaptOptions.useNewCruncher = false*/
 
         Properties properties = new Properties()
         if (rootProject.file("local.properties").exists()) {

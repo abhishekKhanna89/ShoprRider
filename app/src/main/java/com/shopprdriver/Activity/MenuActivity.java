@@ -3,6 +3,7 @@ package com.shopprdriver.Activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +36,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -134,8 +137,62 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
 
+        Log.d("notifiallowed=", String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()));
 
-       startService(new Intent(this, UpdateLocationService.class));
+        NotificationManager manager = (NotificationManager) MenuActivity.this.getSystemService(MenuActivity.this.NOTIFICATION_SERVICE);
+        int importance = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            importance = manager.getImportance();
+        }
+        boolean soundAllowed = importance < 0 || importance >= NotificationManager.IMPORTANCE_DEFAULT;
+
+        Log.d("soundAllowed=", String.valueOf(soundAllowed));
+
+
+
+
+
+        //if()
+        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false") ) {
+
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MenuActivity.this).create();
+            //alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Please update sound,notification  lockscreen,floating notification setting to be better use");
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                            Intent intent = new Intent();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                                intent.putExtra(Settings.EXTRA_APP_PACKAGE, MenuActivity.this.getPackageName());
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                                intent.putExtra("app_package", MenuActivity.this.getPackageName());
+                                intent.putExtra("app_uid", MenuActivity.this.getApplicationInfo().uid);
+                            } else {
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                intent.setData(Uri.parse("package:" + MenuActivity.this.getPackageName()));
+                            }
+                            MenuActivity.this.startActivity(intent);
+
+
+                            dialog.dismiss();
+                        }
+                    });
+
+            alertDialog.show();
+
+        }
+
+
+
+
+
+
+        startService(new Intent(this, UpdateLocationService.class));
 
         viewCheckoutStatus();
         /*Todo:- Version Check*/
@@ -787,6 +844,45 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        Log.d("lakshmi",String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled())) ;
+
+        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false"))
+        {
+            android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MenuActivity.this).create();
+            //alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Please update sound,notification  lockscreen,floating notification setting to be better use");
+            alertDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false") ) {
+
+                                Intent intent = new Intent();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, MenuActivity.this.getPackageName());
+                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                                    intent.putExtra("app_package", MenuActivity.this.getPackageName());
+                                    intent.putExtra("app_uid", MenuActivity.this.getApplicationInfo().uid);
+                                } else {
+                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                    intent.setData(Uri.parse("package:" + MenuActivity.this.getPackageName()));
+                                }
+                                MenuActivity.this.startActivity(intent);
+                            }
+
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+
+        }
+
+
         viewCheckoutStatus();
     }
     private void appCheckVersionApi() {

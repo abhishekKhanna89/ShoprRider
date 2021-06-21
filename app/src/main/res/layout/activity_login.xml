@@ -73,10 +73,12 @@
                             android:textColor="@color/white"
                             android:drawablePadding="5dp"
                             android:textColorHint="@color/white"
-                            android:drawableLeft="@drawable/ic_baseline_phone"
                             android:inputType="number"
-                            android:background="@drawable/eddittext"
                             android:padding="10dp" />
+                          <!--  android:background="@drawable/eddittext"
+                            android:drawableLeft="@drawable/ic_baseline_phone"-->
+
+
                     </androidx.cardview.widget.CardView>
                     <Button
                         android:id="@+id/btnsubmit"

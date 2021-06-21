@@ -2,6 +2,7 @@ package com.shopprdriver.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -10,8 +11,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -66,6 +71,37 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         editMobile=findViewById(R.id.editusername);
         btnLogin=findViewById(R.id.btnsubmit);
+
+/*
+Log.d("notifiallowed=", String.valueOf(NotificationManagerCompat.from(LoginActivity.this).areNotificationsEnabled()));
+
+        NotificationManager manager = (NotificationManager) LoginActivity.this.getSystemService(LoginActivity.this.NOTIFICATION_SERVICE);
+        int importance = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            importance = manager.getImportance();
+        }
+        boolean soundAllowed = importance < 0 || importance >= NotificationManager.IMPORTANCE_DEFAULT;
+
+        Log.d("soundAllowed=", String.valueOf(soundAllowed));
+
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, LoginActivity.this.getPackageName());
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+            intent.putExtra("app_package", LoginActivity.this.getPackageName());
+            intent.putExtra("app_uid", LoginActivity.this.getApplicationInfo().uid);
+        } else {
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setData(Uri.parse("package:" + LoginActivity.this.getPackageName()));
+        }
+        LoginActivity.this.startActivity(intent);
+*/
+
+
+
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -372,4 +408,52 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         savedInstanceState.putBoolean("GPS", gpsCheck);
         super.onSaveInstanceState(savedInstanceState);
     }
+
+
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("lifecycle","onStart");
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("lifecycle","onResume");
+
+
+
+
+
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("lifecycle","onPause");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("lifecycle","onStop");
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("lifecycle","onRestart");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("lifecycle","onDestroy");
+    }
+
+
+
+
+
+
+
+
 }

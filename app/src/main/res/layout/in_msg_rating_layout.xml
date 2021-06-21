@@ -31,6 +31,15 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_rateAndReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Please Rate Our Service"
+                    android:gravity="center_horizontal"
+                    android:textColor="#fff" />
+
+
+                <TextView
                     android:id="@+id/ratingsMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

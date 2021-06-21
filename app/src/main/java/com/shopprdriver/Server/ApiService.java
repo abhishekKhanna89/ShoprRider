@@ -12,6 +12,7 @@ import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.CheckoutStatus.CheckoutStatusModel;
 import com.shopprdriver.Model.CommissionTransactions.CommissionTransactionsModel;
+import com.shopprdriver.Model.DeleteProductModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.LocationUpdateModel;
 import com.shopprdriver.Model.Login.LoginModel;
@@ -43,6 +44,7 @@ import com.shopprdriver.Model.WorkDetailsView.WorkDetailsViewModel;
 import com.shopprdriver.Model.WorkLocation.WorkLocationModel;
 import com.shopprdriver.RequestService.AccountDetailsRequest;
 import com.shopprdriver.RequestService.CheckInCheckOutRequest;
+import com.shopprdriver.RequestService.DiscountRequest;
 import com.shopprdriver.RequestService.LoginRequest;
 import com.shopprdriver.RequestService.OtpVerifyRequest;
 import com.shopprdriver.RequestService.PersonalDetailsRequest;
@@ -92,7 +94,16 @@ public interface ApiService {
     @NonNull
     @GET("accept/{message_id}")
     Call<AcceptModel>apiAccept(@Header("Authorization") String token,
-                               @Path("message_id")int message_id);
+                               @Path("message_id")int message__id);
+
+
+    @NonNull
+    @GET("delete-product/{message_id}")
+    Call<DeleteProductModel>apiDeleteProduct(@Header("Authorization") String token,
+                                             @Path("message_id")String message_id);
+
+
+
     @NonNull
     @GET("reject/{message_id}")
     Call<RejectedModel>apiRejected(@Header("Authorization") String token,
@@ -220,6 +231,10 @@ public interface ApiService {
     @POST("send-message/{chat_id}")
     Call<SendModel>apiWalletRequest(@Header("Authorization") String token,
                            @Path("chat_id")int chat_id, @Body WalletRequest walletRequest);
+
+    @POST("send-message/{chat_id}")
+    Call<SendModel>apiDiscountRequest(@Header("Authorization") String token,
+                                    @Path("chat_id")int chat_id, @Body DiscountRequest discountRequest);
 
 
     @POST("update-personal-details")

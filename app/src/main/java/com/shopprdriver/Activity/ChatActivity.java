@@ -62,6 +62,7 @@ import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.TerminateChat.TerminateChatModel;
 import com.shopprdriver.R;
+import com.shopprdriver.RequestService.DiscountRequest;
 import com.shopprdriver.RequestService.TextTypeRequest;
 import com.shopprdriver.RequestService.WalletRequest;
 import com.shopprdriver.SendBird.utils.ActivityUtils;
@@ -343,6 +344,10 @@ public class ChatActivity extends AppCompatActivity {
                                 .setIcon(R.drawable.splash_transparent)
                                 .show();
                         break;
+
+                    case R.id.action_terminate_discount:
+                        show_Discount_Dialog();
+                        break;
                 }
                 return false;
             }
@@ -532,6 +537,85 @@ public class ChatActivity extends AppCompatActivity {
         alertDialog = builder.create();
         alertDialog.show();
     }
+
+
+
+
+
+
+
+
+    private void show_Discount_Dialog() {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.discount_dialog, viewGroup, false);
+
+        EditText edit_discount=dialogView.findViewById(R.id.edit_discount);
+        Button btn_discount_submit=dialogView.findViewById(R.id.btn_discount_submit);
+
+        btn_discount_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                {
+                    if (CommonUtils.isOnline(ChatActivity.this)) {
+                        //sessonManager.showProgress(ChatActivity.this);
+                        DiscountRequest discountRequest=new DiscountRequest();
+                        discountRequest.setType("discount");
+                        discountRequest.setAmount(edit_discount.getText().toString());
+                        ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
+                        iApiServices.apiDiscountRequest("Bearer "+sessonManager.getToken(), chat_id,discountRequest)
+                                .enqueue(new Callback<SendModel>() {
+                                    @Override
+                                    public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                        //sessonManager.hideProgress();
+
+
+                                        Log.d("asjfbhjdsg",new Gson().toJson(response.body()));
+
+
+                                        if (response.body()!=null) {
+                                            if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                                                chatMessageList(chat_id);
+
+                                                alertDialog.dismiss();
+                                                // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<SendModel> call, Throwable t) {
+                                        //sessonManager.hideProgress();
+                                    }
+                                });
+                    }else {
+                        CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
+                    }
+                }
+
+
+            }
+        });
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+
+
+
 
     private void showCustomDialog() {
         //before inflating the custom alert dialog layout, we will get the current activity viewgroup
@@ -755,6 +839,8 @@ public class ChatActivity extends AppCompatActivity {
             call.enqueue(new Callback<ChatMessageModel>() {
                 @Override
                 public void onResponse(Call<ChatMessageModel> call, Response<ChatMessageModel> response) {
+
+                    Log.d("lidgjifdg",new Gson().toJson(response.body()));
                     //sessonManager.hideProgress();
                     if (response.body()!=null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {

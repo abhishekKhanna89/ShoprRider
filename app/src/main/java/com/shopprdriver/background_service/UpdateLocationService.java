@@ -132,7 +132,7 @@ public class UpdateLocationService  extends Service implements GoogleApiClient.C
                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                         //Toast.makeText(UpdateLocationService.this, ""+locationUpdateModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }else {
-                        Toast.makeText(UpdateLocationService.this, ""+locationUpdateModel.getMessage(), Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(UpdateLocationService.this, ""+locationUpdateModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }

@@ -53,7 +53,7 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:visibility="gone">
+                            android:visibility="visible">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -65,9 +65,22 @@
                                 android:visibility="gone" />
 
                             <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:src="@drawable/green_right" />
+
+
+                            <Button
+                                android:id="@+id/tv_btn_cancel_in"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                               android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:text="cancel"
+                                android:backgroundTint="@color/red"
+                                android:textColor="@color/white"
+                                android:textSize="10dp" />
+
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/closeRedLayout"
