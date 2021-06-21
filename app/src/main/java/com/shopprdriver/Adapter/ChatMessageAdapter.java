@@ -172,7 +172,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
 
             itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.out_msg_audio_layout_two, parent, false);
+                    .inflate(R.layout.in_msg_audio_layout_two, parent, false);
         } else if (viewType == SELF_AUDIO_OUT) {
 
 
@@ -385,6 +385,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         } else if (chat.getType().equalsIgnoreCase("audio")) {
 
             holder.dateText11.setText(chat.getCreatedAt());
+            holder.tv_audio_length.setVisibility(View.GONE);
 
             holder.img_play.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -407,8 +408,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                                 mp.prepare();
                                 mp.start();
                                 Log.d("milisecond=", String.valueOf(mp.getDuration()));
+                                holder.tv_audio_length.setVisibility(View.VISIBLE);
 
-                                holder.tv_audio_length.setText("00:00:00/" + convertSecondsToHMmSs(mp.getDuration() / 1000));
+                                holder.tv_audio_length.setText( convertSecondsToHMmSs(mp.getDuration() / 1000));
 
                             } catch (IOException e) {
                                 Log.e("", "prepare() failed");
