@@ -1,53 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/colorPrimary">
+
             <ImageView
                 android:id="@+id/closeBtn"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:visibility="gone"
-                android:layout_centerInParent="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
                 android:layout_marginRight="30dp"
-                android:src="@drawable/ic_baseline_close"/>
+                android:src="@drawable/ic_baseline_close"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/successText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Discount"
                 android:layout_centerInParent="true"
-                android:textColor="@color/white"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:letterSpacing="0.1"
-                android:textStyle="bold"/>
+                android:text="Your Discount"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:text="Total Cart Value"
+                    android:textColor="@color/black" />
+
+
+                <TextView
+                    android:id="@+id/tv_cartValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="29dp"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:text=""
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/_tv_btn_viewMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@color/colorPrimary"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:text="View More"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+
             <EditText
                 android:id="@+id/edit_discount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/eddittext"
                 android:hint="Amount"
                 android:inputType="number"
-                android:textColorHint="@color/black"
-                android:layout_marginTop="20sp"
-                android:background="@drawable/eddittext"/>
+                android:padding="10dp"
+                android:textColorHint="@color/black" />
 
             <Button
                 android:id="@+id/btn_discount_submit"
@@ -55,8 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="Submit"
                 android:backgroundTint="@color/colo_home_bg"
+                android:text="Submit"
                 android:textColor="@color/white" />
 
         </LinearLayout>

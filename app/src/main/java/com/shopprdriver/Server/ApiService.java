@@ -8,6 +8,7 @@ import com.shopprdriver.Model.Attendences.AttendencesModel;
 import com.shopprdriver.Model.AvailableChat.AvailableChatModel;
 import com.shopprdriver.Model.BankDetailsGet.BankDetailsGetModel;
 import com.shopprdriver.Model.CancelModel;
+import com.shopprdriver.Model.CartApiResponse;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.CheckinCheckouSucess.CheckinCheckouSucessModel;
 import com.shopprdriver.Model.CheckoutStatus.CheckoutStatusModel;
@@ -286,6 +287,20 @@ public interface ApiService {
     @GET("terminate-chat/{id}")
     Call<TerminateChatModel>apiChatTerminate(@Header("Authorization") String token,
                                              @Path("id")int id);
+
+
+
+
+
+    @NonNull
+    @GET("cart/{chat_id} ")
+    Call<CartApiResponse>apiCartDetail(@Header("Authorization") String token,
+                                       @Path("chat_id")int id);
+
+
+
+
+
 
     @POST("resend-otp")
     Call<ResendOtpModel>apiResendOtp(@Query("type")String type,

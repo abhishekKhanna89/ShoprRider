@@ -55,6 +55,7 @@ import com.devlomi.record_view.RecordView;
 import com.google.gson.Gson;
 import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
+import com.shopprdriver.Model.CartApiResponse;
 import com.shopprdriver.Model.ChatMessage.Chat;
 import com.shopprdriver.Model.ChatMessage.ChatMessageModel;
 import com.shopprdriver.Model.ChatModel;
@@ -110,7 +111,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView chatRecyclerView;
     List<Chat> chatList;
     EditText editText;
-    ImageButton sendMsgBtn,chooseImage;
+    ImageButton sendMsgBtn, chooseImage;
     /*Todo:- BroadCast Receiver*/
     BroadcastReceiver mRegistrationBroadcastReceiver;
     String body;
@@ -126,7 +127,7 @@ public class ChatActivity extends AppCompatActivity {
     Bitmap bitmap = null;
     private String photoPath;
     String imageEncoded;
-    private static String baseUrl=ApiExecutor.baseUrl;
+    private static String baseUrl = ApiExecutor.baseUrl;
 
     /*Todo:- Voice Recorder*/
     boolean isRecording = false;
@@ -149,6 +150,9 @@ public class ChatActivity extends AppCompatActivity {
 
     Progressbar progressbar;
 
+
+    TextView tv_cartValue,tv_btn_viewMore;
+
     /*Todo:- Recording Library*/
     RecordView recordView;
     RecordButton recordButton;
@@ -170,12 +174,12 @@ public class ChatActivity extends AppCompatActivity {
         //chatRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         //chatRecyclerView.setNestedScrollingEnabled(false);
         /*Todo:- UserDP*/
-        userDp=findViewById(R.id.userDp);
-        userName=findViewById(R.id.userName);
+        userDp = findViewById(R.id.userDp);
+        userName = findViewById(R.id.userName);
 
         editText = findViewById(R.id.editText);
         sendMsgBtn = findViewById(R.id.sendMsgBtn);
-        chooseImage=findViewById(R.id.chooseImage);
+        chooseImage = findViewById(R.id.chooseImage);
         /*Todo:- Recording Library*/
         recordView = (RecordView) findViewById(R.id.record_view);
         recordButton = (RecordButton) findViewById(R.id.record_button);
@@ -216,7 +220,6 @@ public class ChatActivity extends AppCompatActivity {
             }
 
 
-
             @Override
             public void onFinish(long recordTime) {
                 recordView.setVisibility(View.GONE);
@@ -227,6 +230,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 Log.d("RecordTime", time);
             }
+
             @Override
             public void onLessThanSecond() {
                 // Toast.makeText(ChatActivity.this, "OnLessThanSecond", Toast.LENGTH_SHORT).show();
@@ -245,39 +249,39 @@ public class ChatActivity extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        if (extras!=null) {
+        if (extras != null) {
             String chat_status = getIntent().getStringExtra("chat_status");
             if (chat_status != null && chat_status.equalsIgnoreCase("0")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
-                Log.d("chatId1",""+chat_id);
+                Log.d("chatId1", "" + chat_id);
                 //chatMessageList(chat_id);
             } else if (chat_status != null && chat_status.equalsIgnoreCase("1")) {
                 chat_id = getIntent().getIntExtra("chat_id", 0);
-                Log.d("chatId2",""+chat_id);
+                Log.d("chatId2", "" + chat_id);
                 //chatMessageList(chat_id);
-            }else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
+            } else if (chat_status != null && chat_status.equalsIgnoreCase("2")) {
                 chat_id = Integer.parseInt(extras.getString("chat_id"));
                 //chatMessageList(chat_id);
-                Log.d("chatId3",""+chat_id);
-            }else {
-                String  value = String.valueOf(getIntent().getExtras().get("chat_id"));
-                chat_id= Integer.parseInt(value);
+                Log.d("chatId3", "" + chat_id);
+            } else {
+                String value = String.valueOf(getIntent().getExtras().get("chat_id"));
+                chat_id = Integer.parseInt(value);
                 //chatMessageList(chat_id);
-                Log.d("chatId4",""+chat_id);
+                Log.d("chatId4", "" + chat_id);
             }
 
             //
         }
         //Log.d("chatId5",""+chat_id);
-        if (chatList==null){
+        if (chatList == null) {
             chatMessageList(chat_id);
-        }else  if (chatList.size()>0){
-            ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
+        } else if (chatList.size() > 0) {
+            ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList);
             chatRecyclerView.setNestedScrollingEnabled(false);
             chatMessageAdapter.setHasStableIds(true);
             chatRecyclerView.setHasFixedSize(true);
             chatRecyclerView.setAdapter(chatMessageAdapter);
-            chatRecyclerView.scrollToPosition(chatList.size()-1);
+            chatRecyclerView.scrollToPosition(chatList.size() - 1);
             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
             chatMessageAdapter.notifyDataSetChanged();
         }
@@ -300,7 +304,7 @@ public class ChatActivity extends AppCompatActivity {
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.fab_product:
                         showCustomDialog();
                         break;
@@ -308,15 +312,15 @@ public class ChatActivity extends AppCompatActivity {
                         showWalletDialog();
                         break;
                     case R.id.action_ask_payment:
-                        Call<SendModel>call=ApiExecutor.getApiService(ChatActivity.this)
-                                .apiSendPaymentRequest("Bearer "+sessonManager.getToken(),chat_id,"payment");
+                        Call<SendModel> call = ApiExecutor.getApiService(ChatActivity.this)
+                                .apiSendPaymentRequest("Bearer " + sessonManager.getToken(), chat_id, "payment");
                         call.enqueue(new Callback<SendModel>() {
                             @Override
                             public void onResponse(Call<SendModel> call, Response<SendModel> response) {
-                                if (response.body()!=null) {
+                                if (response.body() != null) {
                                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                         chatMessageList(chat_id);
-                                        Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -327,7 +331,7 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         });
                         break;
-                    case  R.id.action_terminate_chat:
+                    case R.id.action_terminate_chat:
                         new AlertDialog.Builder(ChatActivity.this)
                                 .setTitle("Are you sure want to terminate chat?")
                                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -359,8 +363,8 @@ public class ChatActivity extends AppCompatActivity {
                 startDialog();
             }
         });
-        msgDtoList=new ArrayList<>();
-        chatList=new ArrayList<>();
+        msgDtoList = new ArrayList<>();
+        chatList = new ArrayList<>();
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -369,7 +373,7 @@ public class ChatActivity extends AppCompatActivity {
         };
         IntentFilter i = new IntentFilter();
         i.addAction("message_subject_intent");
-        LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver,new IntentFilter(i));
+        LocalBroadcastManager.getInstance(ChatActivity.this).registerReceiver(mMessageReceiver, new IntentFilter(i));
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -393,27 +397,26 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String msgContent = editText.getText().toString();
-                            if(!TextUtils.isEmpty(msgContent))
-                            {
+                            if (!TextUtils.isEmpty(msgContent)) {
                                 if (CommonUtils.isOnline(ChatActivity.this)) {
                                     //sessonManager.showProgress(ChatActivity.this);
-                                    TextTypeRequest textTypeRequest=new TextTypeRequest();
+                                    TextTypeRequest textTypeRequest = new TextTypeRequest();
                                     textTypeRequest.setType("text");
                                     textTypeRequest.setMessage(msgContent);
-                                    Call<SendModel>call=ApiExecutor.getApiService(ChatActivity.this)
-                                            .apiSend("Bearer "+sessonManager.getToken(), chat_id,textTypeRequest);
+                                    Call<SendModel> call = ApiExecutor.getApiService(ChatActivity.this)
+                                            .apiSend("Bearer " + sessonManager.getToken(), chat_id, textTypeRequest);
                                     call.enqueue(new Callback<SendModel>() {
                                         @Override
                                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
-                                           // sessonManager.hideProgress();
-                                            if (response.body()!=null) {
-                                                SendModel sendModel=response.body();
+                                            // sessonManager.hideProgress();
+                                            if (response.body() != null) {
+                                                SendModel sendModel = response.body();
                                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                                     editText.getText().clear();
                                                     chatMessageList(chat_id);
                                                     //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                                }else {
-                                                    Toast.makeText(ChatActivity.this, ""+sendModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(ChatActivity.this, "" + sendModel.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }
@@ -421,10 +424,10 @@ public class ChatActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<SendModel> call, Throwable t) {
-                                           // sessonManager.hideProgress();
+                                            // sessonManager.hideProgress();
                                         }
                                     });
-                                }else {
+                                } else {
                                     CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
                                 }
 
@@ -441,6 +444,13 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+
+      //  hitCartApi();
+
+
+
+
         /*if (chatList.size()==0){
             chatMessageList(chat_id);
         }else if (chatList.size()>0){
@@ -453,16 +463,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void terminate() {
-        Call<TerminateChatModel>call=ApiExecutor.getApiService(this)
-                .apiChatTerminate("Bearer "+sessonManager.getToken(),chat_id);
+        Call<TerminateChatModel> call = ApiExecutor.getApiService(this)
+                .apiChatTerminate("Bearer " + sessonManager.getToken(), chat_id);
         call.enqueue(new Callback<TerminateChatModel>() {
             @Override
             public void onResponse(Call<TerminateChatModel> call, Response<TerminateChatModel> response) {
-                if (response.body()!=null){
-                    if (response.body().getStatus()!=null&&response.body().getStatus().equalsIgnoreCase("success")){
-                        Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                if (response.body() != null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -487,30 +497,30 @@ public class ChatActivity extends AppCompatActivity {
         //then we will inflate the custom alert dialog xml that we created
         View dialogView = LayoutInflater.from(this).inflate(R.layout.layout_wallet, viewGroup, false);
 
-        EditText editName=dialogView.findViewById(R.id.editName);
-        Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+        EditText editName = dialogView.findViewById(R.id.editName);
+        Button submitBtn = dialogView.findViewById(R.id.submitBtn);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.isOnline(ChatActivity.this)) {
                     //sessonManager.showProgress(ChatActivity.this);
-                    WalletRequest walletRequest=new WalletRequest();
+                    WalletRequest walletRequest = new WalletRequest();
                     walletRequest.setType("add-money");
                     walletRequest.setMessage(editName.getText().toString());
                     ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-                    iApiServices.apiWalletRequest("Bearer "+sessonManager.getToken(), chat_id,walletRequest)
+                    iApiServices.apiWalletRequest("Bearer " + sessonManager.getToken(), chat_id, walletRequest)
                             .enqueue(new Callback<SendModel>() {
                                 @Override
                                 public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                     //sessonManager.hideProgress();
-                                    if (response.body()!=null) {
+                                    if (response.body() != null) {
                                         if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                             chatMessageList(chat_id);
 
                                             alertDialog.dismiss();
                                             // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                        }else {
+                                        } else {
                                             //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -521,7 +531,7 @@ public class ChatActivity extends AppCompatActivity {
                                     //sessonManager.hideProgress();
                                 }
                             });
-                }else {
+                } else {
                     CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
                 }
             }
@@ -539,20 +549,26 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
     private void show_Discount_Dialog() {
         ViewGroup viewGroup = findViewById(android.R.id.content);
-
+        hitCartApi();
         //then we will inflate the custom alert dialog xml that we created
         View dialogView = LayoutInflater.from(this).inflate(R.layout.discount_dialog, viewGroup, false);
 
-        EditText edit_discount=dialogView.findViewById(R.id.edit_discount);
-        Button btn_discount_submit=dialogView.findViewById(R.id.btn_discount_submit);
+        EditText edit_discount = dialogView.findViewById(R.id.edit_discount);
+        Button btn_discount_submit = dialogView.findViewById(R.id.btn_discount_submit);
+        tv_cartValue      = dialogView.findViewById(R.id.tv_cartValue);
+        tv_btn_viewMore  = dialogView.findViewById(R.id._tv_btn_viewMore);
+
+
+                tv_btn_viewMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(ChatActivity.this, "view More", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
 
         btn_discount_submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -561,27 +577,27 @@ public class ChatActivity extends AppCompatActivity {
                 {
                     if (CommonUtils.isOnline(ChatActivity.this)) {
                         //sessonManager.showProgress(ChatActivity.this);
-                        DiscountRequest discountRequest=new DiscountRequest();
+                        DiscountRequest discountRequest = new DiscountRequest();
                         discountRequest.setType("discount");
                         discountRequest.setAmount(edit_discount.getText().toString());
                         ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-                        iApiServices.apiDiscountRequest("Bearer "+sessonManager.getToken(), chat_id,discountRequest)
+                        iApiServices.apiDiscountRequest("Bearer " + sessonManager.getToken(), chat_id, discountRequest)
                                 .enqueue(new Callback<SendModel>() {
                                     @Override
                                     public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                         //sessonManager.hideProgress();
 
 
-                                        Log.d("asjfbhjdsg",new Gson().toJson(response.body()));
+                                        Log.d("asjfbhjdsg", new Gson().toJson(response.body()));
 
 
-                                        if (response.body()!=null) {
+                                        if (response.body() != null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                                 chatMessageList(chat_id);
 
                                                 alertDialog.dismiss();
                                                 // Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                                            }else {
+                                            } else {
                                                 //Toast.makeText(ChatActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -592,7 +608,7 @@ public class ChatActivity extends AppCompatActivity {
                                         //sessonManager.hideProgress();
                                     }
                                 });
-                    }else {
+                    } else {
                         CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
                     }
                 }
@@ -617,20 +633,54 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
+    private void hitCartApi() {
+        Call<CartApiResponse> call = ApiExecutor.getApiService(this)
+                .apiCartDetail("Bearer " + sessonManager.getToken(), chat_id);
+        call.enqueue(new Callback<CartApiResponse>() {
+            @Override
+            public void onResponse(Call<CartApiResponse> call, Response<CartApiResponse> response) {
+                Log.d("jkasfhdsf",new Gson().toJson(response.body()));
+                if (response.body() != null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        tv_cartValue.setText(response.body().getData().getTotal());
+
+                       Log.d("shgfdjgdfg",response.body().getData().getTotal());
+
+                    } else {
+                        Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
     private void showCustomDialog() {
         //before inflating the custom alert dialog layout, we will get the current activity viewgroup
         ViewGroup viewGroup = findViewById(android.R.id.content);
 
         //then we will inflate the custom alert dialog xml that we created
         View dialogView = LayoutInflater.from(this).inflate(R.layout.product_dialog_layout, viewGroup, false);
-        TextView successText=dialogView.findViewById(R.id.successText);
-        circleImage=dialogView.findViewById(R.id.circleImage);
-        ImageView insertImage=dialogView.findViewById(R.id.insertImage);
-        ImageView closeBtn=dialogView.findViewById(R.id.closeBtn);
-        EditText editName=dialogView.findViewById(R.id.editName);
-        EditText editPrice=dialogView.findViewById(R.id.editPrice);
-        EditText editQuantity=dialogView.findViewById(R.id.editQuantity);
-        Button submitBtn=dialogView.findViewById(R.id.submitBtn);
+        TextView successText = dialogView.findViewById(R.id.successText);
+        circleImage = dialogView.findViewById(R.id.circleImage);
+        ImageView insertImage = dialogView.findViewById(R.id.insertImage);
+        ImageView closeBtn = dialogView.findViewById(R.id.closeBtn);
+        EditText editName = dialogView.findViewById(R.id.editName);
+        EditText editPrice = dialogView.findViewById(R.id.editPrice);
+        EditText editQuantity = dialogView.findViewById(R.id.editQuantity);
+        Button submitBtn = dialogView.findViewById(R.id.submitBtn);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -640,9 +690,9 @@ public class ChatActivity extends AppCompatActivity {
                     //sessonManager.showProgress(ChatActivity.this);
                     HashMap<String, RequestBody> partMap = new HashMap<>();
                     partMap.put("type", ApiFactory.getRequestBodyFromString("product"));
-                    partMap.put("name",ApiFactory.getRequestBodyFromString(editName.getText().toString()));
-                    partMap.put("price",ApiFactory.getRequestBodyFromString(editPrice.getText().toString()));
-                    partMap.put("quantity",ApiFactory.getRequestBodyFromString(editQuantity.getText().toString()));
+                    partMap.put("name", ApiFactory.getRequestBodyFromString(editName.getText().toString()));
+                    partMap.put("price", ApiFactory.getRequestBodyFromString(editPrice.getText().toString()));
+                    partMap.put("quantity", ApiFactory.getRequestBodyFromString(editQuantity.getText().toString()));
                     MultipartBody.Part[] imageArray1 = new MultipartBody.Part[imagePathList.size()];
                     //Log.d("arrayLis",""+imageArray1);
 
@@ -658,15 +708,15 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer "+sessonManager.getToken());
+                    headers.put("Authorization", "Bearer " + sessonManager.getToken());
                     ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-                    iApiServices.apiProductSend(headers, chat_id,imageArray1,partMap)
+                    iApiServices.apiProductSend(headers, chat_id, imageArray1, partMap)
                             .enqueue(new Callback<SendModel>() {
                                 @Override
                                 public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                     progressbar.hideProgress();
                                     //sessonManager.hideProgress();
-                                    if (response.body()!=null) {
+                                    if (response.body() != null) {
                                         if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                             chatMessageList(chat_id);
 
@@ -682,7 +732,7 @@ public class ChatActivity extends AppCompatActivity {
                                     //sessonManager.hideProgress();
                                 }
                             });
-                }else {
+                } else {
                     CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
                 }
             }
@@ -701,7 +751,6 @@ public class ChatActivity extends AppCompatActivity {
                 inserImageFile();
             }
         });
-
 
 
         //Now we need an AlertDialog.Builder object
@@ -775,7 +824,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private File createFile1()throws Exception {
+    private File createFile1() throws Exception {
         String imageFileName = "GOOGLES" + System.currentTimeMillis();
         String storageDir = Environment.getExternalStorageDirectory() + "/skImages";
         Log.d("storagepath===", storageDir);
@@ -788,7 +837,6 @@ public class ChatActivity extends AppCompatActivity {
         mCurrentMPath = image.getAbsolutePath();
         return image;
     }
-
 
 
     private void startDialog() {
@@ -832,41 +880,41 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void chatMessageList(int chat_id) {
-        Log.d("ChhatId++",""+chat_id);
+        Log.d("ChhatId++", "" + chat_id);
         if (CommonUtils.isOnline(ChatActivity.this)) {
-            Log.d("TokenResponse",sessonManager.getToken());
-            Call<ChatMessageModel>call=ApiExecutor.getApiService(this).apiChatMessage("Bearer "+sessonManager.getToken(),chat_id);
+            Log.d("TokenResponse", sessonManager.getToken());
+            Call<ChatMessageModel> call = ApiExecutor.getApiService(this).apiChatMessage("Bearer " + sessonManager.getToken(), chat_id);
             call.enqueue(new Callback<ChatMessageModel>() {
                 @Override
                 public void onResponse(Call<ChatMessageModel> call, Response<ChatMessageModel> response) {
 
-                    Log.d("lidgjifdg",new Gson().toJson(response.body()));
+                    Log.d("lidgjifdg", new Gson().toJson(response.body()));
                     //sessonManager.hideProgress();
-                    if (response.body()!=null) {
+                    if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                            ChatMessageModel chatMessageModel=response.body();
-                            Gson gson=new Gson();
-                            String msg=gson.toJson(chatMessageModel);
-                            Log.d("ressTYTUTYUU",""+msg);
-                            if (chatMessageModel.getData()!=null){
-                                chatList=chatMessageModel.getData().getChats();
+                            ChatMessageModel chatMessageModel = response.body();
+                            Gson gson = new Gson();
+                            String msg = gson.toJson(chatMessageModel);
+                            Log.d("ressTYTUTYUU", "" + msg);
+                            if (chatMessageModel.getData() != null) {
+                                chatList = chatMessageModel.getData().getChats();
                                 Picasso.get().load(chatMessageModel.getData().getCustomer().getImage()).into(userDp);
                                 userName.setText(chatMessageModel.getData().getCustomer().getName());
-                                ChatMessageAdapter chatMessageAdapter=new ChatMessageAdapter(ChatActivity.this,chatList);
+                                ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
                                 chatMessageAdapter.notifyDataSetChanged();
-                                chatRecyclerView.scrollToPosition(chatList.size()-1);
+                                chatRecyclerView.scrollToPosition(chatList.size() - 1);
                                 chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
                                 //chatMessageAdapter.notifyDataSetChanged();
 
                             }
-                        }else {
-                            if (response.body().getStatus().equalsIgnoreCase("failed")){
-                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                        } else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")) {
+                                if (response.body().getMessage().equalsIgnoreCase("logout")) {
                                     AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
                                         if (getApplication() != null) {
                                             sessonManager.setToken("");
-                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            PrefUtils.setAppId(ChatActivity.this, "");
                                             Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(ChatActivity.this, LoginActivity.class));
                                             finishAffinity();
@@ -884,14 +932,10 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
 
-        }else {
+        } else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
     }
-
-
-
-
 
 
     @Override
@@ -902,17 +946,12 @@ public class ChatActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over
                 if (!Settings.canDrawOverlays(this)) {
                     // ADD UI FOR USER TO KNOW THAT UI for SYSTEM_ALERT_WINDOW permission was not granted earlier...
-                }
-                else
-                {
-                   Log.d("lakshmi","granted");
+                } else {
+                    Log.d("lakshmi", "granted");
 
                 }
             }
         }
-
-
-
 
 
         if ((resultCode == RESULT_OK && requestCode == 1)) {
@@ -926,12 +965,11 @@ public class ChatActivity extends AppCompatActivity {
             }
 
 
-        }else if ((resultCode == RESULT_OK && requestCode == 2)){
+        } else if ((resultCode == RESULT_OK && requestCode == 2)) {
             rotateImage1();
-        }
-        else if ((requestCode == 786)) {
+        } else if ((requestCode == 786)) {
             selectFromGallery(data);
-        }else if ((requestCode == 787)){
+        } else if ((requestCode == 787)) {
             selectFromGallery1(data);
         }
 
@@ -1127,19 +1165,19 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
             Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", "Bearer "+sessonManager.getToken());
+            headers.put("Authorization", "Bearer " + sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
-            iApiServices.apiImageSend(headers, chat_id,imageArray1,partMap)
+            iApiServices.apiImageSend(headers, chat_id, imageArray1, partMap)
                     .enqueue(new Callback<SendModel>() {
                         @Override
                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                             //sessonManager.hideProgress();
-                            if (response.body()!=null) {
+                            if (response.body() != null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     chatMessageList(chat_id);
-                                    Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(ChatActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -1149,7 +1187,7 @@ public class ChatActivity extends AppCompatActivity {
                             //sessonManager.hideProgress();
                         }
                     });
-        }else {
+        } else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
     }
@@ -1333,6 +1371,7 @@ public class ChatActivity extends AppCompatActivity {
         img.recycle();
         return rotatedImg;
     }
+
     private void askForPermissioncamera(String permission, Integer requestCode) {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
 
@@ -1353,6 +1392,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
     private void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.release();
@@ -1387,7 +1427,7 @@ public class ChatActivity extends AppCompatActivity {
                             if (response.body() != null) {
                                 if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                                     chatMessageList(chat_id);
-                                   // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                    // Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -1397,7 +1437,7 @@ public class ChatActivity extends AppCompatActivity {
                             //sessonManager.hideProgress();
                         }
                     });
-        }else {
+        } else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
     }
@@ -1423,10 +1463,9 @@ public class ChatActivity extends AppCompatActivity {
         mediaRecorder.setOutputFile(recordPath + "/" + recordFile);
 
 
+        pathforaudio = recordPath + "/" + recordFile;
 
-        pathforaudio=recordPath + "/" + recordFile;
-
-        Log.d("recordpath====",recordPath + "/" + recordFile);
+        Log.d("recordpath====", recordPath + "/" + recordFile);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -1438,6 +1477,7 @@ public class ChatActivity extends AppCompatActivity {
         //Start Recording
         mediaRecorder.start();
     }
+
     private boolean checkPermissions() {
         //Check permission
         if (ActivityCompat.checkSelfPermission(this, recordPermission) == PackageManager.PERMISSION_GRANTED) {
@@ -1453,7 +1493,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if(isRecording){
+        if (isRecording) {
             stopRecording();
         }
     }
@@ -1480,6 +1520,7 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
+
     /*Todo:- Option Menu*//*
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1506,17 +1547,17 @@ public class ChatActivity extends AppCompatActivity {
     }*/
     private void initializationVideo(int chat_id) {
         if (CommonUtils.isOnline(this)) {
-            Call<InitiateVideoCallModel>call= ApiExecutor.getApiService(this)
-                    .apiInitiateVideoCall("Bearer "+sessonManager.getToken(),chat_id);
+            Call<InitiateVideoCallModel> call = ApiExecutor.getApiService(this)
+                    .apiInitiateVideoCall("Bearer " + sessonManager.getToken(), chat_id);
             call.enqueue(new Callback<InitiateVideoCallModel>() {
                 @Override
                 public void onResponse(Call<InitiateVideoCallModel> call, Response<InitiateVideoCallModel> response) {
-                    if (response.body()!=null) {
+                    if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
-                            if (initiateVideoCallModel.getData()!=null){
-                                String savedUserId=initiateVideoCallModel.getData().getUser_id();
-                               // CallService.dial(ChatActivity.this, savedUserId, true);
+                            if (initiateVideoCallModel.getData() != null) {
+                                String savedUserId = initiateVideoCallModel.getData().getUser_id();
+                                // CallService.dial(ChatActivity.this, savedUserId, true);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 ActivityUtils.startCallActivityAsCaller(ChatActivity.this, savedUserId, false);
                                 //String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
@@ -1526,13 +1567,13 @@ public class ChatActivity extends AppCompatActivity {
                                 CallService.dial(ChatActivity.this, savedCalleeId, true);*/
 
                             }
-                        }else {
-                            if (response.body().getStatus().equalsIgnoreCase("failed")){
-                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                        } else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")) {
+                                if (response.body().getMessage().equalsIgnoreCase("logout")) {
                                     AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
                                         if (getApplication() != null) {
                                             sessonManager.setToken("");
-                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            PrefUtils.setAppId(ChatActivity.this, "");
                                             Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(ChatActivity.this, LoginActivity.class));
                                             finishAffinity();
@@ -1549,23 +1590,23 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
-        }else {
+        } else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
     }
 
     private void initializationVoice(int chat_id) {
         if (CommonUtils.isOnline(this)) {
-            Call<InitiateVideoCallModel>call= ApiExecutor.getApiService(this)
-                    .apiInitiateVideoCall("Bearer "+sessonManager.getToken(),chat_id);
+            Call<InitiateVideoCallModel> call = ApiExecutor.getApiService(this)
+                    .apiInitiateVideoCall("Bearer " + sessonManager.getToken(), chat_id);
             call.enqueue(new Callback<InitiateVideoCallModel>() {
                 @Override
                 public void onResponse(Call<InitiateVideoCallModel> call, Response<InitiateVideoCallModel> response) {
-                    if (response.body()!=null) {
+                    if (response.body() != null) {
                         if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                             InitiateVideoCallModel initiateVideoCallModel = response.body();
-                            if (initiateVideoCallModel.getData()!=null){
-                                String savedUserId=initiateVideoCallModel.getData().getUser_id();
+                            if (initiateVideoCallModel.getData() != null) {
+                                String savedUserId = initiateVideoCallModel.getData().getUser_id();
                                 //CallService.dial(ChatActivity.this, savedUserId, false);
                                 PrefUtils.setCalleeId(ChatActivity.this, savedUserId);
                                 ActivityUtils.startCallActivityAsCaller(ChatActivity.this, savedUserId, false);
@@ -1574,13 +1615,13 @@ public class ChatActivity extends AppCompatActivity {
                                 String savedCalleeId = PrefUtils.getCalleeId(ChatActivity.this);
                                 CallService.dial(ChatActivity.this, savedCalleeId, false);*/
                             }
-                        }else {
-                            if (response.body().getStatus().equalsIgnoreCase("failed")){
-                                if (response.body().getMessage().equalsIgnoreCase("logout")){
+                        } else {
+                            if (response.body().getStatus().equalsIgnoreCase("failed")) {
+                                if (response.body().getMessage().equalsIgnoreCase("logout")) {
                                     AuthenticationUtils.deauthenticate(ChatActivity.this, isSuccess -> {
                                         if (getApplication() != null) {
                                             sessonManager.setToken("");
-                                            PrefUtils.setAppId(ChatActivity.this,"");
+                                            PrefUtils.setAppId(ChatActivity.this, "");
                                             Toast.makeText(ChatActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(ChatActivity.this, LoginActivity.class));
                                             finishAffinity();
@@ -1597,10 +1638,11 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
-        }else {
+        } else {
             CommonUtils.showToastInCenter(ChatActivity.this, getString(R.string.please_check_network));
         }
     }
+
     @Override
     protected void onDestroy() {
         // Unregister since the activity is about to be closed.
@@ -1609,8 +1651,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void initializationVoice(View view) {
-
-
 
 
         initializationVoice(chat_id);
@@ -1631,6 +1671,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void finish(View view) {
-       onBackPressed();
+        onBackPressed();
     }
 }
