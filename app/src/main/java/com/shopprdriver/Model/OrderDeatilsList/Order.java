@@ -7,6 +7,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Order {
 
+    @SerializedName("discount")
+    @Expose
+    private String discount;
+
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -37,6 +41,15 @@ public class Order {
     @SerializedName("reviews")
     @Expose
     private List<Review> reviews = null;
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
 
 
     public Integer getId() {

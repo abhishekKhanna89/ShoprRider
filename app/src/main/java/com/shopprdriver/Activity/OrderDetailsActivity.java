@@ -55,7 +55,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     //int show_deliver_button,orderId;
     //String status;
     int orderId;
-    TextView TvRatingTitle, RatingTvMessage;
+    TextView TvRatingTitle, RatingTvMessage,discounttext;
     RatingBar ratingbar;
     LinearLayout linearReview;
     List<com.shopprdriver.Model.OrderDeatilsList.Detail> orderList;
@@ -95,6 +95,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         ratingbar.setIsIndicator(true);
         RatingTvMessage = findViewById(R.id.RatingTvMessage);
         linearReview = findViewById(R.id.linearReview);
+
+        discounttext=findViewById(R.id.discounttext);
 
 
         /*Todo:- Btn */
@@ -190,12 +192,17 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 orderIdText.setText(orderDeatilsListModel.getData().getOrder().getRefid());
                                 totalAmountText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getTotal());
                                 serviceChargeText.setText("₹ " + orderDeatilsListModel.getData().getOrder().getServiceCharge());
+
+                                discounttext.setText("₹ " +orderDeatilsListModel.getData().getOrder().getDiscount());
+
                                 double num1 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getTotal());
                                 double num2 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getServiceCharge());
+                                double num3 = Double.parseDouble(orderDeatilsListModel.getData().getOrder().getDiscount());
                                 // add both number and store it to sum
                                 double sum = num1 + num2;
+                                double sum1=num1 + num2-num3;
                                 groundTotalText.setText("₹ " + sum);
-                                totalPaidText.setText("₹ " + sum);
+                                totalPaidText.setText("₹ " + sum1);
                                 walletAmountText.setText("₹ "+orderDeatilsListModel.getData().getOrder().getBalanceUsed());
                                 orderList = orderDeatilsListModel.getData().getOrder().getDetails();
                                 OrderDetailsAdapter orderDetailsAdapter = new OrderDetailsAdapter(OrderDetailsActivity.this, orderList);
