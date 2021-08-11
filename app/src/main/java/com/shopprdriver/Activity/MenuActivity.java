@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -89,7 +90,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MenuActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String[] MANDATORY_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,   // for VoiceCall and VideoCall
             Manifest.permission.CAMERA          // for VideoCall
@@ -98,18 +99,20 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     RecyclerView menuRecyclerView;
     SessonManager sessonManager;
     public static String checkout;
+    Intent serviceIntent;
 
 
     // lists for permissions
     /*Todo:- Check out type*/
     String check_out_type;
-    List<Menu_Model>menuModelList=new ArrayList<>();
+    List<Menu_Model> menuModelList = new ArrayList<>();
 
 
     /*Todo:- Current Location*/
     boolean gpsCheck = false;
     Location mLastLocation;
     String location_address;
+    LocationManager locman;
 
 
     public MenuActivity() {
@@ -119,17 +122,19 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
 
     /*Todo:- Version Check*/
-    String VERSION_URL = ApiExecutor.baseUrl+"app-version";
+    String VERSION_URL = ApiExecutor.baseUrl + "app-version";
     String sCurrentVersion;
     int hoursmilllisecond = 86400000;
     int value = 0, savedMillistime;
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        sessonManager=new SessonManager(this);
-        progressbar=new Progressbar();
-        Log.d("Token",sessonManager.getToken());
+        sessonManager = new SessonManager(this);
+        progressbar = new Progressbar();
+        Log.d("Token", sessonManager.getToken());
         //check_out_type=getIntent().getStringExtra("check_out_type");
         checkPermissions();
 
@@ -149,11 +154,8 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         Log.d("soundAllowed=", String.valueOf(soundAllowed));
 
 
-
-
-
         //if()
-        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false") ) {
+        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false")) {
 
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MenuActivity.this).create();
             //alertDialog.setTitle("Alert");
@@ -187,12 +189,8 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
         }
 
-
-
-
-
-
-        startService(new Intent(this, UpdateLocationService.class));
+        serviceIntent=new Intent(this, UpdateLocationService.class);
+        //startService(serviceIntent);
 
         viewCheckoutStatus();
         /*Todo:- Version Check*/
@@ -227,18 +225,15 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
             }
         }
 
-
-
-       /*Todo:- Current Location*/
         if (savedInstanceState != null) {
-            gpsCheck=savedInstanceState.getBoolean("GPS");
+            gpsCheck = savedInstanceState.getBoolean("GPS");
         }
 
         if (!gpsCheck) {
             EnableGPSAutoMatically();
-
         }
-        final LocationManager locman = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        locman = (LocationManager) getSystemService(LOCATION_SERVICE);
         //gives us the location services
 
         //to use these services we need a listner as given below
@@ -247,7 +242,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         final LocationListener loclis = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (location!= null) {
+                if (location != null) {
                     mLastLocation = location;
                     Geocoder geocoder = new Geocoder(MenuActivity.this);
                     List<Address> list = null;
@@ -262,74 +257,33 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     //String localitys = address.getLocality();
                     location_address = address.getAddressLine(0);
                 }
-
-                //do something when location is changed
-
-                Log.d("MA", "Latitude: " + location.getLatitude());
-                Log.d("MA", "Longitude: " + location.getLongitude());
-                Log.d("MA", "Altitude: " + location.getAltitude());
-
-                   /* latd.setText("Latitude:" + location.getLatitude());
-                    longtd.setText("Longitude:" + location.getLongitude());
-                    altd.setText("Altitude:" + location.getAltitude());*/
-
-
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                //do something when status is changed
-                //status means from where the provider is getting its data
-                //previous locations,current locations etc.
-
             }
 
             @Override
             public void onProviderEnabled(String provider) {
-
-                //does something when provider is enabled
-
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-                //does something when provider is disabled
-
-//                if(provider.equals(LocationManager.GPS_PROVIDER))
-//                {
-//
-//                }
-//
 
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
+            }
+            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
 
-            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 111);
-
-
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        //we set the listner to the location manager
-
-
-        locman.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclis);
-        /*
-        1st para=Provider i.e. from where are we getting our data; our phones network or gps?
-        2nd para=time in milliseconds after which locations must be updated
-        3rd para=distance in meters after which we want updating to occur
-        4th para=locations listner
-         */
 
         new CountDownTimer(0, 0) {
             @Override
@@ -337,55 +291,50 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onFinish() {
-                if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+                if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                    if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    {
+                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
+                    }
+
+                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
                     return;
                 }
                 locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
             }
         }.start();
 
-        //viewMenu();
-
-
-
-
-
     }
 
     private void viewCheckoutStatus() {
         progressbar.showProgress(this);
-        Call<CheckoutStatusModel> call= ApiExecutor.getApiService(MenuActivity.this)
-                .apiCheckoutStatus("Bearer "+sessonManager.getToken());
+        Call<CheckoutStatusModel> call = ApiExecutor.getApiService(MenuActivity.this)
+                .apiCheckoutStatus("Bearer " + sessonManager.getToken());
         call.enqueue(new Callback<CheckoutStatusModel>() {
             @Override
             public void onResponse(Call<CheckoutStatusModel> call, Response<CheckoutStatusModel> response) {
                 progressbar.hideProgress();
                 // pDialog.dismiss();
-                if (response.body()!=null) {
+                if (response.body() != null) {
                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                        CheckoutStatusModel checkoutStatusModel=response.body();
-                        if (checkoutStatusModel!=null){
-                            check_out_type=checkoutStatusModel.getType();
+                        CheckoutStatusModel checkoutStatusModel = response.body();
+                        if (checkoutStatusModel != null) {
+                            check_out_type = checkoutStatusModel.getType();
                             viewMenu();
-                        }else {
-                            Toast.makeText(MenuActivity.this,response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MenuActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         }
-                    }else {
-                        if (response.body().getStatus().equalsIgnoreCase("failed")){
-                            if (response.body().getMessage().equalsIgnoreCase("logout")){
+                    } else {
+                        if (response.body().getStatus().equalsIgnoreCase("failed")) {
+                            if (response.body().getMessage().equalsIgnoreCase("logout")) {
                                 AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
                                     if (getApplication() != null) {
+                                        stopService(serviceIntent);
                                         sessonManager.setToken("");
-                                        PrefUtils.setAppId(MenuActivity.this,"");
+                                        PrefUtils.setAppId(MenuActivity.this, "");
                                         Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(MenuActivity.this, LoginActivity.class));
                                         finishAffinity();
@@ -396,19 +345,22 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<CheckoutStatusModel> call, Throwable t) {
                 progressbar.hideProgress();
-               // pDialog.dismiss();
+                // pDialog.dismiss();
             }
         });
     }
 
     private void viewMenu() {
-        if (check_out_type !=null&& check_out_type.equalsIgnoreCase("checkin")){
-            checkout="Check out";
-        }else if (check_out_type !=null&& check_out_type.equalsIgnoreCase("checkout")){
-            checkout="Check in";
+        if (check_out_type != null && check_out_type.equalsIgnoreCase("checkin")) {
+            startService(serviceIntent);
+            checkout = "Check out";
+        } else if (check_out_type != null && check_out_type.equalsIgnoreCase("checkout")) {
+            checkout = "Check in";
+            stopService(serviceIntent);
         }
         menuModelList.clear();
         menuModelList.add(new Menu_Model("Notification"));
@@ -427,6 +379,17 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         menuRecyclerView.setAdapter(menu_adapter);
         menu_adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (gpsCheck) {
+            if (!locman.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                EnableGPSAutoMatically();
+            }
+        }
+    }
+
     /*Todo:- Current Location*/
     private void EnableGPSAutoMatically() {
         GoogleApiClient googleApiClient = null;
@@ -530,26 +493,15 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putBoolean("GPS", gpsCheck);
-
-
-        /*if (!latd.getText().toString().equals("")) {
-            savedInstanceState.putString("latitude", latd.getText().toString());
-            savedInstanceState.putString("longitude", longtd.getText().toString());
-            savedInstanceState.putString("altitude", altd.getText().toString());
-        }*/
-
-
-        // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
 
 
-
     public class Menu_Adapter extends RecyclerView.Adapter<Menu_Adapter.Holder> {
-        List<Menu_Model>menuModelList;
+        List<Menu_Model> menuModelList;
         Context context;
 
-        public Menu_Adapter(Context context, List<Menu_Model>menuModelLists) {
+        public Menu_Adapter(Context context, List<Menu_Model> menuModelLists) {
             this.context = context;
             this.menuModelList = menuModelLists;
         }
@@ -565,8 +517,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             Menu_Model menu_model = menuModelList.get(position);
             holder.menu_title.setText(menu_model.getMenuName());
-            viewCount(position,holder);
-
+            viewCount(position, holder);
 
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -583,8 +534,8 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     } else if (position == 4) {
                         startActivity(new Intent(context, ChatHistoryActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     } else if (position == 5) {
-                        startActivity(new Intent(context,MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        startActivity(new Intent(context, MainActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     } else if (position == 6) {
                         if (CommonUtils.isOnline(MenuActivity.this)) {
                             KAlertDialog pDialog = new KAlertDialog(MenuActivity.this, KAlertDialog.PROGRESS_TYPE);
@@ -592,49 +543,50 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                             pDialog.setTitleText("Loading");
                             pDialog.setCancelable(false);
                             pDialog.show();
-                            CheckInCheckOutRequest checkInCheckOutRequest=new CheckInCheckOutRequest();
-                            if (mLastLocation!=null){
+                            CheckInCheckOutRequest checkInCheckOutRequest = new CheckInCheckOutRequest();
+                            if (mLastLocation != null) {
                                 checkInCheckOutRequest.setLat(String.valueOf(mLastLocation.getLatitude()));
                                 checkInCheckOutRequest.setLang(String.valueOf(mLastLocation.getLongitude()));
                                 checkInCheckOutRequest.setAddress(location_address);
-                            }else {
+                            } else {
                                 Toast.makeText(MenuActivity.this, "We are fetching your location.Please wait....", Toast.LENGTH_SHORT).show();
                             }
 
-                            if (menu_model.getMenuName().equalsIgnoreCase("Check in")){
-                                Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
-                                        .apiCheckIn("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
+                            if (menu_model.getMenuName().equalsIgnoreCase("Check in")) {
+                                Call<CheckinCheckouSucessModel> call = ApiExecutor.getApiService(MenuActivity.this)
+                                        .apiCheckIn("Bearer " + sessonManager.getToken(), checkInCheckOutRequest);
                                 call.enqueue(new Callback<CheckinCheckouSucessModel>() {
                                     @Override
                                     public void onResponse(Call<CheckinCheckouSucessModel> call, Response<CheckinCheckouSucessModel> response) {
                                         pDialog.dismiss();
-                                        if (response.body()!=null) {
+                                        if (response.body() != null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                                Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MenuActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                                 viewCheckoutStatus();
-                                            }else {
-                                                Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(MenuActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(Call<CheckinCheckouSucessModel> call, Throwable t) {
                                         pDialog.dismiss();
                                     }
                                 });
-                            }else if (menu_model.getMenuName().equalsIgnoreCase("Check out")){
-                                Call<CheckinCheckouSucessModel> call= ApiExecutor.getApiService(MenuActivity.this)
-                                        .apiCheckOut("Bearer "+sessonManager.getToken(),checkInCheckOutRequest);
+                            } else if (menu_model.getMenuName().equalsIgnoreCase("Check out")) {
+                                Call<CheckinCheckouSucessModel> call = ApiExecutor.getApiService(MenuActivity.this)
+                                        .apiCheckOut("Bearer " + sessonManager.getToken(), checkInCheckOutRequest);
                                 call.enqueue(new Callback<CheckinCheckouSucessModel>() {
                                     @Override
                                     public void onResponse(Call<CheckinCheckouSucessModel> call, Response<CheckinCheckouSucessModel> response) {
                                         pDialog.dismiss();
-                                        if (response.body()!=null) {
+                                        if (response.body() != null) {
                                             if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                                Toast.makeText(MenuActivity.this, ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MenuActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
                                                 viewCheckoutStatus();
-                                            }else {
-                                                Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(MenuActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     }
@@ -647,7 +599,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                             }
 
 
-                        }else {
+                        } else {
                             CommonUtils.showToastInCenter(MenuActivity.this, getString(R.string.please_check_network));
                         }
                     } else if (position == 7) {
@@ -656,7 +608,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                         startActivity(new Intent(context, AccountInfoActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     } else if (position == 9) {
                         startActivity(new Intent(context, ReviewsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                    }else if (position==10){
+                    } else if (position == 10) {
                         startActivity(new Intent(context, TravelingDetailsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     }
                 }
@@ -687,7 +639,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                 holder.llMainView.setBackgroundColor(Color.parseColor("#2fc8a3"));
             } else if (position == 9) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#F8A9A3"));
-            }else if (position==10){
+            } else if (position == 10) {
                 holder.llMainView.setBackgroundColor(Color.parseColor("#ba55d3"));
             }
 
@@ -699,41 +651,41 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         }
 
         public class Holder extends RecyclerView.ViewHolder {
-            TextView menu_title,countText;
+            TextView menu_title, countText;
             LinearLayout llMainView;
 
             public Holder(@NonNull View itemView) {
                 super(itemView);
                 menu_title = itemView.findViewById(R.id.menu_title);
                 llMainView = itemView.findViewById(R.id.llMainView);
-                countText=itemView.findViewById(R.id.countText);
+                countText = itemView.findViewById(R.id.countText);
             }
         }
 
     }
 
     private void viewCount(int position, Menu_Adapter.Holder holder) {
-        Call<CheckoutStatusModel> call= ApiExecutor.getApiService(MenuActivity.this)
-                .apiCheckoutStatus("Bearer "+sessonManager.getToken());
+        Call<CheckoutStatusModel> call = ApiExecutor.getApiService(MenuActivity.this)
+                .apiCheckoutStatus("Bearer " + sessonManager.getToken());
         call.enqueue(new Callback<CheckoutStatusModel>() {
             @Override
             public void onResponse(Call<CheckoutStatusModel> call, Response<CheckoutStatusModel> response) {
                 // pDialog.dismiss();
-                if (response.body()!=null) {
+                if (response.body() != null) {
                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                        CheckoutStatusModel checkoutStatusModel=response.body();
-                        if (checkoutStatusModel!=null){
-                            if (position==0){
-                                if (checkoutStatusModel.getNotifications().equalsIgnoreCase("0")){
+                        CheckoutStatusModel checkoutStatusModel = response.body();
+                        if (checkoutStatusModel != null) {
+                            if (position == 0) {
+                                if (checkoutStatusModel.getNotifications().equalsIgnoreCase("0")) {
                                     holder.countText.setVisibility(View.GONE);
-                                }else {
+                                } else {
                                     holder.countText.setVisibility(View.VISIBLE);
                                     holder.countText.setText(checkoutStatusModel.getNotifications());
                                 }
-                            }else if (position==5){
-                                if (checkoutStatusModel.getOrders().equalsIgnoreCase("0")){
+                            } else if (position == 5) {
+                                if (checkoutStatusModel.getOrders().equalsIgnoreCase("0")) {
                                     holder.countText.setVisibility(View.GONE);
-                                }else {
+                                } else {
                                     holder.countText.setVisibility(View.VISIBLE);
                                     holder.countText.setText(checkoutStatusModel.getOrders());
                                 }
@@ -744,6 +696,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<CheckoutStatusModel> call, Throwable t) {
                 // pDialog.dismiss();
@@ -759,37 +712,38 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         getMenuInflater().inflate(R.menu.log_ot_menu, menu);
         return true;
     }
+
     public void logout(MenuItem item) {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Call<LogoutModel>call=ApiExecutor.getApiService(MenuActivity.this)
-                                .apiLogoutStatus("Bearer "+sessonManager.getToken());
+                        Call<LogoutModel> call = ApiExecutor.getApiService(MenuActivity.this)
+                                .apiLogoutStatus("Bearer " + sessonManager.getToken());
                         call.enqueue(new Callback<LogoutModel>() {
                             @Override
                             public void onResponse(Call<LogoutModel> call, Response<LogoutModel> response) {
-                                if (response.body()!=null) {
+                                if (response.body() != null) {
                                     if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
                                         AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
                                             if (getApplication() != null) {
+                                                stopService(serviceIntent);
                                                 sessonManager.setToken("");
-                                                PrefUtils.setAppId(MenuActivity.this,"");
+                                                PrefUtils.setAppId(MenuActivity.this, "");
                                                 Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(MenuActivity.this, LoginActivity.class));
                                                 finishAffinity();
                                             }
                                         });
                                         //Toast.makeText(MenuActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }else {
+                                    } else {
                                         AuthenticationUtils.deauthenticate(MenuActivity.this, isSuccess -> {
                                             if (getApplication() != null) {
                                                 sessonManager.setToken("");
-                                                PrefUtils.setAppId(MenuActivity.this,"");
+                                                PrefUtils.setAppId(MenuActivity.this, "");
                                                 Toast.makeText(MenuActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(MenuActivity.this, LoginActivity.class));
                                                 finishAffinity();
@@ -810,6 +764,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                 .setNegativeButton("No", null)
                 .show();
     }
+
     private void checkPermissions() {
         ArrayList<String> deniedPermissions = new ArrayList<>();
         for (String permission : MANDATORY_PERMISSIONS) {
@@ -826,6 +781,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
             }
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
@@ -845,10 +801,9 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
     protected void onRestart() {
         super.onRestart();
 
-        Log.d("lakshmi",String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled())) ;
+        Log.d("lakshmi", String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()));
 
-        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false"))
-        {
+        if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false")) {
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MenuActivity.this).create();
             //alertDialog.setTitle("Alert");
             alertDialog.setMessage("Please update sound,notification  lockscreen,floating notification setting to be better use");
@@ -856,7 +811,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
-                            if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false") ) {
+                            if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false")) {
 
                                 Intent intent = new Intent();
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -885,6 +840,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
 
         viewCheckoutStatus();
     }
+
     private void appCheckVersionApi() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, VERSION_URL, new com.android.volley.Response.Listener<String>() {
             @Override
@@ -938,8 +894,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
         new AlertDialog.Builder(this)
                 .setTitle("Upgrade App")
                 .setMessage(getResources().getString(R.string.force_update_app_message))
-                .setPositiveButton("Update App", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Update App", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         openPlayStore();
@@ -962,6 +917,7 @@ public class MenuActivity extends AppCompatActivity  implements GoogleApiClient.
                 .show();
 
     }
+
     private void openPlayStore() {
         if (getApplication() == null) {
             return;
