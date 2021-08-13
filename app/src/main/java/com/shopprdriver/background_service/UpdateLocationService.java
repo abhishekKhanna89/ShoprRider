@@ -108,9 +108,11 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         Notification notification = new NotificationCompat.Builder(this, "LocationChannel")
                 .setContentTitle(getString(R.string.app_name))
                 .setContentTitle("Getting Location")
+                .setAutoCancel(false)
                 .setSmallIcon(R.drawable.splash)
                 .setContentIntent(pendingIntent)
                 .build();
+        notification.flags=Notification.FLAG_ONGOING_EVENT;
         startForeground(52, notification);
     }
 

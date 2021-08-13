@@ -19,7 +19,11 @@ import android.text.TextUtils;
 import android.util.Patterns;
 
 import androidx.core.app.NotificationCompat;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.shopprdriver.R;
 import com.shopprdriver.app.Config;
 
@@ -203,5 +207,19 @@ public class NotificationUtils {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static RequestOptions getRequestOptions(Context context) {
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
+
+        return new RequestOptions()
+                .centerCrop()
+                .error(R.drawable.empty)
+                .placeholder(circularProgressDrawable)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.HIGH);
     }
 }

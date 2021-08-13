@@ -1,0 +1,58 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="5dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_ok"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:text="capture" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/gray"
+            android:alpha="0.5"
+            android:layout_height="1dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_ok1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:text="gallery" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/gray"
+            android:alpha="0.5"
+            android:layout_height="1dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@color/black"
+            android:layout_marginRight="12dp"
+            android:text="cancel" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

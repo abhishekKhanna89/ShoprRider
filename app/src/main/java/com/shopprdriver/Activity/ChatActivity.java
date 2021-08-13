@@ -2,6 +2,8 @@
 
 package com.shopprdriver.Activity;
 
+import static android.media.MediaRecorder.VideoSource.CAMERA;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -32,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -103,8 +107,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.media.MediaRecorder.VideoSource.CAMERA;
-
 public class ChatActivity extends AppCompatActivity {
     SessonManager sessonManager;
     int chat_id;
@@ -133,6 +135,10 @@ public class ChatActivity extends AppCompatActivity {
     boolean isRecording = false;
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private int PERMISSION_CODE = 21;
+    private int REQUEST_CAMERA_FOR_IMAGE_ONLY = 1;
+    private int REQUEST_GALLERY_FOR_IMAGE_ONLY = 786;
+    private int REQUEST_CAMERA_FOR_PRODUCT_IMAGE = 21;
+    private int REQUEST_GALLERY_FOR_PRODUCT_IMAGE = 787;
 
     private MediaRecorder mediaRecorder;
     private String recordFile;
@@ -151,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
     Progressbar progressbar;
 
 
-    TextView tv_cartValue,tv_btn_viewMore;
+    TextView tv_cartValue, tv_btn_viewMore;
 
     /*Todo:- Recording Library*/
     RecordView recordView;
@@ -307,6 +313,7 @@ public class ChatActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.fab_product:
                         showCustomDialog();
+                        //showAddMoreProductDialog();
                         break;
                     case R.id.action_wallet:
                         showWalletDialog();
@@ -360,7 +367,7 @@ public class ChatActivity extends AppCompatActivity {
         chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDialog();
+                uploadOnlyImage();
             }
         });
         msgDtoList = new ArrayList<>();
@@ -445,8 +452,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-
-      //  hitCartApi();
+        //  hitCartApi();
 
 
 
@@ -460,6 +466,10 @@ public class ChatActivity extends AppCompatActivity {
             chatRecyclerView.smoothScrollToPosition(chatRecyclerView.getAdapter().getItemCount());
             chatMessageAdapter.notifyDataSetChanged();
         }*/
+    }
+
+    private void showAddMoreProductDialog() {
+        startActivity(new Intent(this, AddMultipleProductActivity.class));
     }
 
     private void terminate() {
@@ -557,17 +567,16 @@ public class ChatActivity extends AppCompatActivity {
 
         EditText edit_discount = dialogView.findViewById(R.id.edit_discount);
         Button btn_discount_submit = dialogView.findViewById(R.id.btn_discount_submit);
-        tv_cartValue      = dialogView.findViewById(R.id.tv_cartValue);
-        tv_btn_viewMore  = dialogView.findViewById(R.id._tv_btn_viewMore);
+        tv_cartValue = dialogView.findViewById(R.id.tv_cartValue);
+        tv_btn_viewMore = dialogView.findViewById(R.id._tv_btn_viewMore);
 
 
-                tv_btn_viewMore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(ChatActivity.this, "view More", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+        tv_btn_viewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ChatActivity.this, "view More", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         btn_discount_submit.setOnClickListener(new View.OnClickListener() {
@@ -629,24 +638,20 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
     private void hitCartApi() {
         Call<CartApiResponse> call = ApiExecutor.getApiService(this)
                 .apiCartDetail("Bearer " + sessonManager.getToken(), chat_id);
         call.enqueue(new Callback<CartApiResponse>() {
             @Override
             public void onResponse(Call<CartApiResponse> call, Response<CartApiResponse> response) {
-                Log.d("jkasfhdsf",new Gson().toJson(response.body()));
+                Log.d("jkasfhdsf", new Gson().toJson(response.body()));
                 if (response.body() != null) {
                     if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                         Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                         tv_cartValue.setText(response.body().getData().getTotal());
 
-                       Log.d("shgfdjgdfg",response.body().getData().getTotal());
+                        Log.d("shgfdjgdfg", response.body().getData().getTotal());
 
                     } else {
                         Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -660,12 +665,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
-
 
     private void showCustomDialog() {
         //before inflating the custom alert dialog layout, we will get the current activity viewgroup
@@ -688,6 +687,8 @@ public class ChatActivity extends AppCompatActivity {
                 progressbar.showProgress(ChatActivity.this);
                 if (CommonUtils.isOnline(ChatActivity.this)) {
                     //sessonManager.showProgress(ChatActivity.this);
+
+                    ArrayList<HashMap<String, RequestBody>> arrayList = new ArrayList<>();
                     HashMap<String, RequestBody> partMap = new HashMap<>();
                     partMap.put("type", ApiFactory.getRequestBodyFromString("product"));
                     partMap.put("name", ApiFactory.getRequestBodyFromString(editName.getText().toString()));
@@ -748,7 +749,7 @@ public class ChatActivity extends AppCompatActivity {
         insertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inserImageFile();
+                addProductImage();
             }
         });
 
@@ -764,7 +765,7 @@ public class ChatActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void inserImageFile() {
+    private void addProductImage() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
         myAlertDialog.setTitle("Upload Pictures Option");
         myAlertDialog.setMessage("How do you want to set your picture?");
@@ -773,16 +774,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(DialogInterface arg0, int arg1) {
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_IMAGE_MULTIPLE);
-
                 } else {
                     Intent intent = new Intent();
                     intent.setType("image/*");
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 787);
+                    //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+                    intent.setAction("android.intent.action.PICK");
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY_FOR_PRODUCT_IMAGE);
                 }
-
-
             }
         });
 
@@ -819,7 +817,7 @@ public class ChatActivity extends AppCompatActivity {
             photoFile = createFile1();
             photoUri = FileProvider.getUriForFile(ChatActivity.this, getPackageName() + ".provider", photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            startActivityForResult(takePictureIntent, 2);
+            startActivityForResult(takePictureIntent, REQUEST_CAMERA_FOR_PRODUCT_IMAGE);
 
         }
     }
@@ -839,7 +837,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    private void startDialog() {
+    private void uploadOnlyImage() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
         myAlertDialog.setTitle("Upload Pictures Option");
         myAlertDialog.setMessage("How do you want to set your picture?");
@@ -852,9 +850,9 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     Intent intent = new Intent();
                     intent.setType("image/*");
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 786);
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY_FOR_IMAGE_ONLY);
                 }
 
 
@@ -948,34 +946,26 @@ public class ChatActivity extends AppCompatActivity {
                     // ADD UI FOR USER TO KNOW THAT UI for SYSTEM_ALERT_WINDOW permission was not granted earlier...
                 } else {
                     Log.d("lakshmi", "granted");
-
                 }
             }
         }
 
-
-        if ((resultCode == RESULT_OK && requestCode == 1)) {
-
+        if ((resultCode == RESULT_OK && requestCode == REQUEST_CAMERA_FOR_IMAGE_ONLY)) {
             try {
-                rotateImage();
-
+                CameraForImageOnly();
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
-
-
-        } else if ((resultCode == RESULT_OK && requestCode == 2)) {
-            rotateImage1();
-        } else if ((requestCode == 786)) {
-            selectFromGallery(data);
-        } else if ((requestCode == 787)) {
-            selectFromGallery1(data);
+        } else if ((resultCode == RESULT_OK && requestCode == REQUEST_CAMERA_FOR_PRODUCT_IMAGE)) {
+            CameraForProductImage();
+        } else if ((requestCode == REQUEST_GALLERY_FOR_IMAGE_ONLY)) {
+            uploadOnlyImages(data);
+        } else if ((requestCode == REQUEST_GALLERY_FOR_PRODUCT_IMAGE)) {
+            UploadProductImage(data);
         }
-
     }
 
-    private void selectFromGallery1(Intent data) {
+    private void UploadProductImage(Intent data) {
         if (data != null) {
             try {
 
@@ -986,7 +976,6 @@ public class ChatActivity extends AppCompatActivity {
                         Uri mImageUri = data.getClipData().getItemAt(i).getUri();
                         photoPath = Helper.pathFromUri(ChatActivity.this, mImageUri);
                         imagePathList.add(photoPath);
-
 
                         // Get the cursor
                         Cursor cursor1 = getApplicationContext().getContentResolver().query(mImageUri,
@@ -1011,10 +1000,8 @@ public class ChatActivity extends AppCompatActivity {
 
                         //   deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                         cursor1.close();
-                        //ProfileUpdateAPI();
+                        //SendOnlyPicture();
                         circleImage.setImageBitmap(bitmap);
-
-
                     }
                 } else {
                     Uri mImageUri = data.getData();
@@ -1045,7 +1032,7 @@ public class ChatActivity extends AppCompatActivity {
                     //  deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
 
                     cursor1.close();
-                    //ProfileUpdateAPI();
+                    //SendOnlyPicture();
                     circleImage.setImageBitmap(bitmap);
 
 
@@ -1059,7 +1046,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void rotateImage1() {
+    private void CameraForProductImage() {
         try {
             String photoPath = photoFile.getAbsolutePath();
             imagePathList.add(photoPath);
@@ -1076,7 +1063,6 @@ public class ChatActivity extends AppCompatActivity {
                 bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             }
-            //ProfileUpdateAPI();
             circleImage.setImageBitmap(bitmap);
 
         } catch (Exception e) {
@@ -1098,7 +1084,7 @@ public class ChatActivity extends AppCompatActivity {
             photoFile = createFile();
             photoUri = FileProvider.getUriForFile(ChatActivity.this, getPackageName() + ".provider", photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            startActivityForResult(takePictureIntent, 1);
+            startActivityForResult(takePictureIntent, REQUEST_CAMERA_FOR_IMAGE_ONLY);
 
         }
 
@@ -1118,7 +1104,7 @@ public class ChatActivity extends AppCompatActivity {
         return image;
     }
 
-    public void rotateImage() throws IOException {
+    public void CameraForImageOnly() throws IOException {
 
         try {
             String photoPath = photoFile.getAbsolutePath();
@@ -1136,7 +1122,7 @@ public class ChatActivity extends AppCompatActivity {
                 bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, false);
 
             }
-            ProfileUpdateAPI();
+            SendOnlyPicture();
             //circleImage.setImageBitmap(bitmap);
 
         } catch (Exception e) {
@@ -1145,7 +1131,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void ProfileUpdateAPI() {
+    private void SendOnlyPicture() {
         if (CommonUtils.isOnline(ChatActivity.this)) {
             //sessonManager.showProgress(ChatActivity.this);
             HashMap<String, RequestBody> partMap = new HashMap<>();
@@ -1164,6 +1150,7 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "Bearer " + sessonManager.getToken());
             ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
@@ -1194,7 +1181,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void selectFromGallery(Intent data) {
+    private void uploadOnlyImages(Intent data) {
         if (data != null) {
             try {
 
@@ -1230,7 +1217,7 @@ public class ChatActivity extends AppCompatActivity {
 
                         //   deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                         cursor1.close();
-                        ProfileUpdateAPI();
+                        SendOnlyPicture();
                         //circleImage.setImageBitmap(bitmap);
 
 
@@ -1264,7 +1251,7 @@ public class ChatActivity extends AppCompatActivity {
                     //  deedBitMap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
 
                     cursor1.close();
-                    ProfileUpdateAPI();
+                    SendOnlyPicture();
                     //circleImage.setImageBitmap(bitmap);
 
 
@@ -1652,10 +1639,8 @@ public class ChatActivity extends AppCompatActivity {
 
     public void initializationVoice(View view) {
 
-
         initializationVoice(chat_id);
     }
-
 
     public void permissionToDrawOverlays() {
         if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over

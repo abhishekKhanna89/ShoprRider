@@ -84,18 +84,18 @@
         app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
         app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"/>
 
-    <io.github.yavski.fabspeeddial.FabSpeedDial
-        android:id="@+id/fab_speed_dial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:fabGravity="bottom_end"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        app:fabMenu="@menu/floating_action_menu"
-        app:miniFabBackgroundTint="@android:color/white"
-        app:miniFabDrawableTint="?attr/colorPrimaryDark"
-        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/fab_speed_dial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|end"
+            app:fabGravity="bottom_end"
+            app:fabMenu="@menu/floating_action_menu"
+            app:miniFabBackgroundTint="@android:color/white"
+            app:miniFabDrawableTint="?attr/colorPrimaryDark"
+            app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
     </RelativeLayout>
     <Chronometer
         android:id="@+id/record_timer"

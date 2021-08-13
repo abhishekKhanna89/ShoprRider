@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="400dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llProductDesc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <ImageView
+                android:id="@+id/imgClose"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:scaleType="fitXY"
+                android:src="@drawable/close" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/imgProduct"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/empty" />
+
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/editName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/eddittext"
+                android:hint="Product Name"
+                android:inputType="textCapSentences"
+                android:padding="5dp" />
+
+            <EditText
+                android:id="@+id/editPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:background="@drawable/eddittext"
+                android:hint="Price"
+                android:inputType="number"
+                android:padding="5dp" />
+
+            <EditText
+                android:id="@+id/editQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:background="@drawable/eddittext"
+                android:hint="Quantity"
+                android:inputType="number"
+                android:padding="5dp"
+                android:textAllCaps="true" />
+
+
+            <Button
+                android:id="@+id/submitBtn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colo_home_bg"
+                android:text="Save"
+                android:visibility="visible"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/red"
+                android:text="Delete"
+                android:visibility="gone"
+                android:textColor="@color/white" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llAddMore"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/add_more" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="Add More Product"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.cardview.widget.CardView>

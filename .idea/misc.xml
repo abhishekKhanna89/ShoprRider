@@ -3,10 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_add_multiple_product.xml" value="0.1921875" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_chat.xml" value="0.1921875" />
         <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_menu.xml" value="0.1921875" />
         <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_page1.xml" value="0.1921875" />
         <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_traveling_details.xml" value="0.1921875" />
         <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/activity_work_location.xml" value="0.1921875" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/add_more_product_dialog.xml" value="0.2" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/custom_alert_dialog.xml" value="0.1921875" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/customediologe1.xml" value="0.33" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/multiple_product_list_item.xml" value="0.33" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/out_msg_image_layout.xml" value="0.67" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/out_msg_multiple_image_collage_layout.xml" value="0.25" />
+        <entry key="..\:/Users/USER/StudioProjects/ShoprRider/app/src/main/res/layout/product_dialog_layout.xml" value="0.1921875" />
       </map>
     </option>
   </component>

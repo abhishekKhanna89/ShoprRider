@@ -38,6 +38,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -189,8 +190,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
 
         }
 
-        serviceIntent=new Intent(this, UpdateLocationService.class);
-        //startService(serviceIntent);
+        serviceIntent = new Intent(this, UpdateLocationService.class);
 
         viewCheckoutStatus();
         /*Todo:- Version Check*/
@@ -225,19 +225,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
 
-        if (savedInstanceState != null) {
-            gpsCheck = savedInstanceState.getBoolean("GPS");
-        }
-
-        if (!gpsCheck) {
-            EnableGPSAutoMatically();
-        }
-
         locman = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //gives us the location services
-
-        //to use these services we need a listner as given below
-
 
         final LocationListener loclis = new LocationListener() {
             @Override
@@ -276,12 +264,10 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
             }
             ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
-
             return;
         }
 
@@ -294,13 +280,12 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onFinish() {
-                if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                    if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                    {
-                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
+                if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
                     }
 
-                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
+                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
                     return;
                 }
                 locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
@@ -356,7 +341,11 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void viewMenu() {
         if (check_out_type != null && check_out_type.equalsIgnoreCase("checkin")) {
-            startService(serviceIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
             checkout = "Check out";
         } else if (check_out_type != null && check_out_type.equalsIgnoreCase("checkout")) {
             checkout = "Check in";
@@ -383,10 +372,17 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        if (gpsCheck) {
-            if (!locman.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        try {
+            gpsCheck = locman.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        if (!gpsCheck) {
                 EnableGPSAutoMatically();
-            }
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 152);
+        } else {
+
         }
     }
 
@@ -783,7 +779,8 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             boolean allowed = true;
 

@@ -1,15 +1,11 @@
 package com.shopprdriver.Adapter;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +14,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,24 +22,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.shopprdriver.Activity.ChatHistoryActivity;
-import com.shopprdriver.Activity.LoginActivity;
 import com.shopprdriver.Activity.OrderDetailsActivity;
-import com.shopprdriver.Model.AcceptModel;
-import com.shopprdriver.Model.CancelModel;
 import com.shopprdriver.Model.ChatMessage.Chat;
 import com.shopprdriver.Model.DeleteProductModel;
-import com.shopprdriver.Model.RatingsModel;
-import com.shopprdriver.Model.RejectedModel;
-import com.shopprdriver.Model.UserChatList.UserChatListModel;
 import com.shopprdriver.R;
-import com.shopprdriver.RequestService.RatingsRequest;
-import com.shopprdriver.SendBird.utils.AuthenticationUtils;
-import com.shopprdriver.SendBird.utils.PrefUtils;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
 import com.shopprdriver.Session.SessonManager;
@@ -96,20 +78,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     private int SELF_ORDERCONFIRMED_IN = 21;
     private int SELF_ORDERCONFIRMED_OUT = 22;
 
-    private int  SELF_DISCOUNT_IN=23;
-    private int  SELF_DISCOUNT_OUT=24;
+    private int SELF_DISCOUNT_IN = 23;
+    private int SELF_DISCOUNT_OUT = 24;
+
+    private int MULTIPLE_PRODUCTS = 25;
 
     boolean isPLAYING = false;
-    private int   countforplay=0;
-
-    /*       rating
-   audio
-   add-money
-           recharge
-   paid
-           address
-   store
-           order_confirmed*/
+    private int countforplay = 0;
     View itemView;
     SessonManager sessonManager;
 
@@ -122,8 +97,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        //if view type is self
-
 
         Log.d("newcheck====", String.valueOf(viewType));
 
@@ -135,8 +108,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.out_msg_text_layout, parent, false);
-        }
-       else  if (viewType == SELF_DISCOUNT_IN) {
+        } else if (viewType == SELF_DISCOUNT_IN) {
             //Inflating the layout self
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.in_msg_text_layout, parent, false);
@@ -245,6 +217,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.out_msg_image_layout, parent, false);
+        }else if (viewType == MULTIPLE_PRODUCTS) {
+
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.out_msg_multiple_image_collage_layout, parent, false);
         } else {
 
             itemView = LayoutInflater.from(parent.getContext())
@@ -266,8 +242,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         sessonManager = new SessonManager(context);
 
         Log.d("chattypeforchecking==", chat.getType());
-
-
 
 
         if (chat.getType().equalsIgnoreCase("image")) {
@@ -300,17 +274,11 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             holder.message_body.setText(chat.getMessage());
             holder.dateText.setText(chat.getCreatedAt());
             //holder.textLayout.setVisibility(View.VISIBLE);
-        }
-        else if (chat.getType().equalsIgnoreCase("discount")) {
+        } else if (chat.getType().equalsIgnoreCase("discount")) {
             holder.message_body.setText(chat.getMessage());
             holder.dateText.setText(chat.getCreatedAt());
             //holder.textLayout.setVisibility(View.VISIBLE);
-        }
-
-
-
-
-        else if (chat.getType().equalsIgnoreCase("product")) {
+        } else if (chat.getType().equalsIgnoreCase("product")) {
             if (chat.getFilePath().length() == 0) {
             } else {
                 Picasso.get().load(chat.getFilePath()).into(holder.productImage);
@@ -342,14 +310,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             holder.tv_btn_cancel_in.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                  //  Toast.makeText(context, "Message In Clicked", Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(context, "Message In Clicked", Toast.LENGTH_SHORT).show();
 
-                    Log.d("ksajdf",String.valueOf(chat.getChatId()));
+                    Log.d("ksajdf", String.valueOf(chat.getChatId()));
 
 
                     deleteApiProduct(String.valueOf(chat.getId()));
-
-
 
 
                 }
@@ -394,7 +360,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
                     countforplay++;
                     MediaPlayer mp = new MediaPlayer();
-                    if(countforplay%2==1) {
+                    if (countforplay % 2 == 1) {
                         holder.img_play.setBackgroundResource(R.drawable.ic_pause_button);
 
                         if (!isPLAYING) {
@@ -410,7 +376,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                                 Log.d("milisecond=", String.valueOf(mp.getDuration()));
                                 holder.tv_audio_length.setVisibility(View.VISIBLE);
 
-                                holder.tv_audio_length.setText( convertSecondsToHMmSs(mp.getDuration() / 1000));
+                                holder.tv_audio_length.setText(convertSecondsToHMmSs(mp.getDuration() / 1000));
 
                             } catch (IOException e) {
                                 Log.e("", "prepare() failed");
@@ -420,9 +386,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                             // stopPlaying();
                         }
 
-                    }
-                    else
-                    {
+                    } else {
 
                         holder.img_play.setBackgroundResource(R.drawable.ic_baseline_play_circle_24);
                         isPLAYING = false;
@@ -443,7 +407,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                     Log.d("milisecond=", String.valueOf(millSecond));*/
 
                     // holder.img_play.setVisibility(View.GONE);
-                   //  holder.img_play.setBackgroundResource(R.drawable.ic_pause_button);
+                    //  holder.img_play.setBackgroundResource(R.drawable.ic_pause_button);
                 }
             });
 
@@ -541,14 +505,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             });
 
 
-
-
-
-
-
-
-
-
         }
 
 
@@ -579,10 +535,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                             .putExtra("position", position));
                 }
             });
+        }else if (chat.getType().equalsIgnoreCase("products")) {
+            // Todo:- Multiple products
+            Toast.makeText(context, "inside multiple", Toast.LENGTH_SHORT).show();
         }
-
-        // Todo:- Visibility Concept
-
 
         holder.setIsRecyclable(false);
     }
@@ -601,28 +557,21 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     public int getItemViewType(int position) {
         //getting message object of current position
 
-
         Chat message = chatList.get(position);
-
 
         Log.d("paal====", String.valueOf(message));
         //If its owner  id is  equals to the logged in user id
         SELF_DIRECTION = message.getDirection();
         Log.d("messagetype===", message.getType());
 
-
         if (message.getDirection() == 1) {
             //Returning self
 
             if (message.getType().equalsIgnoreCase("text")) {
                 return SELF_TEXT_IN;
-            }
-            else if (message.getType().equalsIgnoreCase("discount")) {
+            } else if (message.getType().equalsIgnoreCase("discount")) {
                 return SELF_DISCOUNT_IN;
-            }
-
-
-            else if (message.getType().equalsIgnoreCase("image")) {
+            } else if (message.getType().equalsIgnoreCase("image")) {
                 return SELF_IMAGE_IN;
             } else if (message.getType().equalsIgnoreCase("product")) {
                 return SELF_PRODUCT_IN;
@@ -644,6 +593,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                 return SELF_STORE_IN;
             } else if (message.getType().equalsIgnoreCase("order_confirmed")) {
                 return SELF_ORDERCONFIRMED_IN;
+            } else if (message.getType().equalsIgnoreCase("products")) {
+                return MULTIPLE_PRODUCTS;
             }
 
 
@@ -651,12 +602,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         } else {
             if (message.getType().equalsIgnoreCase("text")) {
                 return SELF_TEXT_OUT;
-            }
-            else if (message.getType().equalsIgnoreCase("discount")) {
+            } else if (message.getType().equalsIgnoreCase("discount")) {
                 return SELF_DISCOUNT_OUT;
-            }
-
-            else if (message.getType().equalsIgnoreCase("image")) {
+            } else if (message.getType().equalsIgnoreCase("image")) {
                 return SELF_IMAGE_OUT;
             } else if (message.getType().equalsIgnoreCase("product")) {
                 return SELF_PRODUCT_OUT;
@@ -695,10 +643,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         TextView message_body, dateText;
         ChatMessageView textLayout;
         /*Todo:- Product*/
-        ImageView productImage;
+        ImageView productImage, imgProduct1,imgProduct2,imgProduct3,imgProduct4;
         TextView pqText, dateProduct, productMessage;
         Button acceptText, rejectText, cancelText;
-        LinearLayout greenLayout, closeRedLayout;
+        LinearLayout greenLayout, closeRedLayout, llMiltipleImage;
         ChatMessageView productLayout;
 
 
@@ -810,9 +758,14 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             orderConfirmDate = itemView.findViewById(R.id.orderConfirmDate);
             detailsBtn = itemView.findViewById(R.id.detailsBtn);
 
+            //Multiple Products
+            imgProduct1 = itemView.findViewById(R.id.imgProduct1);
+            imgProduct2 = itemView.findViewById(R.id.imgProduct2);
+            imgProduct3 = itemView.findViewById(R.id.imgProduct3);
+            imgProduct4 = itemView.findViewById(R.id.imgProduct4);
+            llMiltipleImage = itemView.findViewById(R.id.llMiltipleImage);
         }
     }
-
 
     public void onCallforvoice(String str) {
 
@@ -821,7 +774,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             MediaPlayer mp = new MediaPlayer();
             try {
                 mp.setDataSource(str);
-               // mp.getDuration();
+                // mp.getDuration();
                 mp.prepare();
                 mp.start();
 
@@ -834,11 +787,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             // stopPlaying();
         }
     }
-    public  String convertSecondsToHMmSs(long seconds) {
+
+    public String convertSecondsToHMmSs(long seconds) {
         long s = seconds % 60;
         long m = (seconds / 60) % 60;
         long h = (seconds / (60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", h,m,s);
+        return String.format("%02d:%02d:%02d", h, m, s);
     }
 
     /* private void stopPlaying() {
@@ -847,32 +801,25 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
      }*/
 
 
-
-
-
-
-
-
-
     private void deleteApiProduct(String messageId) {
-        Log.d("jzdfhkjdsg",sessonManager.getToken());
-        Log.d("jhgvjhdf",messageId);
+        Log.d("jzdfhkjdsg", sessonManager.getToken());
+        Log.d("jhgvjhdf", messageId);
         if (CommonUtils.isOnline(context)) {
             sessonManager.showProgress(context);
             //Log.d("token",sessonManager.getToken());
-            Call<DeleteProductModel> call= ApiExecutor.getApiService(context)
-                    .apiDeleteProduct("Bearer "+sessonManager.getToken(),messageId);
+            Call<DeleteProductModel> call = ApiExecutor.getApiService(context)
+                    .apiDeleteProduct("Bearer " + sessonManager.getToken(), messageId);
             call.enqueue(new Callback<DeleteProductModel>() {
                 @Override
                 public void onResponse(Call<DeleteProductModel> call, Response<DeleteProductModel> response) {
 
-                    Log.d("azcjhsadfc",new Gson().toJson(response.body()));
+                    Log.d("azcjhsadfc", new Gson().toJson(response.body()));
                     sessonManager.hideProgress();
-                    if (response.body()!=null){
-                        if (response.body().getStatus().equalsIgnoreCase("Success")){
-                            Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(context, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    if (response.body() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("Success")) {
+                            Toast.makeText(context, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -883,19 +830,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                     sessonManager.hideProgress();
                 }
             });
-        }else {
+        } else {
             //CommonUtils.showToastInCenter(context, getString(R.string.please_check_network));
 
             Toast.makeText(context, "please_check_network", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
-
-
-
 
 
 }
