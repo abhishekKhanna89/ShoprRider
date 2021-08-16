@@ -20,12 +20,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatRatingBar;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.shopprdriver.Activity.OrderDetailsActivity;
 import com.shopprdriver.Model.ChatMessage.Chat;
+import com.shopprdriver.Model.ChatMessage.ProductItem;
 import com.shopprdriver.Model.DeleteProductModel;
+import com.shopprdriver.MyCallBack.OnChatClosed;
+import com.shopprdriver.MyDialog.MultipleProductDialog;
 import com.shopprdriver.R;
 import com.shopprdriver.Server.ApiExecutor;
 import com.shopprdriver.Session.CommonUtils;
@@ -87,10 +92,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     private int countforplay = 0;
     View itemView;
     SessonManager sessonManager;
+    OnChatClosed onChatClosed;
 
-    public ChatMessageAdapter(Context context, List<Chat> chatList) {
+    public ChatMessageAdapter(Context context, List<Chat> chatList, OnChatClosed onChatClosed) {
         this.context = context;
         this.chatList = chatList;
+        this.onChatClosed=onChatClosed;
     }
 
     @NonNull
@@ -118,7 +125,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                     .inflate(R.layout.out_msg_text_layout, parent, false);
         }
 
-
         // lk changes here
         else if (viewType == SELF_PRODUCT_IN) {
 
@@ -141,7 +147,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.out_msg_rating_layout, parent, false);
         } else if (viewType == SELF_AUDIO_IN) {
-
 
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.in_msg_audio_layout_two, parent, false);
@@ -274,6 +279,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             holder.message_body.setText(chat.getMessage());
             holder.dateText.setText(chat.getCreatedAt());
             //holder.textLayout.setVisibility(View.VISIBLE);
+            if (chat.getMessage().contains("with the shopper has been terminated")||chat.getMessage().contains("Order has been delivered")){
+                onChatClosed.onChatClosed(true);
+            }
         } else if (chat.getType().equalsIgnoreCase("discount")) {
             holder.message_body.setText(chat.getMessage());
             holder.dateText.setText(chat.getCreatedAt());
@@ -537,12 +545,54 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             });
         }else if (chat.getType().equalsIgnoreCase("products")) {
             // Todo:- Multiple products
-            Toast.makeText(context, "inside multiple", Toast.LENGTH_SHORT).show();
-        }
+            //Toast.makeText(context, "inside multiple", Toast.LENGTH_SHORT).show();
+            List<ProductItem> productList=chat.getProductList();
+            if (productList.size()>0){
 
+                if (productList.size()==1){
+                    holder.imgProduct4.setVisibility(View.GONE);
+                    holder.imgProduct3.setVisibility(View.GONE);
+                    holder.imgProduct2.setVisibility(View.GONE);
+                    holder.txtProductImageCount.setVisibility(View.GONE);
+                    Picasso.get().load(productList.get(0).getFile_path()).into(holder.imgProduct1);
+                }else if (productList.size()==2){
+                    holder.imgProduct4.setVisibility(View.GONE);
+                    holder.imgProduct3.setVisibility(View.GONE);
+                    holder.txtProductImageCount.setVisibility(View.GONE);
+                    Picasso.get().load(productList.get(0).getFile_path()).into(holder.imgProduct1);
+                    Picasso.get().load(productList.get(1).getFile_path()).into(holder.imgProduct2);
+                }else if (productList.size()==3){
+                    holder.imgProduct4.setVisibility(View.GONE);
+                    holder.txtProductImageCount.setVisibility(View.GONE);
+                    Picasso.get().load(productList.get(0).getFile_path()).into(holder.imgProduct1);
+                    Picasso.get().load(productList.get(1).getFile_path()).into(holder.imgProduct2);
+                    Picasso.get().load(productList.get(2).getFile_path()).into(holder.imgProduct3);
+                }else if (productList.size()==4){
+                    holder.txtProductImageCount.setVisibility(View.GONE);
+                    Picasso.get().load(productList.get(0).getFile_path()).into(holder.imgProduct1);
+                    Picasso.get().load(productList.get(1).getFile_path()).into(holder.imgProduct2);
+                    Picasso.get().load(productList.get(2).getFile_path()).into(holder.imgProduct3);
+                    Picasso.get().load(productList.get(3).getFile_path()).into(holder.imgProduct4);
+                }else {
+                    Picasso.get().load(productList.get(0).getFile_path()).into(holder.imgProduct1);
+                    Picasso.get().load(productList.get(1).getFile_path()).into(holder.imgProduct2);
+                    Picasso.get().load(productList.get(2).getFile_path()).into(holder.imgProduct3);
+                    holder.imgProduct4.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    holder.txtProductImageCount.setText("+"+(productList.size()-3));
+                }
+            }else {
+                holder.llMiltipleImage.setVisibility(View.GONE);
+            }
+            holder.llMiltipleImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MultipleProductDialog multipleProductDialog=new MultipleProductDialog();
+                    multipleProductDialog.showDialog(context, productList);
+                }
+            });
+        }
         holder.setIsRecyclable(false);
     }
-
 
     @Override
     public int getItemCount() {
@@ -646,7 +696,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ImageView productImage, imgProduct1,imgProduct2,imgProduct3,imgProduct4;
         TextView pqText, dateProduct, productMessage;
         Button acceptText, rejectText, cancelText;
-        LinearLayout greenLayout, closeRedLayout, llMiltipleImage;
+        LinearLayout greenLayout, closeRedLayout ;
+        LinearLayoutCompat llMiltipleImage;
         ChatMessageView productLayout;
 
 
@@ -656,7 +707,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
         /*Todo:- Image*/
         ImageView image;
-        TextView imageText, dateImage;
+        TextView imageText, dateImage, txtProductImageCount;
         ChatMessageView imageLayout;
         /*Todo:- Rating*/
         ChatMessageView ratingLayout;
@@ -711,6 +762,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             acceptText = itemView.findViewById(R.id.acceptText);
             rejectText = itemView.findViewById(R.id.rejectText);
             cancelText = itemView.findViewById(R.id.cancelText);
+            txtProductImageCount = itemView.findViewById(R.id.txtProductImageCount);
+
 
             /*Todo:- In Message Product Cancel*/
             tv_btn_cancel_in = itemView.findViewById(R.id.tv_btn_cancel_in);

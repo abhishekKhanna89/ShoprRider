@@ -26,19 +26,35 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopprdriver.Adapter.MultipleProductAdapter;
 import com.shopprdriver.Model.MultipleProduct;
+import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.MyCallBack.OnSelectImageClick;
 import com.shopprdriver.R;
+import com.shopprdriver.Server.ApiExecutor;
+import com.shopprdriver.Server.ApiFactory;
+import com.shopprdriver.Server.ApiService;
+import com.shopprdriver.Session.SessonManager;
+import com.shopprdriver.app.Progressbar;
 import com.shopprdriver.camerautils.ImageCompression;
 import com.shopprdriver.camerautils.ImagePath_MarshMallow;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import id.zelory.compressor.Compressor;
 import kotlin.jvm.internal.Intrinsics;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddMultipleProductActivity extends AppCompatActivity implements OnSelectImageClick {
 
@@ -53,6 +69,10 @@ public class AddMultipleProductActivity extends AppCompatActivity implements OnS
     String filePath = "";
     private Uri fileUri;
     Button submitBtn;
+    private static String baseUrl = ApiExecutor.baseUrl;
+    SessonManager sessonManager;
+    int chat_id;
+    Progressbar progressbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +83,15 @@ public class AddMultipleProductActivity extends AppCompatActivity implements OnS
         submitBtn = (Button) findViewById(R.id.submitBtn);
 
         multipleProductList = new ArrayList<>();
+        sessonManager = new SessonManager(this);
+        progressbar = new Progressbar();
 
         MultipleProduct multipleProduct = new MultipleProduct("", "", "", "", false);
         MultipleProduct multipleProduct1 = new MultipleProduct("Select", "", "", "", false);
         multipleProductList.add(multipleProduct);
         multipleProductList.add(multipleProduct1);
+
+        chat_id = getIntent().getIntExtra("chat_id", 0);
 
         multipleProductAdapter = new MultipleProductAdapter(this, multipleProductList, this);
         LinearLayoutManager linearLayoutManagerMyFavorite = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -77,17 +101,76 @@ public class AddMultipleProductActivity extends AppCompatActivity implements OnS
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValid()) {
-                    Toast.makeText(AddMultipleProductActivity.this, "All OK", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(AddMultipleProductActivity.this, "Please save all data", Toast.LENGTH_SHORT).show();
+                if (multipleProductList.size() > 1) {
+                    if (isValid()) {
+                        Toast.makeText(AddMultipleProductActivity.this, "All OK", Toast.LENGTH_SHORT).show();
+                        SendAllProducts();
+                    } else {
+                        Toast.makeText(AddMultipleProductActivity.this, "Please save all data.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(AddMultipleProductActivity.this, "Please add atleast 1 product.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    private void SendAllProducts() {
+        MultipartBody.Part[] imageArray1 = new MultipartBody.Part[multipleProductList.size() - 1];
+        MultipartBody.Part[] producName = new MultipartBody.Part[multipleProductList.size() - 1];
+        MultipartBody.Part[] producPrice = new MultipartBody.Part[multipleProductList.size() - 1];
+        MultipartBody.Part[] producQuantity = new MultipartBody.Part[multipleProductList.size() - 1];
+        for (int i = 0; i < multipleProductList.size() - 1; i++) {
+            //RequestBody producNameRequest = RequestBody.create(MediaType.parse("text/plain"), multipleProductList.get(i).getProductName());
+            producName[i] = MultipartBody.Part.createFormData("message[]", multipleProductList.get(i).getProductName());
+            producPrice[i] = MultipartBody.Part.createFormData("price[]", multipleProductList.get(i).getProductPrice());
+            producQuantity[i] = MultipartBody.Part.createFormData("quantity[]", multipleProductList.get(i).getProductQty());
+
+            File file = new File(multipleProductList.get(i).getProductImage());
+            File compressedfile = null;
+            try {
+                compressedfile = new Compressor(AddMultipleProductActivity.this).compressToFile(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            RequestBody requestBodyArray = RequestBody.create(MediaType.parse("image/*"), compressedfile);
+            imageArray1[i] = MultipartBody.Part.createFormData("file[]", compressedfile.getName(), requestBodyArray);
+        }
+
+        RequestBody typeReq = RequestBody.create(MediaType.parse("text/plain"), "products");
+        RequestBody direction = RequestBody.create(MediaType.parse("text/plain"), "0");
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + sessonManager.getToken());
+        ApiService iApiServices = ApiFactory.createRetrofitInstance(baseUrl).create(ApiService.class);
+
+        iApiServices.apiMultipleProductSend(headers, chat_id, producName, typeReq, producPrice, producQuantity, imageArray1, direction)
+                .enqueue(new Callback<SendModel>() {
+                    @Override
+                    public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                        progressbar.hideProgress();
+                        //sessonManager.hideProgress();
+                        if (response.body() != null) {
+                            if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
+                                setResult(RESULT_OK);
+                                finish();
+                            }else {
+                                Toast.makeText(AddMultipleProductActivity.this,"" +response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SendModel> call, Throwable t) {
+                        progressbar.hideProgress();
+                        //sessonManager.hideProgress();
+                    }
+                });
+
+    }
+
     private boolean isValid() {
-        for (MultipleProduct item : multipleProductList.subList(0,multipleProductList.size()-1)) {
+        for (MultipleProduct item : multipleProductList.subList(0, multipleProductList.size() - 1)) {
             if (!item.isSaved())
                 return false;
         }

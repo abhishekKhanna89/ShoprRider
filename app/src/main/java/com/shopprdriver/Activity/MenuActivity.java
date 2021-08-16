@@ -251,6 +251,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onStatusChanged(String provider, int status, Bundle extras) {
             }
 
+
             @Override
             public void onProviderEnabled(String provider) {
             }
@@ -699,7 +700,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -18,7 +18,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PixelFormat;
 import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -35,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -57,7 +55,6 @@ import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordButton;
 import com.devlomi.record_view.RecordView;
 import com.google.gson.Gson;
-import com.shopprdriver.Adapter.ChatAppMsgAdapter;
 import com.shopprdriver.Adapter.ChatMessageAdapter;
 import com.shopprdriver.Model.CartApiResponse;
 import com.shopprdriver.Model.ChatMessage.Chat;
@@ -66,6 +63,7 @@ import com.shopprdriver.Model.ChatModel;
 import com.shopprdriver.Model.InitiateVideoCall.InitiateVideoCallModel;
 import com.shopprdriver.Model.Send.SendModel;
 import com.shopprdriver.Model.TerminateChat.TerminateChatModel;
+import com.shopprdriver.MyCallBack.OnChatClosed;
 import com.shopprdriver.R;
 import com.shopprdriver.RequestService.DiscountRequest;
 import com.shopprdriver.RequestService.TextTypeRequest;
@@ -107,7 +105,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements OnChatClosed {
     SessonManager sessonManager;
     int chat_id;
     RecyclerView chatRecyclerView;
@@ -119,9 +117,12 @@ public class ChatActivity extends AppCompatActivity {
     String body;
 
     List<ChatModel> msgDtoList;
-    ChatAppMsgAdapter chatAppMsgAdapter;
+
+    boolean isChatClosed=false;
+
     /*Todo:- Image Choose*/
     int PICK_IMAGE_MULTIPLE = 1;
+    int REQUEST_MULTIPLE_IMAGE = 512;
     File photoFile;
     Uri photoUri;
     String mCurrentMPath;
@@ -282,7 +283,7 @@ public class ChatActivity extends AppCompatActivity {
         if (chatList == null) {
             chatMessageList(chat_id);
         } else if (chatList.size() > 0) {
-            ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList);
+            ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList, this);
             chatRecyclerView.setNestedScrollingEnabled(false);
             chatMessageAdapter.setHasStableIds(true);
             chatRecyclerView.setHasFixedSize(true);
@@ -292,72 +293,79 @@ public class ChatActivity extends AppCompatActivity {
             chatMessageAdapter.notifyDataSetChanged();
         }
 
-
-
-
-
-
         /*Todo:- FloatingActionButton*/
         fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
-        /*fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-
-                // TODO: Do something with yout menu items, or return false if you don't want to show them
-                return true;
-            }
-        });*/
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.fab_product:
-                        showCustomDialog();
-                        //showAddMoreProductDialog();
+                        //showCustomDialog();
+                        if (isChatClosed){
+                         Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            showAddMoreProductDialog();
+                        }
                         break;
                     case R.id.action_wallet:
-                        showWalletDialog();
+                        if (isChatClosed){
+                            Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            showWalletDialog();
+                        }
                         break;
                     case R.id.action_ask_payment:
-                        Call<SendModel> call = ApiExecutor.getApiService(ChatActivity.this)
-                                .apiSendPaymentRequest("Bearer " + sessonManager.getToken(), chat_id, "payment");
-                        call.enqueue(new Callback<SendModel>() {
-                            @Override
-                            public void onResponse(Call<SendModel> call, Response<SendModel> response) {
-                                if (response.body() != null) {
-                                    if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
-                                        chatMessageList(chat_id);
-                                        Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        if (isChatClosed){
+                            Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Call<SendModel> call = ApiExecutor.getApiService(ChatActivity.this)
+                                    .apiSendPaymentRequest("Bearer " + sessonManager.getToken(), chat_id, "payment");
+                            call.enqueue(new Callback<SendModel>() {
+                                @Override
+                                public void onResponse(Call<SendModel> call, Response<SendModel> response) {
+                                    if (response.body() != null) {
+                                        if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
+                                            chatMessageList(chat_id);
+                                            Toast.makeText(ChatActivity.this, "" + response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<SendModel> call, Throwable t) {
+                                @Override
+                                public void onFailure(Call<SendModel> call, Throwable t) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                         break;
                     case R.id.action_terminate_chat:
-                        new AlertDialog.Builder(ChatActivity.this)
-                                .setTitle("Are you sure want to terminate chat?")
-                                // Specifying a listener allows you to take an action before dismissing the dialog.
-                                // The dialog is automatically dismissed when a dialog button is clicked.
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Continue with delete operation
-                                        terminate();
-                                    }
-                                })
+                        if (isChatClosed){
+                            Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            new AlertDialog.Builder(ChatActivity.this)
+                                    .setTitle("Are you sure want to terminate chat?")
+                                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // Continue with delete operation
+                                            terminate();
+                                        }
+                                    })
 
-                                // A null listener allows the button to dismiss the dialog and take no further action.
-                                .setNegativeButton(android.R.string.no, null)
-                                .setIcon(R.drawable.splash_transparent)
-                                .show();
+                                    // A null listener allows the button to dismiss the dialog and take no further action.
+                                    .setNegativeButton(android.R.string.no, null)
+                                    .setIcon(R.drawable.splash_transparent)
+                                    .show();
+                        }
                         break;
 
                     case R.id.action_terminate_discount:
-                        show_Discount_Dialog();
+                        if (isChatClosed){
+                            Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            show_Discount_Dialog();
+                        }
                         break;
                 }
                 return false;
@@ -469,7 +477,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void showAddMoreProductDialog() {
-        startActivity(new Intent(this, AddMultipleProductActivity.class));
+        startActivityForResult(new Intent(this, AddMultipleProductActivity.class).putExtra("chat_id", chat_id), REQUEST_MULTIPLE_IMAGE);
     }
 
     private void terminate() {
@@ -481,6 +489,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success")) {
                         Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        chatMessageList(chat_id);
                     } else {
                         Toast.makeText(ChatActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -898,7 +907,7 @@ public class ChatActivity extends AppCompatActivity {
                                 chatList = chatMessageModel.getData().getChats();
                                 Picasso.get().load(chatMessageModel.getData().getCustomer().getImage()).into(userDp);
                                 userName.setText(chatMessageModel.getData().getCustomer().getName());
-                                ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList);
+                                ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(ChatActivity.this, chatList, ChatActivity.this);
                                 chatRecyclerView.setAdapter(chatMessageAdapter);
                                 chatMessageAdapter.notifyDataSetChanged();
                                 chatRecyclerView.scrollToPosition(chatList.size() - 1);
@@ -962,6 +971,10 @@ public class ChatActivity extends AppCompatActivity {
             uploadOnlyImages(data);
         } else if ((requestCode == REQUEST_GALLERY_FOR_PRODUCT_IMAGE)) {
             UploadProductImage(data);
+        }
+
+        if (requestCode == REQUEST_MULTIPLE_IMAGE) {
+            chatMessageList(chat_id);
         }
     }
 
@@ -1657,5 +1670,10 @@ public class ChatActivity extends AppCompatActivity {
 
     public void finish(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void onChatClosed(boolean isChatClosed) {
+        this.isChatClosed=isChatClosed;
     }
 }

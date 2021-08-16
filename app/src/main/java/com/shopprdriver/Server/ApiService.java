@@ -80,229 +80,246 @@ public interface ApiService {
 
 
     @POST("verify-otp")
-    Call<OtpVerifyModel>otpService(@Body OtpVerifyRequest verifyRequest);
+    Call<OtpVerifyModel> otpService(@Body OtpVerifyRequest verifyRequest);
+
     @NonNull
     @GET("available-chats")
     Call<AvailableChatModel> apiUserAvailableChatList(@Header("Authorization") String token);
+
     @NonNull
     @GET("chats")
     Call<UserChatListModel> apiUserChatList(@Header("Authorization") String token);
 
     @NonNull
     @GET("chat-messages/{chat_id}")
-    Call<ChatMessageModel>apiChatMessage(@Header("Authorization") String token,
-                                         @Path("chat_id")int chat_id);
+    Call<ChatMessageModel> apiChatMessage(@Header("Authorization") String token,
+                                          @Path("chat_id") int chat_id);
+
     @NonNull
     @GET("accept/{message_id}")
-    Call<AcceptModel>apiAccept(@Header("Authorization") String token,
-                               @Path("message_id")int message__id);
+    Call<AcceptModel> apiAccept(@Header("Authorization") String token,
+                                @Path("message_id") int message__id);
 
 
     @NonNull
     @GET("delete-product/{message_id}")
-    Call<DeleteProductModel>apiDeleteProduct(@Header("Authorization") String token,
-                                             @Path("message_id")String message_id);
-
+    Call<DeleteProductModel> apiDeleteProduct(@Header("Authorization") String token,
+                                              @Path("message_id") String message_id);
 
 
     @NonNull
     @GET("reject/{message_id}")
-    Call<RejectedModel>apiRejected(@Header("Authorization") String token,
-                                   @Path("message_id")int message_id);
+    Call<RejectedModel> apiRejected(@Header("Authorization") String token,
+                                    @Path("message_id") int message_id);
+
     @NonNull
     @GET("cancel/{message_id}")
-    Call<CancelModel>apiCancel(@Header("Authorization") String token,
-                               @Path("message_id")int message_id);
+    Call<CancelModel> apiCancel(@Header("Authorization") String token,
+                                @Path("message_id") int message_id);
+
     @POST("rate-service/{message_id}")
-    Call<RatingsModel>apiRatings(@Header("Authorization") String token,
-                                 @Path("message_id")int message_id,@Body RatingsRequest ratingsRequest);
+    Call<RatingsModel> apiRatings(@Header("Authorization") String token,
+                                  @Path("message_id") int message_id, @Body RatingsRequest ratingsRequest);
 
     @POST("send-message/{chat_id}")
-    Call<SendModel>apiSend(@Header("Authorization") String token,
-                           @Path("chat_id")int chat_id, @Body TextTypeRequest textTypeRequest);
-
-    @Multipart
-    @POST("send-message/{chat_id}")
-    Call<SendModel>apiImageSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+    Call<SendModel> apiSend(@Header("Authorization") String token,
+                            @Path("chat_id") int chat_id, @Body TextTypeRequest textTypeRequest);
 
     @Multipart
     @POST("send-message/{chat_id}")
-    Call<SendModel>apiAudioSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id,@Part MultipartBody.Part file, @PartMap() Map<String, RequestBody> partMap);
+    Call<SendModel> apiImageSend(@HeaderMap Map<String, String> token, @Path("chat_id") int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
 
     @Multipart
     @POST("send-message/{chat_id}")
-    Call<SendModel>apiProductSend(@HeaderMap Map<String, String> token, @Path("chat_id")int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+    Call<SendModel> apiAudioSend(@HeaderMap Map<String, String> token, @Path("chat_id") int chat_id, @Part MultipartBody.Part file, @PartMap() Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST("send-message/{chat_id}")
+    Call<SendModel> apiProductSend(@HeaderMap Map<String, String> token, @Path("chat_id") int chat_id, @Part MultipartBody.Part[] images, @PartMap() Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST("send-message/{chat_id}")
+    Call<SendModel> apiMultipleProductSend(@HeaderMap Map<String, String> token,
+                                           @Path("chat_id") int chat_id,
+                                           @Part MultipartBody.Part[] message,
+                                           @Part("type") RequestBody type,
+                                           @Part MultipartBody.Part[] prodPrice,
+                                           @Part MultipartBody.Part[] prodQty,
+                                           @Part MultipartBody.Part[] prodQImage,
+                                           @Part("direction") RequestBody direction
+    );
 
 
     @POST("update-location")
-    Call<LocationUpdateModel>apiLocationUpdate(@Header("Authorization") String token,
-                                               @Body UpdateLocationRequest updateLocationRequest);
+    Call<LocationUpdateModel> apiLocationUpdate(@Header("Authorization") String token,
+                                                @Body UpdateLocationRequest updateLocationRequest);
 
 
     @NonNull
     @GET("initiate-video-call/{chat_id}")
-    Call<InitiateVideoCallModel>apiInitiateVideoCall(@Header("Authorization") String token,
-                                                     @Path("chat_id")int chat_id);
+    Call<InitiateVideoCallModel> apiInitiateVideoCall(@Header("Authorization") String token,
+                                                      @Path("chat_id") int chat_id);
+
     @NonNull
     @GET("notifications")
-    Call<NotificationListModel>apiNotificationList(@Header("Authorization") String token,
-                                                   @Query("page")int page);
+    Call<NotificationListModel> apiNotificationList(@Header("Authorization") String token,
+                                                    @Query("page") int page);
 
 
     @NonNull
     @GET("orders")
-    Call<OrderDetailsModel>apiMyOrderDetails(@Header("Authorization") String token,
-                                             @Query("page")int page);
+    Call<OrderDetailsModel> apiMyOrderDetails(@Header("Authorization") String token,
+                                              @Query("page") int page);
 
     @NonNull
     @GET("state-list")
-    Call<StateListModel>apiStateList();
+    Call<StateListModel> apiStateList();
 
     @Multipart
     @POST("upload-document")
-    Call<UploadDocumentModel>apiUploadDocument(@HeaderMap Map<String, String> token,@Part MultipartBody.Part  pan_card,
-                                               @Part MultipartBody.Part front_aadhaar_card,
-                                               @Part MultipartBody.Part back_aadhaar_card,
-                                               @Part MultipartBody.Part front_dl_no,
-                                               @Part MultipartBody.Part back_dl_no,
-                                               @Part MultipartBody.Part front_bike,
-                                               @Part MultipartBody.Part back_bike);
+    Call<UploadDocumentModel> apiUploadDocument(@HeaderMap Map<String, String> token, @Part MultipartBody.Part pan_card,
+                                                @Part MultipartBody.Part front_aadhaar_card,
+                                                @Part MultipartBody.Part back_aadhaar_card,
+                                                @Part MultipartBody.Part front_dl_no,
+                                                @Part MultipartBody.Part back_dl_no,
+                                                @Part MultipartBody.Part front_bike,
+                                                @Part MultipartBody.Part back_bike);
+
     @NonNull
     @GET("wallet-history")
-    Call<WalletHistoryModel>apiWalletHistory(@Header("Authorization") String token);
+    Call<WalletHistoryModel> apiWalletHistory(@Header("Authorization") String token);
 
     @NonNull
     @GET("deliver-order/{order_id}")
-    Call<LoginModel>apiDeliverOrder(@Header("Authorization") String token,
-                                    @Path("order_id")int order_id);
+    Call<LoginModel> apiDeliverOrder(@Header("Authorization") String token,
+                                     @Path("order_id") int order_id);
+
     @NonNull
     @GET("order-details/{order_id}")
-    Call<OrderDeatilsListModel>apiMyOderDetails(@Header("Authorization") String token,
-                                                @Path("order_id")int order_id);
+    Call<OrderDeatilsListModel> apiMyOderDetails(@Header("Authorization") String token,
+                                                 @Path("order_id") int order_id);
 
     @POST("commission-history")
-    Call<CommissionTransactionsModel>apiCommissionTransaction(@Header("Authorization") String token,
-                                                              @Query("from_date")String from_date,
-                                                              @Query("to_date")String to_date);
+    Call<CommissionTransactionsModel> apiCommissionTransaction(@Header("Authorization") String token,
+                                                               @Query("from_date") String from_date,
+                                                               @Query("to_date") String to_date);
 
     @POST("update-details")
-    Call<UploadDocumentModel>apiUpdateDetails(@Header("Authorization") String token,
-                                              @Body AccountDetailsRequest accountDetailsRequest);
+    Call<UploadDocumentModel> apiUpdateDetails(@Header("Authorization") String token,
+                                               @Body AccountDetailsRequest accountDetailsRequest);
 
     @NonNull
     @GET("profile-status")
-    Call<ProfileStatusModel>apiProfileStatus(@Header("Authorization") String token);
+    Call<ProfileStatusModel> apiProfileStatus(@Header("Authorization") String token);
 
     @NonNull
     @GET("accept-chat/{chat_id}")
-    Call<AcceptChatModel>apiAcceptChat(@Header("Authorization") String token,
-                                       @Path("chat_id") int chat_id);
+    Call<AcceptChatModel> apiAcceptChat(@Header("Authorization") String token,
+                                        @Path("chat_id") int chat_id);
+
     @NonNull
     @GET("reject-chat/{chat_id}")
-    Call<AcceptChatModel>apiRejectChat(@Header("Authorization") String token,
-                                       @Path("chat_id") int chat_id);
+    Call<AcceptChatModel> apiRejectChat(@Header("Authorization") String token,
+                                        @Path("chat_id") int chat_id);
 
     @POST("check-in")
-    Call<CheckinCheckouSucessModel>apiCheckIn(@Header("Authorization") String token,
-                                              @Body CheckInCheckOutRequest checkInCheckOutRequest);
+    Call<CheckinCheckouSucessModel> apiCheckIn(@Header("Authorization") String token,
+                                               @Body CheckInCheckOutRequest checkInCheckOutRequest);
 
     @POST("check-out")
-    Call<CheckinCheckouSucessModel>apiCheckOut(@Header("Authorization") String token,
-                                              @Body CheckInCheckOutRequest checkInCheckOutRequest);
+    Call<CheckinCheckouSucessModel> apiCheckOut(@Header("Authorization") String token,
+                                                @Body CheckInCheckOutRequest checkInCheckOutRequest);
 
     @NonNull
     @GET("attendences")
-    Call<AttendencesModel>apiAttendence(@Header("Authorization") String token);@NonNull
+    Call<AttendencesModel> apiAttendence(@Header("Authorization") String token);
+
+    @NonNull
 
     @GET("reviews")
-    Call<ReviewsModel>apiReviews(@Header("Authorization") String token);
+    Call<ReviewsModel> apiReviews(@Header("Authorization") String token);
 
     @NonNull
     @GET("checkin-status")
-    Call<CheckoutStatusModel>apiCheckoutStatus(@Header("Authorization") String token);
+    Call<CheckoutStatusModel> apiCheckoutStatus(@Header("Authorization") String token);
 
 
     @POST("time-history")
-    Call<TravelingDetailsModel>apiTravelingDetails(@Header("Authorization") String token,
-                                                   @Query("from_date")String from_date,
-                                                   @Query("to_date")String to_date);
+    Call<TravelingDetailsModel> apiTravelingDetails(@Header("Authorization") String token,
+                                                    @Query("from_date") String from_date,
+                                                    @Query("to_date") String to_date);
+
     @NonNull
     @GET("logout")
-    Call<LogoutModel>apiLogoutStatus(@Header("Authorization") String token);
-    @POST("send-message/{chat_id}")
-    Call<SendModel>apiWalletRequest(@Header("Authorization") String token,
-                           @Path("chat_id")int chat_id, @Body WalletRequest walletRequest);
+    Call<LogoutModel> apiLogoutStatus(@Header("Authorization") String token);
 
     @POST("send-message/{chat_id}")
-    Call<SendModel>apiDiscountRequest(@Header("Authorization") String token,
-                                    @Path("chat_id")int chat_id, @Body DiscountRequest discountRequest);
+    Call<SendModel> apiWalletRequest(@Header("Authorization") String token,
+                                     @Path("chat_id") int chat_id, @Body WalletRequest walletRequest);
+
+    @POST("send-message/{chat_id}")
+    Call<SendModel> apiDiscountRequest(@Header("Authorization") String token,
+                                       @Path("chat_id") int chat_id, @Body DiscountRequest discountRequest);
 
 
     @POST("update-personal-details")
-    Call<PersonalDetailsModel>apiPersonalDetails(@Header("Authorization") String token,
-                                                 @Body PersonalDetailsRequest personalDetailsRequest);
+    Call<PersonalDetailsModel> apiPersonalDetails(@Header("Authorization") String token,
+                                                  @Body PersonalDetailsRequest personalDetailsRequest);
 
     @GET("work-locations")
-    Call<WorkLocationModel>apiWorkLocation();
+    Call<WorkLocationModel> apiWorkLocation();
 
     @POST("update-work-details")
-    Call<WorkDetailsModel>apiWorkDetails(@Header("Authorization") String token,
-                                         @Query("locations[]") List<Integer>locationWorkId,
-                                         @Query("work_type")String work_type);
+    Call<WorkDetailsModel> apiWorkDetails(@Header("Authorization") String token,
+                                          @Query("locations[]") List<Integer> locationWorkId,
+                                          @Query("work_type") String work_type);
 
     @NonNull
     @GET("get-documents")
-    Call<GetDocumentModel>apiViewDocument(@Header("Authorization") String token);
+    Call<GetDocumentModel> apiViewDocument(@Header("Authorization") String token);
 
     @Multipart
     @POST("update-documents")
-    Call<DocumentModel>apiDocument(@HeaderMap Map<String, String> token,
-                                   @Part MultipartBody.Part front_aadhaar_card);
+    Call<DocumentModel> apiDocument(@HeaderMap Map<String, String> token,
+                                    @Part MultipartBody.Part front_aadhaar_card);
 
 
     @NonNull
     @GET("get-bank-info")
-    Call<BankDetailsGetModel>apiViewBankDetails(@Header("Authorization") String token);
+    Call<BankDetailsGetModel> apiViewBankDetails(@Header("Authorization") String token);
 
 
     @NonNull
     @GET("get-work-info")
-    Call<WorkDetailsViewModel>apiWorkDetailsView(@Header("Authorization") String token);
+    Call<WorkDetailsViewModel> apiWorkDetailsView(@Header("Authorization") String token);
 
     @NonNull
     @GET("get-personal-info")
-    Call<PersonalInfoViewModel>apiPersonalDetailsView(@Header("Authorization") String token);
+    Call<PersonalInfoViewModel> apiPersonalDetailsView(@Header("Authorization") String token);
 
     @POST("send-message/{chat_id}")
-    Call<SendModel>apiSendPaymentRequest(@Header("Authorization") String token,
-                                         @Path("chat_id")int chat_id,
-                                         @Query("type")String type);
+    Call<SendModel> apiSendPaymentRequest(@Header("Authorization") String token,
+                                          @Path("chat_id") int chat_id,
+                                          @Query("type") String type);
 
 
     @NonNull
     @GET("profile")
-    Call<ProfileModel>apiProfileView(@Header("Authorization") String token);
+    Call<ProfileModel> apiProfileView(@Header("Authorization") String token);
 
     @NonNull
     @GET("terminate-chat/{id}")
-    Call<TerminateChatModel>apiChatTerminate(@Header("Authorization") String token,
-                                             @Path("id")int id);
-
-
-
+    Call<TerminateChatModel> apiChatTerminate(@Header("Authorization") String token,
+                                              @Path("id") int id);
 
 
     @NonNull
     @GET("cart/{chat_id} ")
-    Call<CartApiResponse>apiCartDetail(@Header("Authorization") String token,
-                                       @Path("chat_id")int id);
-
-
-
-
+    Call<CartApiResponse> apiCartDetail(@Header("Authorization") String token,
+                                        @Path("chat_id") int id);
 
 
     @POST("resend-otp")
-    Call<ResendOtpModel>apiResendOtp(@Query("type")String type,
-                                     @Query("mobile")String mobile);
+    Call<ResendOtpModel> apiResendOtp(@Query("type") String type,
+                                      @Query("mobile") String mobile);
 }

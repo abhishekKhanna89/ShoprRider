@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/gray">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,16 +44,16 @@
                             android:id="@+id/imgProduct1"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:scaleType="fitXY"
                             android:layout_margin="5dp"
+                            android:scaleType="fitXY"
                             android:src="@drawable/empty" />
 
                         <ImageView
                             android:id="@+id/imgProduct2"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:scaleType="fitXY"
                             android:layout_margin="5dp"
+                            android:scaleType="fitXY"
                             android:src="@drawable/empty" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -66,17 +66,35 @@
                             android:id="@+id/imgProduct3"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:scaleType="fitXY"
                             android:layout_margin="5dp"
+                            android:scaleType="fitXY"
                             android:src="@drawable/empty" />
 
-                        <ImageView
-                            android:id="@+id/imgProduct4"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:scaleType="fitXY"
-                            android:layout_margin="5dp"
-                            android:src="@drawable/empty" />
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/imgProduct4"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:background="@color/colorPrimary"
+                                android:scaleType="fitXY" />
+
+                            <TextView
+                                android:id="@+id/txtProductImageCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/white"
+                                android:textSize="25dp"
+                                tools:text="+10" />
+                        </RelativeLayout>
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -86,8 +104,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:text="11:00 AM"
                     android:layout_marginTop="5dp"
+                    android:text="11:00 AM"
                     android:textColor="#000000"
                     android:textSize="10sp" />
             </LinearLayout>

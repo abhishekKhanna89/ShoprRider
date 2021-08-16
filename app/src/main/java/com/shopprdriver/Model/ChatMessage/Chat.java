@@ -3,6 +3,8 @@ package com.shopprdriver.Model.ChatMessage;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Chat {
 
     @SerializedName("id")
@@ -50,6 +52,9 @@ public class Chat {
     @SerializedName("order_id")
     @Expose
     private int order_id;
+    @SerializedName("products")
+    @Expose
+    private List<ProductItem> productList;
 
     public Integer getId() {
         return id;
@@ -170,5 +175,13 @@ public class Chat {
 
     public void setOrder_id(int order_id) {
         this.order_id = order_id;
+    }
+
+    public List<ProductItem> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<ProductItem> productList) {
+        this.productList = productList;
     }
 }

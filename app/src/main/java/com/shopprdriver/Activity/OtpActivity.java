@@ -179,75 +179,7 @@ public class OtpActivity extends AppCompatActivity {
 
                                         }
                                     });
-
                                 }
-                                /*if (((BaseApplication)getApplication()).initSendBirdCall(savedAppId)) {
-                                    AuthenticationUtils.authenticate(OtpActivity.this, userId, sendbird_token, isSuccess -> {
-                                        if (isSuccess) {
-                                            setResult(RESULT_OK, null);
-                                            Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                            if (type.equalsIgnoreCase("login")){
-                                                if (form_step==1){
-                                                    startActivity(new Intent(OtpActivity.this, Page1Activity.class));
-                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                    finish();
-                                                }else if (form_step==2){
-                                                    startActivity(new Intent(OtpActivity.this, Page2Activity.class));
-                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                    finish();
-                                                }else if (form_step==3){
-                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step1")){
-                                                        PrefUtils.getAppId(OtpActivity.this);
-                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
-                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                        finish();
-                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step2")){
-                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
-                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                        finish();
-                                                    }else {
-                                                        startActivity(new Intent(OtpActivity.this, PersionalDetailsActivity.class));
-                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                        finish();
-                                                    }
-                                                }else if (form_step==4){
-                                                    if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step3")){
-                                                        PrefUtils.getAppId(OtpActivity.this);
-                                                        startActivity(new Intent(OtpActivity.this, MenuActivity.class)
-                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                        finish();
-                                                    }else if (sessonManager.getAccountUpdateDetails()!=null&&sessonManager.getAccountUpdateDetails().equalsIgnoreCase("step4")){
-                                                        startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
-                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                        finish();
-                                                    }else {
-                                                    startActivity(new Intent(OtpActivity.this, WorkLocationActivity.class));
-                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                    finish();
-                                                    }
-
-                                                }else {
-                                                    sessonManager.getNotificationToken();
-                                                    PrefUtils.getAppId(OtpActivity.this);
-                                                    startActivity(new Intent(OtpActivity.this, MenuActivity.class)
-                                                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                    finish();
-                                                }
-
-
-                                            }else {
-
-                                                //sessonManager.setForm_Step(form_step);
-                                                startActivity(new Intent(OtpActivity.this, Page1Activity.class)
-                                                        .putExtra("form_step",form_step)
-                                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                finish();
-                                                //Toast.makeText(OtpActivity.this, "register", Toast.LENGTH_SHORT).show();
-                                            }
-
-                                        }
-                                    });
-                                }*/
                             }
                         }else {
                             Toast.makeText(OtpActivity.this, "OTP is not correct", Toast.LENGTH_SHORT).show();
