@@ -547,6 +547,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             // Todo:- Multiple products
             //Toast.makeText(context, "inside multiple", Toast.LENGTH_SHORT).show();
             List<ProductItem> productList=chat.getProductList();
+            holder.dateMultipleImage.setText(chat.getCreatedAt());
             if (productList.size()>0){
 
                 if (productList.size()==1){
@@ -694,7 +695,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ChatMessageView textLayout;
         /*Todo:- Product*/
         ImageView productImage, imgProduct1,imgProduct2,imgProduct3,imgProduct4;
-        TextView pqText, dateProduct, productMessage;
+        TextView pqText, dateProduct, productMessage,dateMultipleImage;
         Button acceptText, rejectText, cancelText;
         LinearLayout greenLayout, closeRedLayout ;
         LinearLayoutCompat llMiltipleImage;
@@ -817,6 +818,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             imgProduct3 = itemView.findViewById(R.id.imgProduct3);
             imgProduct4 = itemView.findViewById(R.id.imgProduct4);
             llMiltipleImage = itemView.findViewById(R.id.llMiltipleImage);
+            dateMultipleImage = itemView.findViewById(R.id.dateMultipleImage);
         }
     }
 

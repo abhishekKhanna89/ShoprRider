@@ -6,6 +6,14 @@
         android:icon="@drawable/ic_product"
         android:title="Product" />
     <item
+        android:id="@+id/fab_products"
+        android:icon="@drawable/ic_product"
+        android:title="Multiple Products" />
+    <item
+        android:id="@+id/action_terminate_discount"
+        android:title="Discount"
+        android:icon="@drawable/discount_icon"/>
+    <item
         android:id="@+id/action_wallet"
         android:icon="@drawable/wallet"
         android:title="Wallet"/>
@@ -18,8 +26,6 @@
         android:title="Terminate Chat"
         android:icon="@drawable/chat_terminate"/>
 
-    <item android:id="@+id/action_terminate_discount"
-        android:title="Discount"
-        android:icon="@drawable/discount_icon"/>
+
 
 </menu>

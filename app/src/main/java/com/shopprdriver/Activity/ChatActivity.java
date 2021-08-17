@@ -156,8 +156,6 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
     TextView userName;
 
     Progressbar progressbar;
-
-
     TextView tv_cartValue, tv_btn_viewMore;
 
     /*Todo:- Recording Library*/
@@ -196,20 +194,13 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
         //Cancel Bounds is when the Slide To Cancel text gets before the timer . default is 8
         recordView.setCancelBounds(8);
 
-
         recordView.setSmallMicColor(Color.parseColor("#c2185b"));
         permissionToDrawOverlays();
 
         //prevent recording under one Second
         recordView.setLessThanSecondAllowed(false);
-
-
         recordView.setSlideToCancelText("Slide To Cancel");
-
-
         recordView.setCustomSounds(0, R.raw.record_finished, 0);
-
-
         recordView.setOnRecordListener(new OnRecordListener() {
             @Override
             public void onStart() {
@@ -225,7 +216,6 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                 Log.d("RecordView", "onCancel");
 
             }
-
 
             @Override
             public void onFinish(long recordTime) {
@@ -304,6 +294,14 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                         if (isChatClosed){
                          Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
                         }else {
+                            showCustomDialog();
+                        }
+                        break;
+                    case R.id.fab_products:
+                        //showCustomDialog();
+                        if (isChatClosed){
+                            Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
+                        }else {
                             showAddMoreProductDialog();
                         }
                         break;
@@ -339,9 +337,9 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                         }
                         break;
                     case R.id.action_terminate_chat:
-                        if (isChatClosed){
+                      /*  if (isChatClosed){
                             Toast.makeText(ChatActivity.this, "Your Chat is closed.", Toast.LENGTH_SHORT).show();
-                        }else {
+                        }else {*/
                             new AlertDialog.Builder(ChatActivity.this)
                                     .setTitle("Are you sure want to terminate chat?")
                                     // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -357,7 +355,7 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                                     .setNegativeButton(android.R.string.no, null)
                                     .setIcon(R.drawable.splash_transparent)
                                     .show();
-                        }
+                        //}
                         break;
 
                     case R.id.action_terminate_discount:
@@ -412,6 +410,7 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                         @Override
                         public void onClick(View v) {
                             String msgContent = editText.getText().toString();
+                            sendMsgBtn.setEnabled(false);
                             if (!TextUtils.isEmpty(msgContent)) {
                                 if (CommonUtils.isOnline(ChatActivity.this)) {
                                     //sessonManager.showProgress(ChatActivity.this);
@@ -424,6 +423,7 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                                         @Override
                                         public void onResponse(Call<SendModel> call, Response<SendModel> response) {
                                             // sessonManager.hideProgress();
+                                            sendMsgBtn.setEnabled(true);
                                             if (response.body() != null) {
                                                 SendModel sendModel = response.body();
                                                 if (response.body().getStatus() != null && response.body().getStatus().equals("success")) {
@@ -435,7 +435,6 @@ public class ChatActivity extends AppCompatActivity implements OnChatClosed {
                                                 }
                                             }
                                         }
-
 
                                         @Override
                                         public void onFailure(Call<SendModel> call, Throwable t) {

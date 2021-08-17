@@ -66,6 +66,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
+        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.gradient_bg));
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sessonManager = new SessonManager(this);
         orderId = getIntent().getIntExtra("orderId", 0);

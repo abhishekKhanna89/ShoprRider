@@ -102,12 +102,10 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
     public static String checkout;
     Intent serviceIntent;
 
-
     // lists for permissions
     /*Todo:- Check out type*/
     String check_out_type;
     List<Menu_Model> menuModelList = new ArrayList<>();
-
 
     /*Todo:- Current Location*/
     boolean gpsCheck = false;
@@ -115,12 +113,10 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
     String location_address;
     LocationManager locman;
 
-
     public MenuActivity() {
     }
 
     Progressbar progressbar;
-
 
     /*Todo:- Version Check*/
     String VERSION_URL = ApiExecutor.baseUrl + "app-version";
@@ -133,6 +129,8 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.gradient_bg));
+        getSupportActionBar().setTitle("Shopper Rider");
         sessonManager = new SessonManager(this);
         progressbar = new Progressbar();
         Log.d("Token", sessonManager.getToken());
@@ -141,7 +139,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
 
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         menuRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
 
         Log.d("notifiallowed=", String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()));
 
@@ -155,7 +152,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d("soundAllowed=", String.valueOf(soundAllowed));
 
 
-        //if()
         if (String.valueOf(NotificationManagerCompat.from(MenuActivity.this).areNotificationsEnabled()).equals("false")) {
 
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(MenuActivity.this).create();
@@ -220,7 +216,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.d("valueminus", String.valueOf(valuemus));
             //Log.d("savemilsaecttime===", String.valueOf(savedMillis) + "," + value + "," + hoursmilllisecond + "," + valuemus);
             if (valuemus >= hoursmilllisecond) {
-
                 appCheckVersionApi();
             }
         }
@@ -264,11 +259,11 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
-            }
-            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
+
+            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 111);
             return;
         }
 
@@ -613,33 +608,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
 
             });
 
-
-            if (position == 0) {
-                //holder.countText.setVisibility(View.VISIBLE);
-                holder.llMainView.setBackgroundColor(Color.parseColor("#cd644c"));
-            } else if (position == 1) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#d26088"));
-            } else if (position == 2) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#3e77da"));
-            } else if (position == 3) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#8fb464"));
-            } else if (position == 4) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#d99e4a"));
-            } else if (position == 5) {
-                //holder.countText.setVisibility(View.VISIBLE);
-                holder.llMainView.setBackgroundColor(Color.parseColor("#d94646"));
-            } else if (position == 6) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#91be55"));
-            } else if (position == 7) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#d94646"));
-            } else if (position == 8) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#2fc8a3"));
-            } else if (position == 9) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#F8A9A3"));
-            } else if (position == 10) {
-                holder.llMainView.setBackgroundColor(Color.parseColor("#ba55d3"));
-            }
-
         }
 
         @Override
@@ -914,6 +882,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
                 .show();
 
     }
+
 
     private void openPlayStore() {
         if (getApplication() == null) {

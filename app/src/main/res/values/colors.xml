@@ -36,4 +36,8 @@
     <color name="textColor">#53a3a4</color>
     <color name="yellow">#fefd02</color>
 
+
+    <color name="color_yellow">#a5c838</color>
+    <color name="color_red">#4fa0a1</color>
+
 </resources>
