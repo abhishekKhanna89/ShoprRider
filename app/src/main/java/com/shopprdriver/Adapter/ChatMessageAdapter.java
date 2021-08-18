@@ -1,5 +1,6 @@
 package com.shopprdriver.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -231,18 +232,15 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.in_msg_blank_layout, parent, false);
         }
-//
-//
 
-
-        //returing the view
+  //returing the view
         return new Holder(itemView);
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, @SuppressLint("RecyclerView") int position) {
         Chat chat = chatList.get(position);
         sessonManager = new SessonManager(context);
 

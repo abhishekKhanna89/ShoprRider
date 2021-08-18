@@ -96,6 +96,7 @@
             app:miniFabBackgroundTint="@android:color/white"
             app:miniFabDrawableTint="?attr/colorPrimaryDark"
             app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+
     </RelativeLayout>
     <Chronometer
         android:id="@+id/record_timer"

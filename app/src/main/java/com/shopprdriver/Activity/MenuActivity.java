@@ -97,10 +97,12 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             Manifest.permission.CAMERA          // for VideoCall
     };
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    private static final int REQUEST_LOC_PERMISSIONS_REQUEST_CODE = 122;
     RecyclerView menuRecyclerView;
     SessonManager sessonManager;
     public static String checkout;
     Intent serviceIntent;
+    LocationListener loclis;
 
     // lists for permissions
     /*Todo:- Check out type*/
@@ -221,8 +223,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         locman = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        final LocationListener loclis = new LocationListener() {
+        loclis = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
@@ -263,7 +264,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         ) {
 
             ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 111);
+                    Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 111);
             return;
         }
 
@@ -278,10 +279,10 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onFinish() {
                 if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 122);
+                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_LOC_PERMISSIONS_REQUEST_CODE);
                     }
 
-                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 111);
+                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOC_PERMISSIONS_REQUEST_CODE);
                     return;
                 }
                 locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
@@ -365,15 +366,17 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
         menu_adapter.notifyDataSetChanged();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
         try {
             gpsCheck = locman.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         if (!gpsCheck) {
-                EnableGPSAutoMatically();
+            EnableGPSAutoMatically();
         }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 152);
@@ -759,8 +762,19 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.C
             if (!allowed) {
                 ToastUtils.showToast(this, "Permission denied.");
             }
+        } else if (requestCode == REQUEST_LOC_PERMISSIONS_REQUEST_CODE) {
+
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locman.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
+            }
+            return;
         }
     }
+
 
     @Override
     protected void onRestart() {

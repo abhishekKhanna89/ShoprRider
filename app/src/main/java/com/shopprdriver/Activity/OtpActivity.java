@@ -102,22 +102,6 @@ public class OtpActivity extends AppCompatActivity {
                                             sessonManager.getNotificationToken();
                                             Toast.makeText(OtpActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-//                                            DialParams params = new DialParams("laskmikant22");
-//                                            params.setVideoCall(true);
-//                                            params.setCallOptions(new CallOptions());
-//
-//                                            SendBirdCall.dial(params, new DialHandler() {
-//                                                @Override
-//                                                public void onResult(DirectCall call, SendBirdException e) {
-//
-////                                                    Intent intent = new Intent(OtpActivity.this, MapsActivity.class);
-////                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-////                                                    startActivity(intent);
-////                                                    finish();
-//
-//                                                }
-//                                            });
-
                                             if (type.equalsIgnoreCase("login")){
                                                 if (form_step==1){
                                                     startActivity(new Intent(OtpActivity.this, Page1Activity.class));
@@ -165,7 +149,6 @@ public class OtpActivity extends AppCompatActivity {
                                                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                     finish();
                                                 }
-
 
                                             }else {
 
